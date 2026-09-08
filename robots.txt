@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://legendsofwpierdol-online.pages.dev/sitemap.xml
