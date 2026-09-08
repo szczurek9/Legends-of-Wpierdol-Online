@@ -1,0 +1,377 @@
+/* Ta klasa sprawi, że element zniknie z ekranu */
+
+.hidden {
+  display: none !important;
+}
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: flex-end; /* prawa strona */
+    align-items: center;      /* środek w pionie */
+
+    font-family: "Tagesschrift", system-ui;
+    font-weight: 400;
+    font-style: normal;
+
+    background-image: url(res/img/background.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.main {
+    width: 40%;
+    height: max-content;
+
+    margin: 0 20% 0 0; /* tylko odstęp od prawej */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgb(24, 73, 146);
+    padding: 10px;
+
+    box-shadow: 10px 10px rgb(17, 57, 117);
+    border: 1px solid rgb(11, 37, 75);
+}
+
+#titleheader {
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 30px;
+    text-shadow: 0px 2px 5px rgb(47, 172, 255);
+}
+
+#titleedition {
+    font-size: 18px;
+    margin-bottom: 20px;
+    text-shadow: 0px 2px 5px rgb(47, 172, 255);
+}
+
+#login-screen {
+    display: flex;
+    flex-direction: column;
+    padding: 3px;
+    border: 1px black solid;
+    gap: 5px;
+    text-align: center;
+    background-color: rgba(16, 152, 156, 0.212);
+    width: 70%;
+    box-shadow: 6px 6px rgb(17, 57, 117), inset 0 0 18px rgba(5, 23, 57, 0.28);
+}
+
+#login-screen input {
+    background-color: rgba(44, 129, 132, 0.377);
+}
+
+#login-screen button {
+    background-color: rgba(58, 156, 160, 0.377);
+}
+
+#main-menu {
+    width: 80%;
+    display: flex;
+}
+
+#main-playerSummary {
+    display: flex;
+    flex-direction: column;
+
+    width: 50%;
+    box-sizing: border-box;
+
+    padding: 10px;
+    gap: 5px;
+
+    border: 1px solid black;
+    background-color: rgba(16, 152, 156, 0.212);
+
+    text-align: left;
+
+    font-family: "Tagesschrift", system-ui;
+    font-weight: 300;
+    font-style: normal;
+}
+
+#main-buttons {
+    margin-top: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#main-buttons button {
+    background-color: rgba(58, 156, 160, 0.377);
+    font-family: "Tagesschrift", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+#main-playerModel {
+    display: flex;
+    flex-direction: column;
+    padding: 3px;
+    border: 1px black solid;
+    gap: 5px;
+    text-align: left;
+    background-color: rgba(16, 152, 156, 0.212);
+    font-family: "Tagesschrift", system-ui;
+    font-weight: 300;
+    font-style: normal;
+    width: 50%;
+}
+
+#main-menu {
+    width: 80%;
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+#main-playerSummary,
+#main-playerModel {
+    width: 50%;
+    box-sizing: border-box;
+
+    padding: 3px;
+    border: 1px black solid;
+    background-color: rgba(16, 152, 156, 0.212);
+    box-shadow: 6px 6px rgb(17, 57, 117), inset 0 0 18px rgba(5, 23, 57, 0.28);
+}
+
+
+#main-menu button {
+    background-color: rgba(58, 156, 160, 0.377);
+}
+
+button, input {
+    font-family: "Tagesschrift", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+button {
+    border: 1px solid rgb(11, 37, 75);
+    color: #071d3b;
+    cursor: pointer;
+    padding: 7px 10px;
+    transition: transform 120ms ease, filter 120ms ease, background-color 120ms ease;
+}
+
+button:hover:not(:disabled) {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+#battle-screen {
+    width: 92%;
+    box-sizing: border-box;
+    padding: 14px;
+    border: 1px solid black;
+    background-color: rgba(16, 152, 156, 0.212);
+    box-shadow: inset 0 0 30px rgba(5, 23, 57, 0.35);
+}
+
+.battle-header,
+.stat-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.battle-header {
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+    padding-bottom: 8px;
+}
+
+.battle-header h2,
+.combatant h3 {
+    margin: 2px 0;
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+}
+
+.battle-header h2 {
+    font-size: 24px;
+}
+
+.eyebrow,
+.combatant-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+
+#battle-wave {
+    padding: 5px 8px;
+    border: 1px solid black;
+    background: rgba(58, 156, 160, 0.377);
+}
+
+.battle-arena {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.combatant {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid black;
+    background: rgba(24, 73, 146, 0.38);
+}
+
+.combatant h3 {
+    min-height: 42px;
+    font-size: 18px;
+}
+
+.battle-model,
+.enemy-silhouette {
+    display: flex;
+    height: 135px;
+    align-items: center;
+    justify-content: center;
+    margin: 6px 0 10px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    background: rgba(5, 28, 69, 0.35);
+}
+
+.battle-model img {
+    max-width: 100%;
+    max-height: 125px;
+    object-fit: contain;
+}
+
+.enemy-silhouette {
+    font-size: 68px;
+    color: #142e55;
+    text-shadow: 0 0 12px rgba(47, 172, 255, 0.8);
+}
+
+.health-bar {
+    height: 12px;
+    margin: 5px 0 8px;
+    overflow: hidden;
+    border: 1px solid black;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.health-bar span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: #35c46a;
+    transition: width 180ms ease;
+}
+
+.enemy-health-bar span {
+    background: #e15b61;
+}
+
+.combatant p {
+    min-height: 18px;
+    margin: 7px 0 0;
+    font-size: 12px;
+}
+
+.battle-versus {
+    display: flex;
+    align-items: center;
+    color: #071d3b;
+    font-family: "New Rocker", system-ui;
+    font-size: 20px;
+}
+
+.battle-log {
+    min-height: 38px;
+    box-sizing: border-box;
+    margin: 12px 0 8px;
+    padding: 9px;
+    border: 1px solid black;
+    background: rgba(5, 28, 69, 0.28);
+    text-align: center;
+}
+
+.battle-log.success {
+    background: rgba(49, 158, 83, 0.4);
+}
+
+.battle-log.warning {
+    background: rgba(187, 151, 36, 0.4);
+}
+
+.battle-log.danger {
+    background: rgba(179, 48, 58, 0.42);
+}
+
+.battle-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.battle-actions button:first-child {
+    background: rgba(58, 156, 160, 0.65);
+}
+
+.battle-actions button:last-child {
+    background: rgba(156, 116, 58, 0.5);
+}
+
+.secondary-button {
+    width: 100%;
+    background: rgba(58, 156, 160, 0.377);
+}
+
+@media (max-width: 760px) {
+    body {
+        justify-content: center;
+        padding: 12px;
+        box-sizing: border-box;
+    }
+
+    .main {
+        width: min(100%, 620px);
+        margin: 0;
+    }
+
+    #main-menu {
+        width: 100%;
+    }
+
+    #battle-screen {
+        width: 100%;
+    }
+}
+
+@media (max-width: 520px) {
+    #main-menu,
+    .battle-arena {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    #main-playerSummary,
+    #main-playerModel {
+        width: 100%;
+    }
+
+    .battle-versus {
+        justify-content: center;
+        height: 24px;
+    }
+}
+

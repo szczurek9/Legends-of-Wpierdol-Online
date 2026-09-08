@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=New+Rocker&family=Tagesschrift&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legends of Wpierdol</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+    <div class="main">
+    <h1 id="titleheader">Legends of Wpierdol</h1>
+    <a id="titleedition">Web Edition</a>
+
+        <div id="login-screen">
+            <a>Podaj swój nick:</a>
+            <input type="text" id="nickname" placeholder="Nick" autocomplete="off">
+            <button id="start-game">Graj</button>
+        </div>
+
+        <div id="main-menu" class="hidden">
+            <div id="main-playerSummary">
+                <a id="mainNickname">🔤 Nick:</a>
+                <a id="mainMoney">💸 Hajs:</a>
+                <a id="mainLevel">⚡ LVL:</a>
+                <a id="mainWeapon">🔫 Broń</a>
+                <!-- Do wypelnienia ID -->
+                <a id="mainDefenseStats">❤️ HP: | 🛡️ Pancerz:</a>
+                <a id="mainOffenseStats">💥 Crit: % | 🗡️ Armor Pen:</a>
+                <a id="mainMagicStats">🔷 Mana: | ⭐ Moc umiejętności:</a>
+                
+                <div id="main-buttons">
+                    <button id="play-btn" type="button">⚔️ Graj</button>
+                    <button id="shop-btn">🪙 Sklep</button>
+                    <button id="options-btn">⚙️ Opcje</button>
+                </div>
+
+            </div> 
+            <div id="main-playerModel">
+                <img src="res/img/player_model.png">
+                <button id="change-playerModel">👁️ Zmień skina</button>
+            </div>
+        </div>
+
+        <section id="battle-screen" class="hidden" aria-live="polite">
+            <div class="battle-header">
+                <div>
+                    <span class="eyebrow">POJEDYNEK</span>
+                    <h2 id="battle-title">Walka</h2>
+                </div>
+                <div id="battle-wave">Fala 1 / 1</div>
+            </div>
+
+            <div class="battle-arena">
+                <article class="combatant combatant-player">
+                    <span class="combatant-label">TY</span>
+                    <h3 id="battle-player-name">Gracz</h3>
+                    <div class="battle-model battle-model-player">
+                        <img src="res/img/player_model.png" alt="Postać gracza">
+                    </div>
+                    <div class="stat-line"><span>HP</span><strong id="battle-player-hp">100 / 100</strong></div>
+                    <div class="health-bar"><span id="battle-player-health-bar"></span></div>
+                    <p id="battle-player-weapon">Broń: nic | 0 DMG</p>
+                </article>
+
+                <div class="battle-versus">VS</div>
+
+                <article class="combatant combatant-enemy">
+                    <span class="combatant-label">PRZECIWNIK</span>
+                    <h3 id="battle-enemy-name">Przeciwnik</h3>
+                    <div class="enemy-silhouette" aria-hidden="true">☠</div>
+                    <div class="stat-line"><span>HP</span><strong id="battle-enemy-hp">0 / 0</strong></div>
+                    <div class="health-bar enemy-health-bar"><span id="battle-enemy-health-bar"></span></div>
+                    <p id="battle-enemy-stats">DMG: 0 | Szansa ataku: 0%</p>
+                </article>
+            </div>
+
+            <div id="battle-log" class="battle-log">Wybierz akcję.</div>
+
+            <div id="battle-actions" class="battle-actions">
+                <button id="attack-btn" type="button">⚔️ Atakuj</button>
+                <button id="escape-btn" type="button">🏃 Uciekaj</button>
+            </div>
+            <button id="battle-back-btn" class="secondary-button hidden" type="button">Wróć do menu</button>
+        </section>
+
+
+    </div>
+
+    <script src="script/variables.js"></script>
+    <script src="script/pullFromHTML.js"></script>
+    <script src="script/mainMenu.js"></script>
+    <script src="script/battle.js"></script>
+    <script src="script/battleUI.js"></script>
+</body>
+</html>
