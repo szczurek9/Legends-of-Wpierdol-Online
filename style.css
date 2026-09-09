@@ -423,12 +423,13 @@ button:disabled {
     body {
         justify-content: center;
         box-sizing: border-box;
-        padding: 12px;
+        padding: 12px 12px 44px;
     }
 
     .main {
         width: min(100%, 620px);
         margin: 0;
+        box-sizing: border-box;
     }
 
     #main-menu,
@@ -437,12 +438,83 @@ button:disabled {
         width: 100%;
     }
 
+    #start-screen,
+    #login-screen {
+        width: 100%;
+    }
+
+    #main-menu {
+        flex-direction: column;
+    }
+
+    #main-playerSummary,
+    #main-playerModel {
+        width: 100%;
+    }
+
+    #main-playerModel img {
+        max-width: 100%;
+        max-height: 220px;
+        object-fit: contain;
+    }
+
+    #battle-screen,
+    #shop-screen {
+        padding: 10px;
+    }
+
+    .battle-arena {
+        grid-template-columns: 1fr;
+    }
+
+    .battle-versus {
+        justify-content: center;
+        height: 24px;
+    }
+
+    .battle-header,
+    .shop-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .battle-header h2,
+    .shop-header h2 {
+        font-size: 22px;
+    }
+
     .shop-sections {
         grid-template-columns: 1fr;
+    }
+
+    .shop-items {
+        max-height: 260px;
     }
 }
 
 @media (max-width: 520px) {
+    body {
+        align-items: flex-start;
+        padding: 8px 8px 44px;
+    }
+
+    .main {
+        width: 100%;
+        margin: 8px 0 0;
+        padding: 8px;
+    }
+
+    #titleheader {
+        margin-bottom: 8px;
+        font-size: 25px;
+        text-align: center;
+    }
+
+    #titleedition {
+        margin-bottom: 14px;
+        font-size: 16px;
+    }
+
     #main-menu,
     .battle-arena {
         flex-direction: column;
@@ -462,8 +534,37 @@ button:disabled {
         height: 24px;
     }
 
+    .battle-actions {
+        grid-template-columns: 1fr;
+    }
+
+    button,
+    input {
+        min-height: 42px;
+        box-sizing: border-box;
+        font-size: 15px;
+    }
+
+    input {
+        padding: 8px 10px;
+    }
+
+    .stat-line {
+        gap: 8px;
+    }
+
+    .combatant h3 {
+        min-height: 0;
+    }
+
     .shop-items {
         max-height: 230px;
+    }
+
+    .site-footer {
+        padding: 7px 5px;
+        font-size: 10px;
+        line-height: 1.35;
     }
 }
 
