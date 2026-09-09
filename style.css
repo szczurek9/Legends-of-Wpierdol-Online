@@ -341,7 +341,7 @@ button:disabled {
     box-sizing: border-box;
     padding: 14px;
     border: 1px solid black;
-    background-color: rgba(16, 152, 156, 0.212);
+    background-color: rgba(189, 86, 63, 0.21);
     box-shadow: inset 0 0 30px rgba(5, 23, 57, 0.35);
 }
 
@@ -371,7 +371,7 @@ button:disabled {
 .shop-current-weapon {
     padding: 7px 9px;
     border: 1px solid black;
-    background: rgba(58, 156, 160, 0.377);
+    background: rgba(95, 58, 160, 0.38);
 }
 
 .shop-current-weapon {
@@ -382,6 +382,12 @@ button:disabled {
     margin-top: 14px;
 }
 
+.shop-sections {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+}
+
 .shop-section h3 {
     margin-bottom: 8px;
     font-size: 18px;
@@ -389,7 +395,7 @@ button:disabled {
 
 .shop-items {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    grid-template-columns: 1fr;
     max-height: 300px;
     gap: 8px;
     overflow-y: auto;
@@ -405,7 +411,7 @@ button:disabled {
     flex-direction: column;
     padding: 8px;
     border: 1px solid black;
-    background: rgba(24, 73, 146, 0.38);
+    background: rgba(19, 94, 49, 0.38);
 }
 
 .shop-item h4 {
@@ -469,6 +475,10 @@ button:disabled {
     #battle-screen,
     #shop-screen {
         width: 100%;
+    }
+
+    .shop-sections {
+        grid-template-columns: 1fr;
     }
 }
 
