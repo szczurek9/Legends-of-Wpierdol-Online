@@ -17,7 +17,13 @@
     <h1 id="titleheader">Legends of Wpierdol</h1>
     <a id="titleedition">Web Edition</a>
 
-        <div id="login-screen">
+        <div id="start-screen">
+            <button id="new-game-btn" type="button">🎮 Nowa gra</button>
+            <button id="load-game-btn" type="button">📥 Wczytaj grę</button>
+            <p id="start-message" class="screen-message" aria-live="polite"></p>
+        </div>
+
+        <div id="login-screen" class="hidden">
             <a>Podaj swój nick:</a>
             <input type="text" id="nickname" placeholder="Nick" autocomplete="off">
             <button id="start-game">Graj</button>
@@ -37,7 +43,7 @@
                 <div id="main-buttons">
                     <button id="play-btn" type="button">⚔️ Graj</button>
                     <button id="shop-btn" type="button">🪙 Sklep</button>
-                    <button id="options-btn">⚙️ Opcje</button>
+                    <button id="options-btn" type="button">⚙️ Opcje</button>
                 </div>
 
             </div> 
@@ -116,13 +122,41 @@
                 <button id="escape-btn" type="button">🏃 Uciekaj</button>
             </div>
             <button id="battle-back-btn" class="secondary-button hidden" type="button">Wróć do menu</button>
+
+            <div id="battle-death-panel" class="battle-death-panel hidden">
+                <h3>☠️ Zginąłeś!</h3>
+                <p>Co chcesz zrobić?</p>
+                <div class="death-actions">
+                    <button id="death-new-game-btn" type="button">🎮 Nowa gra</button>
+                    <button id="death-restore-btn" type="button">↩️ Cofnij stan sprzed walki</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="options-modal" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="options-title">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="options-title">Opcje</h2>
+                    <button id="close-options-btn" class="modal-close" type="button" aria-label="Zamknij">✕</button>
+                </div>
+                <label for="save-code">Kod zapisu</label>
+                <textarea id="save-code" rows="5" spellcheck="false" placeholder="Tutaj pojawi się kod zapisu..."></textarea>
+                <div class="modal-actions">
+                    <button id="save-game-btn" type="button">💾 Zapisz grę</button>
+                    <button id="copy-save-btn" type="button">📋 Kopiuj zapis</button>
+                    <button id="load-save-btn" type="button">📥 Wczytaj zapis</button>
+                </div>
+                <p id="options-message" class="screen-message" aria-live="polite"></p>
+            </div>
         </section>
 
 
     </div>
 
     <script src="script/variables.js"></script>
+    <script src="script/dataLoader.js"></script>
     <script src="script/pullFromHTML.js"></script>
+    <script src="script/saveSystem.js"></script>
     <script src="script/mainMenu.js"></script>
     <script src="script/shop.js"></script>
     <script src="script/battle.js"></script>

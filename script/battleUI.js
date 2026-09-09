@@ -7,6 +7,9 @@
   const backButton = document.getElementById("battle-back-btn");
   const actions = document.getElementById("battle-actions");
   const battleLog = document.getElementById("battle-log");
+  const deathPanel = document.getElementById("battle-death-panel");
+  const deathNewGameButton = document.getElementById("death-new-game-btn");
+  const deathRestoreButton = document.getElementById("death-restore-btn");
   const battleTitle = document.getElementById("battle-title");
   const battleWave = document.getElementById("battle-wave");
   const playerName = document.getElementById("battle-player-name");
@@ -50,12 +53,21 @@
     showMessage(message, type);
   }
 
+  function showDeathPanel() {
+    actions.classList.add("hidden");
+    backButton.classList.add("hidden");
+    deathPanel.classList.remove("hidden");
+    showMessage("Przegrywasz walkę.", "danger");
+  }
+
   function openBattle() {
+    window.SaveSystem.captureBattleState();
     state = window.BattleSystem.start(window.player.level);
     mainMenu.classList.add("hidden");
     battleScreen.classList.remove("hidden");
     actions.classList.remove("hidden");
     backButton.classList.add("hidden");
+    deathPanel.classList.add("hidden");
 
     if (state.finished) {
       battleTitle.textContent = "Koniec gry";
@@ -88,11 +100,12 @@
     render();
 
     if (window.player.healthPoints <= 0) {
-      finish("Przegrywasz walke.", "danger");
+      showDeathPanel();
       return;
     }
 
-    showMessage(`${attackResult.message} ${enemyResult.message}`);
+    const healMessage = attackResult.heal > 0 ? ` Odzyskujesz ${attackResult.heal} HP.` : "";
+    showMessage(`${attackResult.message}${healMessage} ${enemyResult.message}`);
   }
 
   function escape() {
@@ -109,11 +122,23 @@
   function closeBattle() {
     battleScreen.classList.add("hidden");
     mainMenu.classList.remove("hidden");
+    deathPanel.classList.add("hidden");
+    window.SaveSystem.clearBattleState();
     window.refreshMainMenu();
+  }
+
+  function restoreBeforeBattle() {
+    window.SaveSystem.restoreBattleState();
+    closeBattle();
   }
 
   playButton.addEventListener("click", openBattle);
   attackButton.addEventListener("click", attack);
   escapeButton.addEventListener("click", escape);
   backButton.addEventListener("click", closeBattle);
+  deathNewGameButton.addEventListener("click", () => {
+    battleScreen.classList.add("hidden");
+    window.startNewGame();
+  });
+  deathRestoreButton.addEventListener("click", restoreBeforeBattle);
 })();

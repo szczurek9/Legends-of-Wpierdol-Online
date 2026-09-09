@@ -29,9 +29,10 @@
     attack(state) {
       const player = window.player;
       const enemy = window.enemies[state.enemyIndex];
-      const finalDodge = Math.max(0, enemy.dodgeChance - player.bonusAccuracy);
+      const baseAccuracy = enemy.playerAttackChance ?? (100 - enemy.dodgeChance);
+      const finalAccuracy = Math.min(100, baseAccuracy + player.bonusAccuracy);
 
-      if (roll100() < finalDodge) {
+      if (roll100() >= finalAccuracy) {
         return { ...state, enemyDefeated: false, damage: 0, heal: 0, message: "Przeciwnik uniknął twojego ataku!" };
       }
 

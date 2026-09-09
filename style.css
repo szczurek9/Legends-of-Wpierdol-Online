@@ -1,165 +1,75 @@
-/* Ta klasa sprawi, że element zniknie z ekranu */
-
-.hidden {
-  display: none !important;
+:root {
+    --shop-page-background: rgba(189, 86, 63, 0.21);
+    --shop-card-background: rgba(19, 94, 49, 0.38);
+    --shop-control-background: rgba(58, 156, 160, 0.65);
+    --shop-info-background: rgba(95, 58, 160, 0.38);
+    --shop-border-color: rgb(11, 37, 75);
+    --text-color: #071d3b;
 }
+
+/* Elementy ukrywane przez logikę ekranów. */
+.hidden {
+    display: none !important;
+}
+
+/* Podstawowy układ strony. */
 body {
-    margin: 0;
     min-height: 100vh;
-
+    margin: 0;
     display: flex;
-    justify-content: flex-end; /* prawa strona */
-    align-items: center;      /* środek w pionie */
-
+    justify-content: flex-end;
+    align-items: center;
     font-family: "Tagesschrift", system-ui;
     font-weight: 400;
     font-style: normal;
-
     background-image: url(res/img/background.png);
     background-repeat: no-repeat;
     background-size: cover;
 }
 
+/* Kolor tego kontenera pozostaje bez zmian. */
 .main {
     width: 40%;
     height: max-content;
-
-    margin: 0 20% 0 0; /* tylko odstęp od prawej */
-
+    margin: 0 20% 0 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    background-color: rgb(24, 73, 146);
     padding: 10px;
-
-    box-shadow: 10px 10px rgb(17, 57, 117);
+    background-color: rgb(27, 103, 126);
+    box-shadow: 10px 10px rgb(19, 67, 79);
     border: 1px solid rgb(11, 37, 75);
 }
 
 #titleheader {
+    margin-top: 0.67em;
     font-family: "New Rocker", system-ui;
     font-weight: 400;
     font-style: normal;
     font-size: 30px;
-    text-shadow: 0px 2px 5px rgb(47, 172, 255);
+    text-shadow: 0 2px 5px rgb(47, 172, 255);
 }
 
 #titleedition {
-    font-size: 18px;
     margin-bottom: 20px;
-    text-shadow: 0px 2px 5px rgb(47, 172, 255);
+    font-size: 18px;
+    text-shadow: 0 2px 5px rgb(47, 172, 255);
 }
 
-#login-screen {
-    display: flex;
-    flex-direction: column;
-    padding: 3px;
-    border: 1px black solid;
-    gap: 5px;
-    text-align: center;
-    background-color: rgba(16, 152, 156, 0.212);
-    width: 70%;
-    box-shadow: 6px 6px rgb(17, 57, 117), inset 0 0 18px rgba(5, 23, 57, 0.28);
-}
-
-#login-screen input {
-    background-color: rgba(44, 129, 132, 0.377);
-}
-
-#login-screen button {
-    background-color: rgba(58, 156, 160, 0.377);
-}
-
-#main-menu {
-    width: 80%;
-    display: flex;
-}
-
-#main-playerSummary {
-    display: flex;
-    flex-direction: column;
-
-    width: 50%;
-    box-sizing: border-box;
-
-    padding: 10px;
-    gap: 5px;
-
-    border: 1px solid black;
-    background-color: rgba(16, 152, 156, 0.212);
-
-    text-align: left;
-
-    font-family: "Tagesschrift", system-ui;
-    font-weight: 300;
-    font-style: normal;
-}
-
-#main-buttons {
-    margin-top: auto;
-
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-#main-buttons button {
-    background-color: rgba(58, 156, 160, 0.377);
-    font-family: "Tagesschrift", system-ui;
-    font-weight: 400;
-    font-style: normal;
-}
-
-#main-playerModel {
-    display: flex;
-    flex-direction: column;
-    padding: 3px;
-    border: 1px black solid;
-    gap: 5px;
-    text-align: left;
-    background-color: rgba(16, 152, 156, 0.212);
-    font-family: "Tagesschrift", system-ui;
-    font-weight: 300;
-    font-style: normal;
-    width: 50%;
-}
-
-#main-menu {
-    width: 80%;
-    display: flex;
-    gap: 10px;
-    align-items: stretch;
-}
-
-#main-playerSummary,
-#main-playerModel {
-    width: 50%;
-    box-sizing: border-box;
-
-    padding: 3px;
-    border: 1px black solid;
-    background-color: rgba(16, 152, 156, 0.212);
-    box-shadow: 6px 6px rgb(17, 57, 117), inset 0 0 18px rgba(5, 23, 57, 0.28);
-}
-
-
-#main-menu button {
-    background-color: rgba(58, 156, 160, 0.377);
-}
-
-button, input {
+button,
+input {
     font-family: "Tagesschrift", system-ui;
     font-weight: 400;
     font-style: normal;
 }
 
 button {
-    border: 1px solid rgb(11, 37, 75);
-    color: #071d3b;
+    border: 1px solid var(--shop-border-color);
+    color: var(--text-color);
     cursor: pointer;
     padding: 7px 10px;
+    background: var(--shop-control-background);
     transition: transform 120ms ease, filter 120ms ease, background-color 120ms ease;
 }
 
@@ -173,12 +83,80 @@ button:disabled {
     opacity: 0.5;
 }
 
-#battle-screen {
+#main-buttons button,
+#main-playerModel button,
+#login-screen button,
+#login-screen input {
+    background: rgba(90, 130, 121, 0.65) !important;
+}
+
+/* Ekran logowania. */
+#login-screen {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 3px;
+    border: 1px solid black;
+    text-align: center;
+    background-color: var(--shop-page-background);
+    box-shadow: 6px 6px rgb(10, 68, 91), inset 0 0 18px rgba(5, 23, 57, 0.28);
+}
+
+#login-screen input {
+    background: var(--shop-control-background);
+}
+
+/* Menu główne. */
+#main-menu {
+    width: 80%;
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+#main-playerSummary,
+#main-playerModel {
+    width: 50%;
+    box-sizing: border-box;
+    border: 1px solid black;
+    background: var(--shop-page-background);
+    box-shadow: 6px 6px rgb(17, 89, 117), inset 0 0 18px rgba(5, 23, 57, 0.28);
+}
+
+#main-playerSummary {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    text-align: left;
+    font-weight: 300;
+}
+
+#main-playerModel {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 3px;
+    text-align: left;
+    font-weight: 300;
+}
+
+#main-buttons {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Wspólne style ekranu walki i sklepu. */
+#battle-screen,
+#shop-screen {
     width: 92%;
     box-sizing: border-box;
     padding: 14px;
     border: 1px solid black;
-    background-color: rgba(16, 152, 156, 0.212);
+    background: var(--shop-page-background);
     box-shadow: inset 0 0 30px rgba(5, 23, 57, 0.35);
 }
 
@@ -191,18 +169,22 @@ button:disabled {
 
 .battle-header {
     margin-bottom: 12px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.55);
     padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.55);
 }
 
 .battle-header h2,
-.combatant h3 {
+.combatant h3,
+.shop-header h2,
+.shop-section h3,
+.shop-item h4 {
     margin: 2px 0;
     font-family: "New Rocker", system-ui;
     font-weight: 400;
 }
 
-.battle-header h2 {
+.battle-header h2,
+.shop-header h2 {
     font-size: 24px;
 }
 
@@ -216,7 +198,7 @@ button:disabled {
 #battle-wave {
     padding: 5px 8px;
     border: 1px solid black;
-    background: rgba(58, 156, 160, 0.377);
+    background: var(--shop-info-background);
 }
 
 .battle-arena {
@@ -230,7 +212,7 @@ button:disabled {
     min-width: 0;
     padding: 10px;
     border: 1px solid black;
-    background: rgba(24, 73, 146, 0.38);
+    background: var(--shop-card-background);
 }
 
 .combatant h3 {
@@ -246,7 +228,7 @@ button:disabled {
     justify-content: center;
     margin: 6px 0 10px;
     border: 1px solid rgba(0, 0, 0, 0.6);
-    background: rgba(5, 28, 69, 0.35);
+    background: var(--shop-info-background);
 }
 
 .battle-model img {
@@ -256,8 +238,8 @@ button:disabled {
 }
 
 .enemy-silhouette {
-    font-size: 68px;
     color: #142e55;
+    font-size: 68px;
     text-shadow: 0 0 12px rgba(47, 172, 255, 0.8);
 }
 
@@ -271,8 +253,8 @@ button:disabled {
 
 .health-bar span {
     display: block;
-    height: 100%;
     width: 100%;
+    height: 100%;
     background: #35c46a;
     transition: width 180ms ease;
 }
@@ -290,30 +272,38 @@ button:disabled {
 .battle-versus {
     display: flex;
     align-items: center;
-    color: #071d3b;
+    color: var(--text-color);
     font-family: "New Rocker", system-ui;
     font-size: 20px;
 }
 
-.battle-log {
-    min-height: 38px;
+.battle-log,
+.shop-message {
+    min-height: 18px;
     box-sizing: border-box;
-    margin: 12px 0 8px;
     padding: 9px;
     border: 1px solid black;
-    background: rgba(5, 28, 69, 0.28);
+    background: var(--shop-info-background);
     text-align: center;
 }
 
-.battle-log.success {
+.battle-log {
+    min-height: 38px;
+    margin: 12px 0 8px;
+}
+
+.battle-log.success,
+.shop-message.success {
     background: rgba(49, 158, 83, 0.4);
 }
 
-.battle-log.warning {
+.battle-log.warning,
+.shop-message.warning {
     background: rgba(187, 151, 36, 0.4);
 }
 
-.battle-log.danger {
+.battle-log.danger,
+.shop-message.danger {
     background: rgba(179, 48, 58, 0.42);
 }
 
@@ -323,69 +313,40 @@ button:disabled {
     gap: 8px;
 }
 
-.battle-actions button:first-child {
-    background: rgba(58, 156, 160, 0.65);
-}
-
-.battle-actions button:last-child {
-    background: rgba(156, 116, 58, 0.5);
-}
-
 .secondary-button {
     width: 100%;
-    background: rgba(58, 156, 160, 0.377);
 }
 
-#shop-screen {
-    width: 92%;
-    box-sizing: border-box;
-    padding: 14px;
-    border: 1px solid black;
-    background-color: rgba(189, 86, 63, 0.21);
-    box-shadow: inset 0 0 30px rgba(5, 23, 57, 0.35);
-}
-
+/* Sklep. */
 .shop-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 12px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.55);
     padding-bottom: 8px;
-}
-
-.shop-header h2,
-.shop-section h3,
-.shop-item h4 {
-    margin: 2px 0;
-    font-family: "New Rocker", system-ui;
-    font-weight: 400;
-}
-
-.shop-header h2 {
-    font-size: 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.55);
 }
 
 #shop-money,
 .shop-current-weapon {
     padding: 7px 9px;
     border: 1px solid black;
-    background: rgba(95, 58, 160, 0.38);
+    background: var(--shop-info-background);
 }
 
 .shop-current-weapon {
     margin-bottom: 12px;
 }
 
-.shop-section {
-    margin-top: 14px;
-}
-
 .shop-sections {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
+}
+
+.shop-section {
+    margin-top: 14px;
 }
 
 .shop-section h3 {
@@ -402,7 +363,7 @@ button:disabled {
     align-content: start;
     padding: 2px 6px 6px 2px;
     overscroll-behavior: contain;
-    scrollbar-color: rgb(11, 37, 75) rgba(5, 28, 69, 0.28);
+    scrollbar-color: var(--shop-border-color) rgba(5, 28, 69, 0.28);
 }
 
 .shop-item {
@@ -411,7 +372,7 @@ button:disabled {
     flex-direction: column;
     padding: 8px;
     border: 1px solid black;
-    background: rgba(19, 94, 49, 0.38);
+    background: var(--shop-card-background);
 }
 
 .shop-item h4 {
@@ -426,41 +387,19 @@ button:disabled {
 
 .shop-item .shop-description {
     min-height: 42px;
-    color: #071d3b;
-}
-
-.shop-item button {
-    width: 100%;
-    margin-top: auto;
-    background: rgba(58, 156, 160, 0.65);
+    color: var(--text-color);
 }
 
 .shop-message {
-    min-height: 18px;
     margin: 12px 0 8px;
-    padding: 9px;
-    border: 1px solid black;
-    background: rgba(5, 28, 69, 0.28);
-    text-align: center;
 }
 
-.shop-message.success {
-    background: rgba(49, 158, 83, 0.4);
-}
-
-.shop-message.warning {
-    background: rgba(187, 151, 36, 0.4);
-}
-
-.shop-message.danger {
-    background: rgba(179, 48, 58, 0.42);
-}
-
+/* Responsywność. */
 @media (max-width: 760px) {
     body {
         justify-content: center;
-        padding: 12px;
         box-sizing: border-box;
+        padding: 12px;
     }
 
     .main {
@@ -468,10 +407,7 @@ button:disabled {
         margin: 0;
     }
 
-    #main-menu {
-        width: 100%;
-    }
-
+    #main-menu,
     #battle-screen,
     #shop-screen {
         width: 100%;
@@ -485,13 +421,16 @@ button:disabled {
 @media (max-width: 520px) {
     #main-menu,
     .battle-arena {
-        grid-template-columns: 1fr;
         flex-direction: column;
     }
 
     #main-playerSummary,
     #main-playerModel {
         width: 100%;
+    }
+
+    .battle-arena {
+        grid-template-columns: 1fr;
     }
 
     .battle-versus {
@@ -504,3 +443,119 @@ button:disabled {
     }
 }
 
+/* Ekran startowy, modal opcji i ekran śmierci. */
+#start-screen {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    box-sizing: border-box;
+    border: 1px solid black;
+    background: var(--shop-page-background);
+}
+
+.screen-message {
+    min-height: 18px;
+    margin: 4px 0 0;
+    text-align: center;
+}
+
+.screen-message.success {
+    color: #d6f5dd;
+}
+
+.screen-message.warning {
+    color: #fff0b2;
+}
+
+.screen-message.danger {
+    color: #ffd0d0;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.65);
+}
+
+.modal-content {
+    width: min(100%, 560px);
+    box-sizing: border-box;
+    padding: 16px;
+    border: 1px solid black;
+    background: rgb(27, 103, 126);
+    box-shadow: 8px 8px rgb(17, 57, 117);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+}
+
+.modal-close {
+    width: 36px;
+    padding: 6px;
+}
+
+#save-code {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 6px;
+    padding: 8px;
+    resize: vertical;
+    border: 1px solid black;
+    color: var(--control-text-color);
+    background: var(--shop-info-background);
+}
+
+.modal-actions,
+.death-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.battle-death-panel {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid black;
+    background: var(--shop-info-background);
+    text-align: center;
+}
+
+.battle-death-panel h3 {
+    margin: 0 0 6px;
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+}
+
+.battle-death-panel p {
+    margin: 6px 0;
+}
+
+.death-actions {
+    grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 520px) {
+    .modal-actions,
+    .death-actions {
+        grid-template-columns: 1fr;
+    }
+}

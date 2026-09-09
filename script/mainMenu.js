@@ -1,3 +1,13 @@
+const startScreen = document.getElementById("start-screen");
+const loginScreen = document.getElementById("login-screen");
+const mainMenu = document.getElementById("main-menu");
+const input = document.getElementById("nickname");
+const startButton = document.getElementById("start-game");
+const startMessage = document.getElementById("start-message");
+const optionsModal = document.getElementById("options-modal");
+const saveCode = document.getElementById("save-code");
+const optionsMessage = document.getElementById("options-message");
+
 function refreshMainMenu() {
   mainNickname.textContent = `💭 Nick: ${window.player.nickname}`;
   mainMoney.textContent = `💸 Hajs: ${window.player.money} $`;
@@ -8,21 +18,104 @@ function refreshMainMenu() {
   mainMagicStats.textContent = `🔷 Mana: ${window.player.manaPoints} | ⭐ Moc umiejętności: ${window.player.abilityPower}`;
 }
 
-window.refreshMainMenu = refreshMainMenu;
-
-button.addEventListener('click', () => {
-  const enteredName = input.value.trim();
-
-  if (!enteredName) return alert("Najpierw wpisz swój nick!");
-
-  // 1. Zapisujemy nick gracza
-  window.player.nickname = enteredName;
-
-  // 2. Personalizujemy nagłówek w menu głównym
+function showMainMenu() {
+  startScreen.classList.add("hidden");
+  loginScreen.classList.add("hidden");
+  mainMenu.classList.remove("hidden");
   refreshMainMenu();
+}
 
-  // 3. Przełączamy ekrany (ukrywamy logowanie, pokazujemy menu)
-  loginScreen.classList.add('hidden');
-  mainMenu.classList.remove('hidden');
-  mainPlayerModel.classList.remove('hidden');
+function showNewGameLogin() {
+  window.SaveSystem.resetPlayer();
+  input.value = "";
+  startMessage.textContent = "";
+  startScreen.classList.add("hidden");
+  mainMenu.classList.add("hidden");
+  loginScreen.classList.remove("hidden");
+  input.focus();
+}
+
+function showOptionsMessage(text, type) {
+  optionsMessage.textContent = text;
+  optionsMessage.className = `screen-message ${type || ""}`.trim();
+}
+
+function openOptions() {
+  saveCode.value = "";
+  showOptionsMessage("");
+  optionsModal.classList.remove("hidden");
+  saveCode.focus();
+}
+
+function closeOptions() {
+  optionsModal.classList.add("hidden");
+}
+
+function loadCode(code) {
+  if (!code || !window.SaveSystem.loadSaveCode(code)) {
+    return false;
+  }
+
+  showMainMenu();
+  return true;
+}
+
+function loadFromPrompt() {
+  const code = window.prompt("Wklej kod zapisu gry:");
+  if (code === null) return;
+
+  if (!loadCode(code)) {
+    startMessage.textContent = "Nieprawidłowy lub uszkodzony zapis gry.";
+  }
+}
+
+window.refreshMainMenu = refreshMainMenu;
+window.showMainMenu = showMainMenu;
+window.startNewGame = showNewGameLogin;
+
+document.getElementById("new-game-btn").addEventListener("click", showNewGameLogin);
+document.getElementById("load-game-btn").addEventListener("click", loadFromPrompt);
+
+startButton.addEventListener("click", () => {
+  const enteredName = input.value.trim();
+  if (!enteredName) {
+    alert("Najpierw wpisz swój nick!");
+    return;
+  }
+
+  window.player.nickname = enteredName;
+  showMainMenu();
+});
+
+document.getElementById("options-btn").addEventListener("click", openOptions);
+document.getElementById("close-options-btn").addEventListener("click", closeOptions);
+
+document.getElementById("save-game-btn").addEventListener("click", () => {
+  saveCode.value = window.SaveSystem.createSaveCode();
+  saveCode.select();
+  showOptionsMessage("Zapis gry został wygenerowany.", "success");
+});
+
+document.getElementById("copy-save-btn").addEventListener("click", async () => {
+  if (!saveCode.value) saveCode.value = window.SaveSystem.createSaveCode();
+
+  try {
+    await navigator.clipboard.writeText(saveCode.value);
+    showOptionsMessage("Kod zapisu skopiowany do schowka.", "success");
+  } catch (error) {
+    saveCode.select();
+    showOptionsMessage("Zaznaczono kod — skopiuj go ręcznie.", "warning");
+  }
+});
+
+document.getElementById("load-save-btn").addEventListener("click", () => {
+  const code = saveCode.value.trim() || window.prompt("Wklej kod zapisu gry:");
+  if (code === null) return;
+
+  if (loadCode(code)) {
+    closeOptions();
+    showOptionsMessage("Gra została wczytana.", "success");
+  } else {
+    showOptionsMessage("Nieprawidłowy lub uszkodzony zapis gry.", "danger");
+  }
 });
