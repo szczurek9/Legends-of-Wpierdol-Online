@@ -390,7 +390,13 @@ button:disabled {
 .shop-items {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    max-height: 300px;
     gap: 8px;
+    overflow-y: auto;
+    align-content: start;
+    padding: 2px 6px 6px 2px;
+    overscroll-behavior: contain;
+    scrollbar-color: rgb(11, 37, 75) rgba(5, 28, 69, 0.28);
 }
 
 .shop-item {
@@ -481,6 +487,10 @@ button:disabled {
     .battle-versus {
         justify-content: center;
         height: 24px;
+    }
+
+    .shop-items {
+        max-height: 230px;
     }
 }
 
