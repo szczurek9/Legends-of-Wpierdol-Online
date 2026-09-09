@@ -17,10 +17,13 @@
   const playerHealthBar = document.getElementById("battle-player-health-bar");
   const playerWeapon = document.getElementById("battle-player-weapon");
   const enemyName = document.getElementById("battle-enemy-name");
+  const enemyModel = document.getElementById("battle-enemy-model");
+  const enemyModelFallback = document.getElementById("enemy-model-fallback");
   const enemyHp = document.getElementById("battle-enemy-hp");
   const enemyHealthBar = document.getElementById("battle-enemy-health-bar");
   const enemyStats = document.getElementById("battle-enemy-stats");
   let state;
+  let isTransitioning = false;
 
   function showMessage(message, type) {
     battleLog.textContent = message;
@@ -47,6 +50,20 @@
     return message;
   }
 
+  function renderEnemyModel(enemy, dead) {
+    const modelPath = dead ? enemy.modelDead : enemy.modelAlive;
+    enemyModel.alt = dead ? `${enemy.name} — pokonany` : enemy.name;
+    enemyModel.onload = () => {
+      enemyModel.classList.remove("hidden");
+      enemyModelFallback.classList.add("hidden");
+    };
+    enemyModel.onerror = () => {
+      enemyModel.classList.add("hidden");
+      enemyModelFallback.classList.remove("hidden");
+    };
+    enemyModel.src = modelPath;
+  }
+
   function render() {
     const player = window.player;
     const enemy = window.enemies[state.enemyIndex];
@@ -60,6 +77,7 @@
     enemyHp.textContent = `${state.enemyHealth} / ${enemy.health}`;
     setBar(enemyHealthBar, state.enemyHealth, enemy.health);
     enemyStats.textContent = `DMG: ${enemy.damage} | Atak: ${enemy.attackChance}% | Crit: ${enemy.critChance}% | Pancerz: ${enemy.armorPoints} | Pen: ${enemy.armorPenetration}`;
+    renderEnemyModel(enemy, state.enemyDefeated === true);
     escapeButton.disabled = player.usedEscape;
   }
 
@@ -97,17 +115,28 @@
   }
 
   function attack() {
-    if (!state || state.finished) return;
+    if (!state || state.finished || isTransitioning) return;
     const attackResult = window.BattleSystem.attack(state);
     state = attackResult;
 
     if (attackResult.enemyDefeated) {
       window.player.money += window.enemies[state.enemyIndex].reward;
-      state = window.BattleSystem.nextWave(state);
+      isTransitioning = true;
+      actions.classList.add("hidden");
       render();
+      showMessage(`${formatPlayerAttack(attackResult)} Pokonano przeciwnika!`, "success");
 
-      if (state.levelUp) finish(`${formatPlayerAttack(attackResult)} ${state.message} Otrzymujesz nagrodę: ${state.reward} $.`, "success");
-      else showMessage(`${formatPlayerAttack(attackResult)} ${state.message} Otrzymujesz ${state.reward} $.`, "success");
+      window.setTimeout(() => {
+        state = window.BattleSystem.nextWave(state);
+        render();
+        isTransitioning = false;
+
+        if (state.levelUp) finish(`${formatPlayerAttack(attackResult)} ${state.message} Otrzymujesz nagrodę: ${state.reward} $.`, "success");
+        else {
+          actions.classList.remove("hidden");
+          showMessage(`${formatPlayerAttack(attackResult)} ${state.message} Otrzymujesz ${state.reward} $.`, "success");
+        }
+      }, 700);
       return;
     }
 
@@ -135,6 +164,7 @@
   }
 
   function closeBattle() {
+    isTransitioning = false;
     battleScreen.classList.add("hidden");
     mainMenu.classList.remove("hidden");
     deathPanel.classList.add("hidden");

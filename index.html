@@ -108,7 +108,10 @@
                 <article class="combatant combatant-enemy">
                     <span class="combatant-label">PRZECIWNIK</span>
                     <h3 id="battle-enemy-name">Przeciwnik</h3>
-                    <div class="enemy-silhouette" aria-hidden="true">☠</div>
+                    <div class="battle-model battle-model-enemy">
+                        <img id="battle-enemy-model" src="" alt="Przeciwnik">
+                        <div id="enemy-model-fallback" class="enemy-silhouette hidden" aria-hidden="true">☠</div>
+                    </div>
                     <div class="stat-line"><span>HP</span><strong id="battle-enemy-hp">0 / 0</strong></div>
                     <div class="health-bar enemy-health-bar"><span id="battle-enemy-health-bar"></span></div>
                     <p id="battle-enemy-stats">DMG: 0 | Szansa ataku: 0%</p>

@@ -116,7 +116,7 @@
         return { ...state, finished: true, levelUp: true, reward: enemy.reward, message: `Awansujesz na poziom ${window.player.level}!` };
       }
 
-      const nextState = { ...state, currentWave: nextWave, enemyHealth: enemy.health, levelUp: false, reward: enemy.reward, message: "Przeciwnik pokonany! Nadchodzi następna fala." };
+      const nextState = { ...state, currentWave: nextWave, enemyHealth: enemy.health, enemyDefeated: false, levelUp: false, reward: enemy.reward, message: "Przeciwnik pokonany! Nadchodzi następna fala." };
       updateBattleState(nextState);
       return nextState;
     },

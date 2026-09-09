@@ -246,7 +246,7 @@ button:disabled {
 .battle-model,
 .enemy-silhouette {
     display: flex;
-    height: 135px;
+    height: 220px;
     align-items: center;
     justify-content: center;
     margin: 6px 0 10px;
@@ -256,7 +256,7 @@ button:disabled {
 
 .battle-model img {
     max-width: 100%;
-    max-height: 125px;
+    max-height: 220px;
     object-fit: contain;
 }
 
