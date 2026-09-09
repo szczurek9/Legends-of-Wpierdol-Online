@@ -14,8 +14,8 @@
     "armorPoints": 0,
     "magicResistance": 0,
     "armorPenetration": 0,
-    "modelAlive": "res/img/enemies/1a.png",
-    "modelDead": "res/img/enemies/1d.png"
+    "modelAlive": "res/enemies/1a.png",
+    "modelDead": "res/enemies/1d.png"
   },
   {
     "level": 2,
@@ -32,8 +32,8 @@
     "armorPoints": 0,
     "magicResistance": 0,
     "armorPenetration": 0,
-    "modelAlive": "res/img/enemies/2a.png",
-    "modelDead": "res/img/enemies/2d.png"
+    "modelAlive": "res/enemies/2a.png",
+    "modelDead": "res/enemies/2d.png"
   },
   {
     "level": 3,
@@ -50,8 +50,8 @@
     "armorPoints": 0,
     "magicResistance": 0,
     "armorPenetration": 0,
-    "modelAlive": "res/img/enemies/3a.png",
-    "modelDead": "res/img/enemies/3d.png"
+    "modelAlive": "res/enemies/3a.png",
+    "modelDead": "res/enemies/3d.png"
   },
   {
     "level": 4,
@@ -68,8 +68,8 @@
     "armorPoints": 5,
     "magicResistance": 0,
     "armorPenetration": 0,
-    "modelAlive": "res/img/enemies/4a.png",
-    "modelDead": "res/img/enemies/4d.png"
+    "modelAlive": "res/enemies/4a.png",
+    "modelDead": "res/enemies/4d.png"
   },
   {
     "level": 5,
@@ -86,8 +86,8 @@
     "armorPoints": 10,
     "magicResistance": 5,
     "armorPenetration": 0,
-    "modelAlive": "res/img/enemies/5a.png",
-    "modelDead": "res/img/enemies/5d.png"
+    "modelAlive": "res/enemies/5a.png",
+    "modelDead": "res/enemies/5d.png"
   },
   {
     "level": 6,
@@ -104,8 +104,8 @@
     "armorPoints": 5,
     "magicResistance": 0,
     "armorPenetration": 0,
-    "modelAlive": "res/img/enemies/6a.png",
-    "modelDead": "res/img/enemies/6d.png"
+    "modelAlive": "res/enemies/6a.png",
+    "modelDead": "res/enemies/6d.png"
   },
   {
     "level": 7,
@@ -122,8 +122,8 @@
     "armorPoints": 8,
     "magicResistance": 0,
     "armorPenetration": 0,
-    "modelAlive": "res/img/enemies/7a.png",
-    "modelDead": "res/img/enemies/7d.png"
+    "modelAlive": "res/enemies/7a.png",
+    "modelDead": "res/enemies/7d.png"
   },
   {
     "level": 8,
@@ -140,8 +140,8 @@
     "armorPoints": 10,
     "magicResistance": 5,
     "armorPenetration": 0,
-    "modelAlive": "res/img/enemies/8a.png",
-    "modelDead": "res/img/enemies/8d.png"
+    "modelAlive": "res/enemies/8a.png",
+    "modelDead": "res/enemies/8d.png"
   },
   {
     "level": 9,
@@ -158,8 +158,8 @@
     "armorPoints": 12,
     "magicResistance": 5,
     "armorPenetration": 0,
-    "modelAlive": "res/img/enemies/9a.png",
-    "modelDead": "res/img/enemies/9d.png"
+    "modelAlive": "res/enemies/9a.png",
+    "modelDead": "res/enemies/9d.png"
   },
   {
     "level": 10,
@@ -176,8 +176,8 @@
     "armorPoints": 15,
     "magicResistance": 10,
     "armorPenetration": 0,
-    "modelAlive": "res/img/enemies/10a.png",
-    "modelDead": "res/img/enemies/10d.png"
+    "modelAlive": "res/enemies/10a.png",
+    "modelDead": "res/enemies/10d.png"
   },
   {
     "level": 11,
@@ -194,8 +194,8 @@
     "armorPoints": 15,
     "magicResistance": 10,
     "armorPenetration": 1,
-    "modelAlive": "res/img/enemies/11a.png",
-    "modelDead": "res/img/enemies/11d.png"
+    "modelAlive": "res/enemies/11a.png",
+    "modelDead": "res/enemies/11d.png"
   },
   {
     "level": 12,
@@ -212,8 +212,8 @@
     "armorPoints": 18,
     "magicResistance": 10,
     "armorPenetration": 2,
-    "modelAlive": "res/img/enemies/12a.png",
-    "modelDead": "res/img/enemies/12d.png"
+    "modelAlive": "res/enemies/12a.png",
+    "modelDead": "res/enemies/12d.png"
   },
   {
     "level": 13,
@@ -230,8 +230,8 @@
     "armorPoints": 20,
     "magicResistance": 15,
     "armorPenetration": 5,
-    "modelAlive": "res/img/enemies/13a.png",
-    "modelDead": "res/img/enemies/13d.png"
+    "modelAlive": "res/enemies/13a.png",
+    "modelDead": "res/enemies/13d.png"
   },
   {
     "level": 14,
@@ -248,8 +248,8 @@
     "armorPoints": 22,
     "magicResistance": 15,
     "armorPenetration": 6,
-    "modelAlive": "res/img/enemies/14a.png",
-    "modelDead": "res/img/enemies/14d.png"
+    "modelAlive": "res/enemies/14a.png",
+    "modelDead": "res/enemies/14d.png"
   },
   {
     "level": 15,
@@ -266,8 +266,8 @@
     "armorPoints": 25,
     "magicResistance": 20,
     "armorPenetration": 7,
-    "modelAlive": "res/img/enemies/15a.png",
-    "modelDead": "res/img/enemies/15d.png"
+    "modelAlive": "res/enemies/15a.png",
+    "modelDead": "res/enemies/15d.png"
   },
   {
     "level": 16,
@@ -284,8 +284,8 @@
     "armorPoints": 25,
     "magicResistance": 20,
     "armorPenetration": 10,
-    "modelAlive": "res/img/enemies/16a.png",
-    "modelDead": "res/img/enemies/16d.png"
+    "modelAlive": "res/enemies/16a.png",
+    "modelDead": "res/enemies/16d.png"
   },
   {
     "level": 17,
@@ -302,8 +302,8 @@
     "armorPoints": 28,
     "magicResistance": 20,
     "armorPenetration": 11,
-    "modelAlive": "res/img/enemies/17a.png",
-    "modelDead": "res/img/enemies/17d.png"
+    "modelAlive": "res/enemies/17a.png",
+    "modelDead": "res/enemies/17d.png"
   },
   {
     "level": 18,
@@ -320,8 +320,8 @@
     "armorPoints": 30,
     "magicResistance": 25,
     "armorPenetration": 11,
-    "modelAlive": "res/img/enemies/18a.png",
-    "modelDead": "res/img/enemies/18d.png"
+    "modelAlive": "res/enemies/18a.png",
+    "modelDead": "res/enemies/18d.png"
   },
   {
     "level": 19,
@@ -338,8 +338,8 @@
     "armorPoints": 32,
     "magicResistance": 25,
     "armorPenetration": 12,
-    "modelAlive": "res/img/enemies/19a.png",
-    "modelDead": "res/img/enemies/19d.png"
+    "modelAlive": "res/enemies/19a.png",
+    "modelDead": "res/enemies/19d.png"
   },
   {
     "level": 20,
@@ -356,8 +356,8 @@
     "armorPoints": 35,
     "magicResistance": 30,
     "armorPenetration": 15,
-    "modelAlive": "res/img/enemies/20a.png",
-    "modelDead": "res/img/enemies/20d.png"
+    "modelAlive": "res/enemies/20a.png",
+    "modelDead": "res/enemies/20d.png"
   },
   {
     "level": 21,
@@ -374,8 +374,8 @@
     "armorPoints": 35,
     "magicResistance": 30,
     "armorPenetration": 16,
-    "modelAlive": "res/img/enemies/21a.png",
-    "modelDead": "res/img/enemies/21d.png"
+    "modelAlive": "res/enemies/21a.png",
+    "modelDead": "res/enemies/21d.png"
   },
   {
     "level": 22,
@@ -392,8 +392,8 @@
     "armorPoints": 38,
     "magicResistance": 30,
     "armorPenetration": 17,
-    "modelAlive": "res/img/enemies/22a.png",
-    "modelDead": "res/img/enemies/22d.png"
+    "modelAlive": "res/enemies/22a.png",
+    "modelDead": "res/enemies/22d.png"
   },
   {
     "level": 23,
@@ -410,8 +410,8 @@
     "armorPoints": 40,
     "magicResistance": 35,
     "armorPenetration": 18,
-    "modelAlive": "res/img/enemies/23a.png",
-    "modelDead": "res/img/enemies/23d.png"
+    "modelAlive": "res/enemies/23a.png",
+    "modelDead": "res/enemies/23d.png"
   },
   {
     "level": 24,
@@ -428,8 +428,8 @@
     "armorPoints": 42,
     "magicResistance": 35,
     "armorPenetration": 20,
-    "modelAlive": "res/img/enemies/24a.png",
-    "modelDead": "res/img/enemies/24d.png"
+    "modelAlive": "res/enemies/24a.png",
+    "modelDead": "res/enemies/24d.png"
   },
   {
     "level": 25,
@@ -446,8 +446,8 @@
     "armorPoints": 45,
     "magicResistance": 40,
     "armorPenetration": 25,
-    "modelAlive": "res/img/enemies/25a.png",
-    "modelDead": "res/img/enemies/25d.png"
+    "modelAlive": "res/enemies/25a.png",
+    "modelDead": "res/enemies/25d.png"
   },
   {
     "level": 26,
@@ -464,8 +464,8 @@
     "armorPoints": 45,
     "magicResistance": 40,
     "armorPenetration": 27,
-    "modelAlive": "res/img/enemies/26a.png",
-    "modelDead": "res/img/enemies/26d.png"
+    "modelAlive": "res/enemies/26a.png",
+    "modelDead": "res/enemies/26d.png"
   },
   {
     "level": 27,
@@ -482,8 +482,8 @@
     "armorPoints": 50,
     "magicResistance": 40,
     "armorPenetration": 27,
-    "modelAlive": "res/img/enemies/27a.png",
-    "modelDead": "res/img/enemies/27d.png"
+    "modelAlive": "res/enemies/27a.png",
+    "modelDead": "res/enemies/27d.png"
   },
   {
     "level": 28,
@@ -500,8 +500,8 @@
     "armorPoints": 52,
     "magicResistance": 45,
     "armorPenetration": 27,
-    "modelAlive": "res/img/enemies/28a.png",
-    "modelDead": "res/img/enemies/28d.png"
+    "modelAlive": "res/enemies/28a.png",
+    "modelDead": "res/enemies/28d.png"
   },
   {
     "level": 29,
@@ -518,8 +518,8 @@
     "armorPoints": 55,
     "magicResistance": 45,
     "armorPenetration": 30,
-    "modelAlive": "res/img/enemies/29a.png",
-    "modelDead": "res/img/enemies/29d.png"
+    "modelAlive": "res/enemies/29a.png",
+    "modelDead": "res/enemies/29d.png"
   },
   {
     "level": 30,
@@ -536,8 +536,8 @@
     "armorPoints": 58,
     "magicResistance": 50,
     "armorPenetration": 30,
-    "modelAlive": "res/img/enemies/30a.png",
-    "modelDead": "res/img/enemies/30d.png"
+    "modelAlive": "res/enemies/30a.png",
+    "modelDead": "res/enemies/30d.png"
   },
   {
     "level": 31,
@@ -554,8 +554,8 @@
     "armorPoints": 58,
     "magicResistance": 50,
     "armorPenetration": 30,
-    "modelAlive": "res/img/enemies/31a.png",
-    "modelDead": "res/img/enemies/31d.png"
+    "modelAlive": "res/enemies/31a.png",
+    "modelDead": "res/enemies/31d.png"
   },
   {
     "level": 32,
@@ -572,8 +572,8 @@
     "armorPoints": 60,
     "magicResistance": 55,
     "armorPenetration": 30,
-    "modelAlive": "res/img/enemies/32a.png",
-    "modelDead": "res/img/enemies/32d.png"
+    "modelAlive": "res/enemies/32a.png",
+    "modelDead": "res/enemies/32d.png"
   },
   {
     "level": 33,
@@ -590,8 +590,8 @@
     "armorPoints": 62,
     "magicResistance": 55,
     "armorPenetration": 35,
-    "modelAlive": "res/img/enemies/33a.png",
-    "modelDead": "res/img/enemies/33d.png"
+    "modelAlive": "res/enemies/33a.png",
+    "modelDead": "res/enemies/33d.png"
   },
   {
     "level": 34,
@@ -608,8 +608,8 @@
     "armorPoints": 65,
     "magicResistance": 60,
     "armorPenetration": 35,
-    "modelAlive": "res/img/enemies/34a.png",
-    "modelDead": "res/img/enemies/34d.png"
+    "modelAlive": "res/enemies/34a.png",
+    "modelDead": "res/enemies/34d.png"
   },
   {
     "level": 35,
@@ -626,8 +626,8 @@
     "armorPoints": 68,
     "magicResistance": 65,
     "armorPenetration": 35,
-    "modelAlive": "res/img/enemies/35a.png",
-    "modelDead": "res/img/enemies/35d.png"
+    "modelAlive": "res/enemies/35a.png",
+    "modelDead": "res/enemies/35d.png"
   },
   {
     "level": 36,
@@ -644,8 +644,8 @@
     "armorPoints": 68,
     "magicResistance": 65,
     "armorPenetration": 40,
-    "modelAlive": "res/img/enemies/36a.png",
-    "modelDead": "res/img/enemies/36d.png"
+    "modelAlive": "res/enemies/36a.png",
+    "modelDead": "res/enemies/36d.png"
   },
   {
     "level": 37,
@@ -662,8 +662,8 @@
     "armorPoints": 70,
     "magicResistance": 70,
     "armorPenetration": 40,
-    "modelAlive": "res/img/enemies/37a.png",
-    "modelDead": "res/img/enemies/37d.png"
+    "modelAlive": "res/enemies/37a.png",
+    "modelDead": "res/enemies/37d.png"
   },
   {
     "level": 38,
@@ -680,8 +680,8 @@
     "armorPoints": 72,
     "magicResistance": 70,
     "armorPenetration": 40,
-    "modelAlive": "res/img/enemies/38a.png",
-    "modelDead": "res/img/enemies/38d.png"
+    "modelAlive": "res/enemies/38a.png",
+    "modelDead": "res/enemies/38d.png"
   },
   {
     "level": 39,
@@ -698,8 +698,8 @@
     "armorPoints": 75,
     "magicResistance": 75,
     "armorPenetration": 40,
-    "modelAlive": "res/img/enemies/39a.png",
-    "modelDead": "res/img/enemies/39d.png"
+    "modelAlive": "res/enemies/39a.png",
+    "modelDead": "res/enemies/39d.png"
   },
   {
     "level": 40,
@@ -716,8 +716,8 @@
     "armorPoints": 80,
     "magicResistance": 80,
     "armorPenetration": 50,
-    "modelAlive": "res/img/enemies/40a.png",
-    "modelDead": "res/img/enemies/40d.png"
+    "modelAlive": "res/enemies/40a.png",
+    "modelDead": "res/enemies/40d.png"
   },
   {
     "level": 41,
@@ -734,8 +734,8 @@
     "armorPoints": 85,
     "magicResistance": 75,
     "armorPenetration": 45,
-    "modelAlive": "res/img/enemies/41a.png",
-    "modelDead": "res/img/enemies/41d.png"
+    "modelAlive": "res/enemies/41a.png",
+    "modelDead": "res/enemies/41d.png"
   },
   {
     "level": 42,
@@ -752,8 +752,8 @@
     "armorPoints": 90,
     "magicResistance": 90,
     "armorPenetration": 45,
-    "modelAlive": "res/img/enemies/42a.png",
-    "modelDead": "res/img/enemies/42d.png"
+    "modelAlive": "res/enemies/42a.png",
+    "modelDead": "res/enemies/42d.png"
   },
   {
     "level": 43,
@@ -770,8 +770,8 @@
     "armorPoints": 90,
     "magicResistance": 100,
     "armorPenetration": 50,
-    "modelAlive": "res/img/enemies/43a.png",
-    "modelDead": "res/img/enemies/43d.png"
+    "modelAlive": "res/enemies/43a.png",
+    "modelDead": "res/enemies/43d.png"
   },
   {
     "level": 44,
@@ -788,8 +788,8 @@
     "armorPoints": 95,
     "magicResistance": 99,
     "armorPenetration": 50,
-    "modelAlive": "res/img/enemies/44a.png",
-    "modelDead": "res/img/enemies/44d.png"
+    "modelAlive": "res/enemies/44a.png",
+    "modelDead": "res/enemies/44d.png"
   },
   {
     "level": 45,
@@ -806,8 +806,8 @@
     "armorPoints": 100,
     "magicResistance": 100,
     "armorPenetration": 55,
-    "modelAlive": "res/img/enemies/45a.png",
-    "modelDead": "res/img/enemies/45d.png"
+    "modelAlive": "res/enemies/45a.png",
+    "modelDead": "res/enemies/45d.png"
   },
   {
     "level": 46,
@@ -824,8 +824,8 @@
     "armorPoints": 99,
     "magicResistance": 100,
     "armorPenetration": 55,
-    "modelAlive": "res/img/enemies/46a.png",
-    "modelDead": "res/img/enemies/46d.png"
+    "modelAlive": "res/enemies/46a.png",
+    "modelDead": "res/enemies/46d.png"
   },
   {
     "level": 47,
@@ -842,8 +842,8 @@
     "armorPoints": 110,
     "magicResistance": 110,
     "armorPenetration": 56,
-    "modelAlive": "res/img/enemies/47a.png",
-    "modelDead": "res/img/enemies/47d.png"
+    "modelAlive": "res/enemies/47a.png",
+    "modelDead": "res/enemies/47d.png"
   },
   {
     "level": 48,
@@ -860,8 +860,8 @@
     "armorPoints": 115,
     "magicResistance": 105,
     "armorPenetration": 57,
-    "modelAlive": "res/img/enemies/48a.png",
-    "modelDead": "res/img/enemies/48d.png"
+    "modelAlive": "res/enemies/48a.png",
+    "modelDead": "res/enemies/48d.png"
   },
   {
     "level": 49,
@@ -878,8 +878,8 @@
     "armorPoints": 120,
     "magicResistance": 115,
     "armorPenetration": 59,
-    "modelAlive": "res/img/enemies/49a.png",
-    "modelDead": "res/img/enemies/49d.png"
+    "modelAlive": "res/enemies/49a.png",
+    "modelDead": "res/enemies/49d.png"
   },
   {
     "level": 50,
@@ -896,7 +896,7 @@
     "armorPoints": 125,
     "magicResistance": 125,
     "armorPenetration": 60,
-    "modelAlive": "res/img/enemies/50a.png",
-    "modelDead": "res/img/enemies/50d.png"
+    "modelAlive": "res/enemies/50a.png",
+    "modelDead": "res/enemies/50d.png"
   }
 ]
