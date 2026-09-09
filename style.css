@@ -336,6 +336,114 @@ button:disabled {
     background: rgba(58, 156, 160, 0.377);
 }
 
+#shop-screen {
+    width: 92%;
+    box-sizing: border-box;
+    padding: 14px;
+    border: 1px solid black;
+    background-color: rgba(16, 152, 156, 0.212);
+    box-shadow: inset 0 0 30px rgba(5, 23, 57, 0.35);
+}
+
+.shop-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+    padding-bottom: 8px;
+}
+
+.shop-header h2,
+.shop-section h3,
+.shop-item h4 {
+    margin: 2px 0;
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+}
+
+.shop-header h2 {
+    font-size: 24px;
+}
+
+#shop-money,
+.shop-current-weapon {
+    padding: 7px 9px;
+    border: 1px solid black;
+    background: rgba(58, 156, 160, 0.377);
+}
+
+.shop-current-weapon {
+    margin-bottom: 12px;
+}
+
+.shop-section {
+    margin-top: 14px;
+}
+
+.shop-section h3 {
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.shop-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 8px;
+}
+
+.shop-item {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 8px;
+    border: 1px solid black;
+    background: rgba(24, 73, 146, 0.38);
+}
+
+.shop-item h4 {
+    min-height: 38px;
+    font-size: 15px;
+}
+
+.shop-item p {
+    margin: 4px 0;
+    font-size: 12px;
+}
+
+.shop-item .shop-description {
+    min-height: 42px;
+    color: #071d3b;
+}
+
+.shop-item button {
+    width: 100%;
+    margin-top: auto;
+    background: rgba(58, 156, 160, 0.65);
+}
+
+.shop-message {
+    min-height: 18px;
+    margin: 12px 0 8px;
+    padding: 9px;
+    border: 1px solid black;
+    background: rgba(5, 28, 69, 0.28);
+    text-align: center;
+}
+
+.shop-message.success {
+    background: rgba(49, 158, 83, 0.4);
+}
+
+.shop-message.warning {
+    background: rgba(187, 151, 36, 0.4);
+}
+
+.shop-message.danger {
+    background: rgba(179, 48, 58, 0.42);
+}
+
 @media (max-width: 760px) {
     body {
         justify-content: center;
@@ -352,7 +460,8 @@ button:disabled {
         width: 100%;
     }
 
-    #battle-screen {
+    #battle-screen,
+    #shop-screen {
         width: 100%;
     }
 }

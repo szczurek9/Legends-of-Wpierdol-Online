@@ -36,7 +36,7 @@
     playerName.textContent = player.nickname || "Gracz";
     playerHp.textContent = `${player.healthPoints} / ${player.maxHealthPoints}`;
     setBar(playerHealthBar, player.healthPoints, player.maxHealthPoints);
-    playerWeapon.textContent = `Bron: ${player.weaponName} | ${player.weaponDmg} DMG`;
+    playerWeapon.textContent = `Broń: ${player.weaponName} | ${player.weaponDmg} DMG`;
     enemyName.textContent = enemy.name;
     enemyHp.textContent = `${state.enemyHealth} / ${enemy.health}`;
     setBar(enemyHealthBar, state.enemyHealth, enemy.health);

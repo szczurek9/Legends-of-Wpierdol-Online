@@ -49,10 +49,10 @@
 
       if (roll100() < enemy.attackChance) {
         player.healthPoints = clamp(player.healthPoints - enemy.damage, 0, player.maxHealthPoints);
-        return { ...state, enemyHit: true, message: `Przeciwnik zadał Ci ${enemy.damage} obrazen!` };
+        return { ...state, enemyHit: true, message: `Przeciwnik zadał Ci ${enemy.damage} obrazeń!` };
       }
 
-      return { ...state, enemyHit: false, message: "Przeciwnik nie trafil!" };
+      return { ...state, enemyHit: false, message: "Przeciwnik nie trafił!" };
     },
 
     nextWave(state) {

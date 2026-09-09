@@ -36,7 +36,7 @@
                 
                 <div id="main-buttons">
                     <button id="play-btn" type="button">⚔️ Graj</button>
-                    <button id="shop-btn">🪙 Sklep</button>
+                    <button id="shop-btn" type="button">🪙 Sklep</button>
                     <button id="options-btn">⚙️ Opcje</button>
                 </div>
 
@@ -46,6 +46,33 @@
                 <button id="change-playerModel">👁️ Zmień skina</button>
             </div>
         </div>
+
+        <section id="shop-screen" class="hidden" aria-live="polite">
+            <div class="shop-header">
+                <div>
+                    <span class="eyebrow">EKWIPUNEK</span>
+                    <h2>Sklep</h2>
+                </div>
+                <div id="shop-money">💸 Hajs: 0 $</div>
+            </div>
+
+            <div class="shop-current-weapon">
+                Aktualna broń: <strong id="shop-current-weapon-value">Pięści</strong>
+            </div>
+
+            <div class="shop-section">
+                <h3>⚔️ Broń</h3>
+                <div id="shop-weapons" class="shop-items"></div>
+            </div>
+
+            <div class="shop-section">
+                <h3>✨ Wzmocnienia i umiejętności</h3>
+                <div id="shop-skills" class="shop-items"></div>
+            </div>
+
+            <div id="shop-message" class="shop-message" aria-live="polite">Wybierz przedmiot.</div>
+            <button id="shop-back-btn" class="secondary-button" type="button">Wróć do menu</button>
+        </section>
 
         <section id="battle-screen" class="hidden" aria-live="polite">
             <div class="battle-header">
@@ -95,6 +122,7 @@
     <script src="script/variables.js"></script>
     <script src="script/pullFromHTML.js"></script>
     <script src="script/mainMenu.js"></script>
+    <script src="script/shop.js"></script>
     <script src="script/battle.js"></script>
     <script src="script/battleUI.js"></script>
 </body>
