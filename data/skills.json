@@ -1,0 +1,78 @@
+[
+  {
+    "id": "healthStone",
+    "name": "Skała Zdrowia",
+    "price": 180,
+    "description": "+50 maksymalnego HP.",
+    "effect": "maxHealth",
+    "value": 50
+  },
+  {
+    "id": "waterOfLife",
+    "name": "Woda Życia",
+    "price": 560,
+    "description": "+160 maksymalnego HP.",
+    "effect": "maxHealth",
+    "value": 160
+  },
+  {
+    "id": "chainmail",
+    "name": "Kolczuga",
+    "price": 220,
+    "description": "+15 pancerza.",
+    "effect": "armor",
+    "value": 15
+  },
+  {
+    "id": "revengeSpikes",
+    "name": "Kolce Odwetu",
+    "price": 350,
+    "description": "+10 przebicia pancerza przeciwnika (maksymalnie 70).",
+    "effect": "armorPenetration",
+    "value": 10,
+    "maxValue": 70
+  },
+  {
+    "id": "vampiricBlade",
+    "name": "Wampiryczne Ostrze",
+    "price": 580,
+    "description": "Leczy za 10% zadanych obrażeń (maksymalnie 20%).",
+    "effect": "lifesteal",
+    "value": 10,
+    "maxValue": 20
+  },
+  {
+    "id": "focusCrystal",
+    "name": "Kryształ Skupienia",
+    "price": 420,
+    "description": "15% mniejsza szansa na nietrafienie ataku (maksymalnie 30%).",
+    "effect": "accuracy",
+    "value": 15,
+    "maxValue": 30
+  },
+  {
+    "id": "assassinRing",
+    "name": "Pierścień Zabójcy",
+    "price": 500,
+    "description": "+10% szansy na trafienie krytyczne (do 50%).",
+    "effect": "critChance",
+    "value": 10,
+    "maxValue": 50
+  },
+  {
+    "id": "assassinCloak",
+    "name": "Płaszcz Assasyna",
+    "price": 1000,
+    "description": "+10% szansy na trafienie krytyczne (powyżej 50%).",
+    "effect": "critChanceAbove50",
+    "value": 10
+  },
+  {
+    "id": "secondWind",
+    "name": "Drugie Tchnienie",
+    "price": 275,
+    "description": "Pokonanie przeciwnika leczy Cię o 25% maksymalnego HP.",
+    "effect": "secondWind",
+    "value": 25
+  }
+]

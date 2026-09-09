@@ -7,6 +7,18 @@
     return Math.floor(Math.random() * 100);
   }
 
+  function calculatePhysicalDamage(rawDamage, armor, armorPenetration) {
+    const effectiveArmor = Math.max(0, armor - armorPenetration);
+    const reduction = effectiveArmor / (effectiveArmor + 100);
+    const damage = Math.max(1, Math.floor(rawDamage * (1 - reduction)));
+
+    return {
+      damage,
+      armorReduced: rawDamage - damage,
+      effectiveArmor,
+    };
+  }
+
   function updateBattleState(state) {
     window.battle.currentWave = state.currentWave;
     window.battle.totalWaves = state.totalWaves;
@@ -36,12 +48,35 @@
         return { ...state, enemyDefeated: false, damage: 0, heal: 0, message: "Przeciwnik uniknął twojego ataku!" };
       }
 
-      const damage = Math.min(player.weaponDmg, state.enemyHealth);
+      const critical = roll100() < player.critChance;
+      const rawDamage = critical ? Math.floor(player.weaponDmg * 1.5) : player.weaponDmg;
+      const damageResult = calculatePhysicalDamage(
+        rawDamage,
+        enemy.armorPoints || 0,
+        player.armorPenetration,
+      );
+      const damage = Math.min(damageResult.damage, state.enemyHealth);
       const nextHealth = state.enemyHealth - damage;
       const heal = Math.floor((damage * player.lifesteal) / 100);
       player.healthPoints = clamp(player.healthPoints + heal, 0, player.maxHealthPoints);
 
-      return { ...state, enemyHealth: nextHealth, enemyDefeated: nextHealth <= 0, damage, heal, message: `Zadałeś ${damage} obrazeń!` };
+      const secondWindHeal = nextHealth <= 0 && player.secondWind
+        ? Math.floor(player.maxHealthPoints * 0.25)
+        : 0;
+      player.healthPoints = clamp(player.healthPoints + secondWindHeal, 0, player.maxHealthPoints);
+
+      return {
+        ...state,
+        enemyHealth: nextHealth,
+        enemyDefeated: nextHealth <= 0,
+        damage,
+        rawDamage,
+        heal,
+        secondWindHeal,
+        critical,
+        armorReduced: damageResult.armorReduced,
+        message: `Zadałeś ${damage} obrazeń!`,
+      };
     },
 
     enemyTurn(state) {
@@ -49,8 +84,23 @@
       const enemy = window.enemies[state.enemyIndex];
 
       if (roll100() < enemy.attackChance) {
-        player.healthPoints = clamp(player.healthPoints - enemy.damage, 0, player.maxHealthPoints);
-        return { ...state, enemyHit: true, message: `Przeciwnik zadał Ci ${enemy.damage} obrazeń!` };
+        const critical = roll100() < enemy.critChance;
+        const rawDamage = critical ? Math.floor(enemy.damage * 1.5) : enemy.damage;
+        const damageResult = calculatePhysicalDamage(
+          rawDamage,
+          player.armorPoints,
+          enemy.armorPenetration || 0,
+        );
+        player.healthPoints = clamp(player.healthPoints - damageResult.damage, 0, player.maxHealthPoints);
+        return {
+          ...state,
+          enemyHit: true,
+          enemyCritical: critical,
+          enemyRawDamage: rawDamage,
+          enemyArmorReduced: damageResult.armorReduced,
+          enemyFinalDamage: damageResult.damage,
+          message: `Przeciwnik zadał Ci ${damageResult.damage} obrażeń!`,
+        };
       }
 
       return { ...state, enemyHit: false, message: "Przeciwnik nie trafił!" };

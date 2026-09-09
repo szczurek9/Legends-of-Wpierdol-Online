@@ -27,11 +27,13 @@
     return typeof player.nickname === "string"
       && typeof player.weaponName === "string"
       && typeof player.usedEscape === "boolean"
+      && typeof player.secondWind === "boolean"
       && numericFields.every((field) => Number.isFinite(player[field]) && player[field] >= 0)
       && player.maxHealthPoints > 0
       && player.healthPoints <= player.maxHealthPoints
       && player.lifesteal <= 20
-      && player.bonusAccuracy <= 30;
+      && player.bonusAccuracy <= 30
+      && player.critChance <= 100;
   }
 
   function copyPlayer(player) {

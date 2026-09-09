@@ -39,24 +39,51 @@
       return;
     }
 
-    if (index === 0) {
-      if (player.lifesteal >= 20) {
+    if (skill.effect === "maxHealth") {
+      player.maxHealthPoints += skill.value;
+      player.healthPoints += skill.value;
+    } else if (skill.effect === "armor") {
+      player.armorPoints += skill.value;
+    } else if (skill.effect === "armorPenetration") {
+      if (player.armorPenetration >= skill.maxValue) {
+        showMessage("Osiągnięto maksymalny poziom przebicia pancerza.", "warning");
+        return;
+      }
+      player.armorPenetration = Math.min(skill.maxValue, player.armorPenetration + skill.value);
+    } else if (skill.effect === "lifesteal") {
+      if (player.lifesteal >= skill.maxValue) {
         showMessage("Osiągnięto maksymalny poziom Wampirycznego Ostrza.", "warning");
         return;
       }
-      player.lifesteal = Math.min(20, player.lifesteal + 10);
-    } else if (index === 1) {
-      player.maxHealthPoints += 50;
-      player.healthPoints += 50;
-    } else if (index === 2) {
-      player.maxHealthPoints += 210;
-      player.healthPoints += 210;
-    } else if (index === 3) {
-      if (player.bonusAccuracy >= 30) {
+      player.lifesteal = Math.min(skill.maxValue, player.lifesteal + skill.value);
+    } else if (skill.effect === "accuracy") {
+      if (player.bonusAccuracy >= skill.maxValue) {
         showMessage("Osiągnięto maksymalną ilość Kryształów Skupienia.", "warning");
         return;
       }
-      player.bonusAccuracy = Math.min(30, player.bonusAccuracy + 15);
+      player.bonusAccuracy = Math.min(skill.maxValue, player.bonusAccuracy + skill.value);
+    } else if (skill.effect === "critChance") {
+      if (player.critChance >= skill.maxValue) {
+        showMessage("Osiągnięto maksymalny poziom szansy krytycznej.", "warning");
+        return;
+      }
+      player.critChance = Math.min(skill.maxValue, player.critChance + skill.value);
+    } else if (skill.effect === "critChanceAbove50") {
+      if (player.critChance < 50) {
+        showMessage("Najpierw zwiększ szansę krytyczną Pierścieniem Zabójcy do 50%.", "warning");
+        return;
+      }
+      if (player.critChance >= 100) {
+        showMessage("Osiągnięto maksymalną szansę krytyczną.", "warning");
+        return;
+      }
+      player.critChance = Math.min(100, player.critChance + skill.value);
+    } else if (skill.effect === "secondWind") {
+      if (player.secondWind) {
+        showMessage("Drugie Tchnienie zostało już kupione.", "warning");
+        return;
+      }
+      player.secondWind = true;
     }
 
     player.money -= skill.price;

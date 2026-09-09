@@ -65,43 +65,68 @@
     "damage": 390
   },
   {
-    "name": "Młot Mordekaisera",
-    "price": 1200,
-    "damage": 475
-  },
-  {
     "name": "Shurikeny Akali",
-    "price": 1600,
+    "price": 1200,
     "damage": 527
   },
   {
-    "name": "Red Queen",
-    "price": 2300,
+    "name": "Yamato",
+    "price": 1650,
     "damage": 700
   },
   {
     "name": "Ebony & Ivory",
-    "price": 5000,
+    "price": 2000,
     "damage": 820
   },
   {
     "name": "Mantis Blades",
-    "price": 6500,
+    "price": 2700,
     "damage": 930
   },
   {
     "name": "Malorian 3516",
-    "price": 10000,
+    "price": 3000,
     "damage": 1000
   },
   {
     "name": "GTX 1080 TI",
-    "price": 18000,
-    "damage": 1881
+    "price": 3600,
+    "damage": 1800
   },
   {
     "name": "Nokia 3310",
-    "price": 33100,
-    "damage": 3331
+    "price": 4800,
+    "damage": 3310
+  },
+  {
+    "name": "Desert Eagle",
+    "price": 5000,
+    "damage": 4000
+  },
+  {
+    "name": "RAM DDR4",
+    "price": 6700,
+    "damage": 5444
+  },
+  {
+    "name": "AWP Dragonlore",
+    "price": 7777,
+    "damage": 6767
+  },
+  {
+    "name": "Red Bull GreatSword",
+    "price": 10000,
+    "damage": 8120
+  },
+  {
+    "name": "Lightsaber",
+    "price": 12000,
+    "damage": 9800
+  },
+  {
+    "name": "Devil Sword Dante",
+    "price": 15000,
+    "damage": 12255
   }
 ]

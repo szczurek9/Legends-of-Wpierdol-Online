@@ -31,6 +31,22 @@
     element.style.width = `${Math.max(0, Math.min(100, (value / max) * 100))}%`;
   }
 
+  function formatPlayerAttack(result) {
+    let message = result.message;
+    if (result.critical) message += " KRYTYK!";
+    if (result.armorReduced > 0) message += ` Pancerz zmniejszył obrażenia o ${result.armorReduced}.`;
+    if (result.heal > 0) message += ` Odzyskujesz ${result.heal} HP.`;
+    if (result.secondWindHeal > 0) message += ` Drugie Tchnienie przywraca ${result.secondWindHeal} HP.`;
+    return message;
+  }
+
+  function formatEnemyAttack(result) {
+    let message = result.message;
+    if (result.enemyCritical) message += " KRYTYK!";
+    if (result.enemyArmorReduced > 0) message += ` Twój pancerz zmniejszył obrażenia o ${result.enemyArmorReduced}.`;
+    return message;
+  }
+
   function render() {
     const player = window.player;
     const enemy = window.enemies[state.enemyIndex];
@@ -39,11 +55,11 @@
     playerName.textContent = player.nickname || "Gracz";
     playerHp.textContent = `${player.healthPoints} / ${player.maxHealthPoints}`;
     setBar(playerHealthBar, player.healthPoints, player.maxHealthPoints);
-    playerWeapon.textContent = `Broń: ${player.weaponName} | ${player.weaponDmg} DMG`;
+    playerWeapon.textContent = `Broń: ${player.weaponName} | ${player.weaponDmg} DMG | Crit: ${player.critChance}% | Pen: ${player.armorPenetration}`;
     enemyName.textContent = enemy.name;
     enemyHp.textContent = `${state.enemyHealth} / ${enemy.health}`;
     setBar(enemyHealthBar, state.enemyHealth, enemy.health);
-    enemyStats.textContent = `DMG: ${enemy.damage} | Szansa ataku: ${enemy.attackChance}%`;
+    enemyStats.textContent = `DMG: ${enemy.damage} | Atak: ${enemy.attackChance}% | Crit: ${enemy.critChance}% | Pancerz: ${enemy.armorPoints} | Pen: ${enemy.armorPenetration}`;
     escapeButton.disabled = player.usedEscape;
   }
 
@@ -90,8 +106,8 @@
       state = window.BattleSystem.nextWave(state);
       render();
 
-      if (state.levelUp) finish(`${state.message} Otrzymujesz nagrode: ${state.reward} $.`, "success");
-      else showMessage(`${state.message} Otrzymujesz ${state.reward} $.`, "success");
+      if (state.levelUp) finish(`${formatPlayerAttack(attackResult)} ${state.message} Otrzymujesz nagrodę: ${state.reward} $.`, "success");
+      else showMessage(`${formatPlayerAttack(attackResult)} ${state.message} Otrzymujesz ${state.reward} $.`, "success");
       return;
     }
 
@@ -104,8 +120,7 @@
       return;
     }
 
-    const healMessage = attackResult.heal > 0 ? ` Odzyskujesz ${attackResult.heal} HP.` : "";
-    showMessage(`${attackResult.message}${healMessage} ${enemyResult.message}`);
+    showMessage(`${formatPlayerAttack(attackResult)} ${formatEnemyAttack(enemyResult)}`);
   }
 
   function escape() {

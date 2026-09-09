@@ -18,10 +18,15 @@
       if (!response.ok) throw new Error(`Nie udało się wczytać przeciwników: ${response.status}`);
       return response.json();
     }),
+    fetch("data/skills.json").then((response) => {
+      if (!response.ok) throw new Error(`Nie udało się wczytać umiejętności: ${response.status}`);
+      return response.json();
+    }),
   ])
-    .then(([weapons, enemies]) => {
+    .then(([weapons, enemies, skills]) => {
       window.shopWeapons = weapons;
       window.enemies = enemies;
+      window.shopSkills = skills;
 
       gameplayButtons.forEach((button) => { button.disabled = false; });
       if (startButton) startButton.textContent = "Graj";
