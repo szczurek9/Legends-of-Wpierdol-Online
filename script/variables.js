@@ -1,10 +1,10 @@
-// Jeden wspolny stan gry. Menu i walka korzystaja z tego samego obiektu player.
+
 window.player = {
   nickname: "",
   money: 5,
   level: 1,
   weaponName: "Pięści",
-  weaponDmg: 1,
+  weaponDmg: 3,
   healthPoints: 100,
   maxHealthPoints: 100,
   armorPoints: 0,
@@ -12,7 +12,7 @@ window.player = {
   armorPenetration: 0,
   manaPoints: 90,
   abilityPower: 0,
-  lifestealPercent: 0,
+  lifesteal: 0,
   bonusAccuracy: 0,
   usedEscape: false,
 };
