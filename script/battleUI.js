@@ -85,11 +85,11 @@
     playerHp.textContent = `${player.healthPoints} / ${player.maxHealthPoints}`;
     setBar(playerHealthBar, player.healthPoints, player.maxHealthPoints);
     renderPlayerModel(false);
-    playerWeapon.textContent = `Broń: ${player.weaponName} | ${player.weaponDmg} DMG | Crit: ${player.critChance}% | Pen: ${player.armorPenetration}`;
+    playerWeapon.textContent = `⚔️: ${player.weaponName} | ${player.weaponDmg} DMG | 💥: ${player.critChance}% | 🗡: ${player.armorPenetration}`;
     enemyName.textContent = enemy.name;
     enemyHp.textContent = `${state.enemyHealth} / ${enemy.health}`;
     setBar(enemyHealthBar, state.enemyHealth, enemy.health);
-    enemyStats.textContent = `DMG: ${enemy.damage} | Atak: ${enemy.attackChance}% | Crit: ${enemy.critChance}% | Pancerz: ${enemy.armorPoints} | Pen: ${enemy.armorPenetration}`;
+    enemyStats.textContent = `⚔️: ${enemy.damage} | ⚔️%: ${enemy.attackChance}% | 💥: ${enemy.critChance}% | 🛡: ${enemy.armorPoints} | 🗡: ${enemy.armorPenetration}`;
     renderEnemyModel(enemy, state.enemyDefeated === true);
     escapeButton.disabled = player.usedEscape;
   }
