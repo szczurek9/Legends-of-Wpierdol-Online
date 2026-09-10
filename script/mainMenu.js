@@ -1,6 +1,8 @@
 const startScreen = document.getElementById("start-screen");
 const loginScreen = document.getElementById("login-screen");
 const mainMenu = document.getElementById("main-menu");
+const mainSkinPoints = document.getElementById("mainSkinPoints");
+const mainPlayerModelImage = document.querySelector("#main-playerModel img");
 const input = document.getElementById("nickname");
 const startButton = document.getElementById("start-game");
 const startMessage = document.getElementById("start-message");
@@ -12,21 +14,34 @@ function refreshMainMenu() {
   mainNickname.textContent = `💭 Nick: ${window.player.nickname}`;
   mainMoney.textContent = `💸 Hajs: ${window.player.money} $`;
   mainLevel.textContent = `⚡ LVL: ${window.player.level}`;
+  mainSkinPoints.textContent = `🎨 SP: ${window.player.skinPoints}`;
   mainWeapon.textContent = `🔫 Broń ${window.player.weaponName} | ${window.player.weaponDmg} DMG`;
   mainDefenseStats.textContent = `❤️ HP: ${window.player.healthPoints} | 🛡️ Pancerz: ${window.player.armorPoints}`;
   mainOffenseStats.textContent = `💥 Crit: ${window.player.critChance}% | 🗡️ Armor Pen: ${window.player.armorPenetration}`;
   mainMagicStats.textContent = `🔷 Mana: ${window.player.manaPoints} | ⭐ Moc umiejętności: ${window.player.abilityPower}`;
+
+  const currentSkin = window.skinCatalog?.find((skin) => skin.id === window.player.skinName);
+  if (currentSkin) {
+    mainPlayerModelImage.onerror = () => {
+      mainPlayerModelImage.onerror = null;
+      mainPlayerModelImage.src = "res/skins/player_model.png";
+    };
+    mainPlayerModelImage.src = currentSkin.modelAlive;
+    mainPlayerModelImage.alt = currentSkin.name;
+  }
 }
 
 function showMainMenu() {
   startScreen.classList.add("hidden");
   loginScreen.classList.add("hidden");
   mainMenu.classList.remove("hidden");
+  if (window.applyInterfaceTheme) window.applyInterfaceTheme(window.player.theme);
   refreshMainMenu();
 }
 
 function showNewGameLogin() {
   window.SaveSystem.resetPlayer();
+  if (window.applyInterfaceTheme) window.applyInterfaceTheme(window.player.theme);
   input.value = "";
   startMessage.textContent = "";
   startScreen.classList.add("hidden");

@@ -3,7 +3,11 @@ window.createDefaultPlayer = function () {
   return {
     nickname: "",
     money: 5,
+    theme: "prism",
+    skinPoints: 1,
     level: 1,
+    skinName: "default",
+    skinInventory: ["default"],
     weaponName: "Pięści",
     weaponDmg: 3,
     inventory: [],

@@ -4,7 +4,75 @@
     --shop-control-background: rgba(58, 156, 160, 0.65);
     --shop-info-background: rgba(95, 58, 160, 0.38);
     --shop-border-color: rgb(11, 37, 75);
+    --menu-control-background: rgba(90, 130, 121, 0.65);
+    --control-text-color: #e2f2ef;
     --text-color: #071d3b;
+    --main-background: rgb(27, 103, 126);
+    --main-shadow: rgb(19, 67, 79);
+    --title-glow: rgb(47, 172, 255);
+}
+
+body[data-theme="night"] {
+    --shop-page-background: rgba(48, 52, 58, 0.96);
+    --shop-card-background: rgba(70, 75, 82, 0.96);
+    --shop-control-background: rgba(112, 120, 130, 0.98);
+    --shop-info-background: rgba(30, 34, 39, 0.96);
+    --shop-border-color: #aab4c0;
+    --menu-control-background: rgba(112, 120, 130, 0.98);
+    --control-text-color: #f0f2f4;
+    --text-color: #f0f2f4;
+    --main-background: #343940;
+    --main-shadow: #1d2025;
+    --title-glow: #aab4c0;
+}
+
+body[data-theme="neon"] {
+    --shop-page-background: rgba(21, 15, 36, 0.97);
+    --shop-card-background: rgba(39, 20, 59, 0.97);
+    --shop-control-background: rgba(18, 51, 64, 0.98);
+    --shop-info-background: rgba(55, 15, 76, 0.97);
+    --shop-border-color: #00e5ff;
+    --menu-control-background: rgba(18, 51, 64, 0.98);
+    --control-text-color: #eaffff;
+    --text-color: #eaffff;
+    --main-background: #171126;
+    --main-shadow: #090611;
+    --title-glow: #00e5ff;
+}
+
+body[data-theme="neon"] {
+    color: #eaffff;
+}
+
+body[data-theme="neon"] a,
+body[data-theme="neon"] label,
+body[data-theme="neon"] h1,
+body[data-theme="neon"] h2,
+body[data-theme="neon"] h3,
+body[data-theme="neon"] h4,
+body[data-theme="neon"] p,
+body[data-theme="neon"] span {
+    color: #eaffff;
+}
+
+body[data-theme="night"] button,
+body[data-theme="night"] input,
+body[data-theme="night"] select {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+body[data-theme="nature"] {
+    --shop-page-background: rgba(214, 226, 197, 0.97);
+    --shop-card-background: rgba(139, 166, 124, 0.92);
+    --shop-control-background: rgba(111, 154, 114, 0.98);
+    --shop-info-background: rgba(166, 184, 162, 0.98);
+    --shop-border-color: #405c43;
+    --menu-control-background: rgba(111, 154, 114, 0.98);
+    --control-text-color: #f4faed;
+    --text-color: #203222;
+    --main-background: #8aa47c;
+    --main-shadow: #536b4d;
+    --title-glow: #dff2b8;
 }
 
 /* Elementy ukrywane przez logikę ekranów. */
@@ -34,8 +102,8 @@ body {
     left: 0;
     z-index: 5;
     padding: 6px 12px;
-    color: #d7eeee;
-    background: rgb(27, 103, 126);
+    color: var(--control-text-color);
+    background: var(--main-background);
     border-top: 1px solid rgb(11, 37, 75);
     box-shadow: 0 -4px 10px rgba(5, 23, 57, 0.3);
     text-align: center;
@@ -43,7 +111,7 @@ body {
 }
 
 .site-footer a {
-    color: #e2f2ef;
+    color: var(--control-text-color);
     text-decoration: none;
 }
 
@@ -60,9 +128,9 @@ body {
     justify-content: center;
     align-items: center;
     padding: 10px;
-    background-color: rgb(27, 103, 126);
-    box-shadow: 10px 10px rgb(19, 67, 79);
-    border: 1px solid rgb(11, 37, 75);
+    background-color: var(--main-background);
+    box-shadow: 10px 10px var(--main-shadow);
+    border: 1px solid var(--shop-border-color);
 }
 
 #titleheader {
@@ -71,17 +139,18 @@ body {
     font-weight: 400;
     font-style: normal;
     font-size: 30px;
-    text-shadow: 0 2px 5px rgb(47, 172, 255);
+    text-shadow: 0 2px 5px var(--title-glow);
 }
 
 #titleedition {
     margin-bottom: 20px;
     font-size: 18px;
-    text-shadow: 0 2px 5px rgb(47, 172, 255);
+    text-shadow: 0 2px 5px var(--title-glow);
 }
 
 button,
-input {
+input,
+select {
     font-family: "Tagesschrift", system-ui;
     font-weight: 400;
     font-style: normal;
@@ -110,7 +179,7 @@ button:disabled {
 #main-playerModel button,
 #login-screen button,
 #login-screen input {
-    background: rgba(90, 130, 121, 0.65) !important;
+    background: var(--menu-control-background) !important;
 }
 
 /* Ekran logowania. */
@@ -180,7 +249,8 @@ button:disabled {
 /* Wspólne style ekranu walki i sklepu. */
 #battle-screen,
 #shop-screen,
-#inventory-screen {
+#inventory-screen,
+#skin-screen {
     width: 92%;
     box-sizing: border-box;
     padding: 14px;
@@ -482,6 +552,123 @@ button:disabled {
     gap: 8px;
 }
 
+/* Skins. */
+.skin-search-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 14px;
+}
+
+#skin-search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid black;
+    color: var(--control-text-color);
+    background: var(--shop-control-background);
+}
+
+.skin-layout {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.skin-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    border: 1px solid black;
+    background: var(--shop-card-background);
+}
+
+.skin-filters h3 {
+    margin: 0 0 4px;
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+}
+
+.skin-filter {
+    padding: 6px 8px;
+    text-align: left;
+}
+
+.skin-filter.active {
+    outline: 2px solid var(--shop-info-background);
+    filter: brightness(1.2);
+}
+
+.skin-filter[data-rarity="basic"] { color: #d7eeee; }
+.skin-filter[data-rarity="rare"] { color: #72b7ff; }
+.skin-filter[data-rarity="epic"] { color: #d39cff; }
+.skin-filter[data-rarity="mythic"] { color: #ff8cd8; }
+.skin-filter[data-rarity="legendary"] { color: #ffd45c; }
+.skin-filter[data-rarity="ultimate"] { color: #ff8a5b; }
+
+.skin-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    max-height: 430px;
+    gap: 8px;
+    overflow-y: auto;
+    align-content: start;
+    padding: 2px 6px 6px 2px;
+    scrollbar-color: var(--shop-border-color) rgba(5, 28, 69, 0.28);
+}
+
+.skin-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 8px;
+    border: 1px solid black;
+    background: var(--shop-card-background);
+}
+
+.skin-card-equipped {
+    border-color: #f0d36a;
+    box-shadow: inset 0 0 0 1px #f0d36a;
+}
+
+.skin-preview {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    background: var(--shop-info-background);
+}
+
+.skin-card h3 {
+    min-height: 38px;
+    margin: 7px 0 2px;
+    font-family: "New Rocker", system-ui;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.skin-rarity {
+    margin: 2px 0 8px;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+
+.skin-rarity-basic { color: #d7eeee; }
+.skin-rarity-rare { color: #72b7ff; }
+.skin-rarity-epic { color: #d39cff; }
+.skin-rarity-mythic { color: #ff8cd8; }
+.skin-rarity-legendary { color: #ffd45c; }
+.skin-rarity-ultimate { color: #ff8a5b; }
+
+.skin-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: auto;
+}
+
 /* Responsywność. */
 @media (max-width: 760px) {
     body {
@@ -499,7 +686,8 @@ button:disabled {
     #main-menu,
     #battle-screen,
     #shop-screen,
-    #inventory-screen {
+    #inventory-screen,
+    #skin-screen {
         width: 100%;
     }
 
@@ -554,6 +742,23 @@ button:disabled {
 
     .inventory-layout {
         grid-template-columns: 1fr;
+    }
+
+    .skin-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .skin-filters {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .skin-filters h3 {
+        grid-column: 1 / -1;
+    }
+
+    .skin-filter {
+        text-align: center;
     }
 
     .shop-items {
@@ -638,6 +843,15 @@ button:disabled {
         max-height: 230px;
     }
 
+    .skin-list {
+        grid-template-columns: 1fr 1fr;
+        max-height: 360px;
+    }
+
+    .skin-preview {
+        height: 130px;
+    }
+
     .site-footer {
         padding: 7px 5px;
         font-size: 10px;
@@ -691,8 +905,8 @@ button:disabled {
     box-sizing: border-box;
     padding: 16px;
     border: 1px solid black;
-    background: rgb(27, 103, 126);
-    box-shadow: 8px 8px rgb(17, 57, 117);
+    background: var(--main-background);
+    box-shadow: 8px 8px var(--main-shadow);
 }
 
 .modal-header {
@@ -723,6 +937,20 @@ button:disabled {
     border: 1px solid black;
     color: var(--control-text-color);
     background: var(--shop-info-background);
+}
+
+.theme-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+#theme-select {
+    padding: 8px 10px;
+    border: 1px solid var(--shop-border-color);
+    color: var(--control-text-color);
+    background: var(--shop-control-background);
 }
 
 .modal-actions,

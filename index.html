@@ -35,6 +35,7 @@
                 <a id="mainNickname">🔤 Nick:</a>
                 <a id="mainMoney">💸 Hajs:</a>
                 <a id="mainLevel">⚡ LVL:</a>
+                <a id="mainSkinPoints">🎨 SP:</a>
                 <a id="mainWeapon">🔫 Broń</a>
                 <!-- Do wypelnienia ID -->
                 <a id="mainDefenseStats">❤️ HP: | 🛡️ Pancerz:</a>
@@ -50,8 +51,8 @@
 
             </div> 
             <div id="main-playerModel">
-                <img src="res/img/player_model.png">
-                <button id="change-playerModel">👁️ Zmień skina</button>
+                <img src="res/skins/player_model.png">
+                <button id="change-playerModel" type="button">👁️ Zmień skina</button>
             </div>
         </div>
 
@@ -82,6 +83,39 @@
 
             <div id="shop-message" class="shop-message" aria-live="polite">Wybierz przedmiot.</div>
             <button id="shop-back-btn" class="secondary-button" type="button">Wróć do menu</button>
+        </section>
+
+        <section id="skin-screen" class="hidden" aria-live="polite">
+            <div class="shop-header">
+                <div>
+                    <span class="eyebrow">KOSMETYKA</span>
+                    <h2>Skiny gracza</h2>
+                </div>
+                <div id="skin-points">🎨 SP: 0</div>
+            </div>
+
+            <div class="skin-search-row">
+                <label for="skin-search">Szukaj skina</label>
+                <input id="skin-search" type="search" placeholder="Wpisz nazwę..." autocomplete="off">
+            </div>
+
+            <div class="skin-layout">
+                <aside class="skin-filters">
+                    <h3>Rzadkość</h3>
+                    <button class="skin-filter active" data-rarity="all" type="button">Wszystkie</button>
+                    <button class="skin-filter" data-rarity="basic" type="button">Basic</button>
+                    <button class="skin-filter" data-rarity="rare" type="button">Rare</button>
+                    <button class="skin-filter" data-rarity="epic" type="button">Epic</button>
+                    <button class="skin-filter" data-rarity="mythic" type="button">Mythic</button>
+                    <button class="skin-filter" data-rarity="legendary" type="button">Legendary</button>
+                    <button class="skin-filter" data-rarity="ultimate" type="button">Ultimate</button>
+                </aside>
+
+                <div id="skin-list" class="skin-list"></div>
+            </div>
+
+            <div id="skin-message" class="shop-message" aria-live="polite">Wybierz skina.</div>
+            <button id="skin-back-btn" class="secondary-button" type="button">Wróć do menu</button>
         </section>
 
         <section id="inventory-screen" class="hidden" aria-live="polite">
@@ -130,7 +164,7 @@
                     <span class="combatant-label">TY</span>
                     <h3 id="battle-player-name">Gracz</h3>
                     <div class="battle-model battle-model-player">
-                        <img src="res/img/player_model.png" alt="Postać gracza">
+                        <img src="res/skins/player_model.png" alt="Postać gracza">
                     </div>
                     <div class="stat-line"><span>HP</span><strong id="battle-player-hp">100 / 100</strong></div>
                     <div class="health-bar"><span id="battle-player-health-bar"></span></div>
@@ -165,7 +199,7 @@
                 <p>Co chcesz zrobić?</p>
                 <div class="death-actions">
                     <button id="death-restore-btn" type="button">↩️ Cofnij stan sprzed walki</button>
-<button id="death-new-game-btn" type="button">🎮 Nowa gra</button>
+                    <button id="death-new-game-btn" type="button">🎮 Nowa gra</button>
                 </div>
             </div>
         </section>
@@ -178,6 +212,15 @@
                 </div>
                 <label for="save-code">Kod zapisu</label>
                 <textarea id="save-code" rows="5" spellcheck="false" placeholder="Tutaj pojawi się kod zapisu..."></textarea>
+                <div class="theme-picker">
+                    <label for="theme-select">Motyw interfejsu</label>
+                    <select id="theme-select">
+                        <option value="prism">Prism</option>
+                        <option value="night">Night</option>
+                        <option value="neon">Neon</option>
+                        <option value="nature">Nature</option>
+                    </select>
+                </div>
                 <div class="modal-actions">
                     <button id="save-game-btn" type="button">💾 Zapisz grę</button>
                     <button id="copy-save-btn" type="button">📋 Kopiuj zapis</button>
@@ -202,8 +245,10 @@
     <script src="script/pullFromHTML.js"></script>
     <script src="script/saveSystem.js"></script>
     <script src="script/mainMenu.js"></script>
+    <script src="script/themes.js"></script>
     <script src="script/shop.js"></script>
     <script src="script/inventory.js"></script>
+    <script src="script/skins.js"></script>
     <script src="script/battle.js"></script>
     <script src="script/battleUI.js"></script>
 </body>

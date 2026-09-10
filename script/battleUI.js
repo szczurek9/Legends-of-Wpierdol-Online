@@ -13,6 +13,7 @@
   const battleTitle = document.getElementById("battle-title");
   const battleWave = document.getElementById("battle-wave");
   const playerName = document.getElementById("battle-player-name");
+  const playerModel = document.querySelector(".battle-model-player img");
   const playerHp = document.getElementById("battle-player-hp");
   const playerHealthBar = document.getElementById("battle-player-health-bar");
   const playerWeapon = document.getElementById("battle-player-weapon");
@@ -64,6 +65,17 @@
     enemyModel.src = modelPath;
   }
 
+  function renderPlayerModel(dead) {
+    const skin = window.skinCatalog?.find((item) => item.id === window.player.skinName);
+    const modelPath = skin ? (dead ? skin.modelDead : skin.modelAlive) : "res/skins/player_model.png";
+    playerModel.onerror = () => {
+      playerModel.onerror = null;
+      playerModel.src = "res/skins/player_model.png";
+    };
+    playerModel.src = modelPath;
+    playerModel.alt = dead ? "Postać gracza — pokonana" : "Postać gracza";
+  }
+
   function render() {
     const player = window.player;
     const enemy = window.enemies[state.enemyIndex];
@@ -72,6 +84,7 @@
     playerName.textContent = player.nickname || "Gracz";
     playerHp.textContent = `${player.healthPoints} / ${player.maxHealthPoints}`;
     setBar(playerHealthBar, player.healthPoints, player.maxHealthPoints);
+    renderPlayerModel(false);
     playerWeapon.textContent = `Broń: ${player.weaponName} | ${player.weaponDmg} DMG | Crit: ${player.critChance}% | Pen: ${player.armorPenetration}`;
     enemyName.textContent = enemy.name;
     enemyHp.textContent = `${state.enemyHealth} / ${enemy.health}`;
@@ -91,6 +104,7 @@
     actions.classList.add("hidden");
     backButton.classList.add("hidden");
     deathPanel.classList.remove("hidden");
+    renderPlayerModel(true);
     showMessage("Przegrywasz walkę.", "danger");
   }
 

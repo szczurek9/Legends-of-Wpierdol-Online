@@ -112,8 +112,9 @@
 
       if (nextWave > state.totalWaves) {
         window.player.level += 1;
+        window.player.skinPoints += 1;
         window.player.usedEscape = false;
-        return { ...state, finished: true, levelUp: true, reward: enemy.reward, message: `Awansujesz na poziom ${window.player.level}!` };
+        return { ...state, finished: true, levelUp: true, reward: enemy.reward, skinPointReward: 1, message: `Awansujesz na poziom ${window.player.level}! Otrzymujesz 1 SP.` };
       }
 
       const nextState = { ...state, currentWave: nextWave, enemyHealth: enemy.health, enemyDefeated: false, levelUp: false, reward: enemy.reward, message: "Przeciwnik pokonany! Nadchodzi następna fala." };

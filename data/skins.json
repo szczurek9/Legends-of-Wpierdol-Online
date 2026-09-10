@@ -1,0 +1,56 @@
+[
+  {
+    "id": "default",
+    "name": "Patyczak",
+    "rarity": "basic",
+    "cost": 0,
+    "modelAlive": "res/skins/player_model.png",
+    "modelDead": "res/skins/player_model.png",
+    "sellable": false
+  },
+  {
+    "id": "skin1",
+    "name": "Zwykły Ludzik",
+    "rarity": "basic",
+    "cost": 1,
+    "modelAlive": "res/skins/sa1.png",
+    "modelDead": "res/skins/sd1.png",
+    "sellable": true
+  },
+  {
+    "id": "skin2",
+    "name": "Czarek Kirkowski",
+    "rarity": "legendary",
+    "cost": 15,
+    "modelAlive": "res/skins/sa2.png",
+    "modelDead": "res/skins/sd2.png",
+    "sellable": true
+  },
+  {
+    "id": "skin3",
+    "name": "Wujek Jerzy",
+    "rarity": "legendary",
+    "cost": 15,
+    "modelAlive": "res/skins/sa3.png",
+    "modelDead": "res/skins/sd3.png",
+    "sellable": true
+  },
+  {
+    "id": "skin4",
+    "name": "Malarz",
+    "rarity": "mythic",
+    "cost": 8,
+    "modelAlive": "res/skins/sa4.png",
+    "modelDead": "res/skins/sd4.png",
+    "sellable": true
+  },
+  {
+    "id": "skin5",
+    "name": "Słodka Lisica",
+    "rarity": "ultimate",
+    "cost": 20,
+    "modelAlive": "res/skins/sa5.png",
+    "modelDead": "res/skins/sd5.png",
+    "sellable": true
+  }
+]
