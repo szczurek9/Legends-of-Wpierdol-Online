@@ -4,6 +4,7 @@
     startButton,
     document.getElementById("play-btn"),
     document.getElementById("shop-btn"),
+    document.getElementById("inventory-btn"),
   ].filter(Boolean);
 
   gameplayButtons.forEach((button) => { button.disabled = true; });

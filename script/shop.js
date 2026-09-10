@@ -14,19 +14,40 @@
     message.className = `shop-message ${type || ""}`.trim();
   }
 
+  function refreshInventoryIfOpen() {
+    if (window.refreshInventory) window.refreshInventory();
+  }
+
   function buyWeapon(index) {
     const weapon = window.shopWeapons[index];
     const player = window.player;
+
+    const alreadyOwned = player.inventory.some((ownedWeapon) => ownedWeapon.name === weapon.name);
+    if (alreadyOwned) {
+      player.weaponName = weapon.name;
+      player.weaponDmg = weapon.damage;
+      refresh();
+      refreshInventoryIfOpen();
+      showMessage(`Wyposażono: ${weapon.name}.`, "success");
+      return;
+    }
 
     if (player.money < weapon.price) {
       showMessage("Za mało hajsu!", "danger");
       return;
     }
 
+    if (player.weaponName !== "Pięści" && !player.inventory.some((ownedWeapon) => ownedWeapon.name === player.weaponName)) {
+      const previousWeapon = window.shopWeapons.find((ownedWeapon) => ownedWeapon.name === player.weaponName);
+      if (previousWeapon) player.inventory.push({ ...previousWeapon });
+    }
+
     player.money -= weapon.price;
+    player.inventory.push({ ...weapon });
     player.weaponName = weapon.name;
     player.weaponDmg = weapon.damage;
     refresh();
+    refreshInventoryIfOpen();
     showMessage(`Kupiono: ${weapon.name}!`, "success");
   }
 

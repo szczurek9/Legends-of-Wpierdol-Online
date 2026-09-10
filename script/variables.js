@@ -6,6 +6,7 @@ window.createDefaultPlayer = function () {
     level: 1,
     weaponName: "Pięści",
     weaponDmg: 3,
+    inventory: [],
     healthPoints: 100,
     maxHealthPoints: 100,
     armorPoints: 0,

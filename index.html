@@ -44,6 +44,7 @@
                 <div id="main-buttons">
                     <button id="play-btn" type="button">⚔️ Graj</button>
                     <button id="shop-btn" type="button">🪙 Sklep</button>
+                    <button id="inventory-btn" type="button">🎒 Ekwipunek</button>
                     <button id="options-btn" type="button">⚙️ Opcje</button>
                 </div>
 
@@ -81,6 +82,38 @@
 
             <div id="shop-message" class="shop-message" aria-live="polite">Wybierz przedmiot.</div>
             <button id="shop-back-btn" class="secondary-button" type="button">Wróć do menu</button>
+        </section>
+
+        <section id="inventory-screen" class="hidden" aria-live="polite">
+            <div class="shop-header">
+                <div>
+                    <span class="eyebrow">WYPOSAŻENIE</span>
+                    <h2>Ekwipunek</h2>
+                </div>
+                <div id="inventory-money">💸 Hajs: 0 $</div>
+            </div>
+
+            <div class="inventory-layout">
+                <article class="inventory-current">
+                    <h3>Aktualna broń</h3>
+                    <div class="inventory-current-card">
+                        <h4 id="inventory-current-name">Pięści</h4>
+                        <p id="inventory-current-stats">3 DMG</p>
+                        <span id="inventory-current-note">Broń domyślna — niezbywalna</span>
+                    </div>
+                </article>
+
+                <article class="inventory-owned">
+                    <h3>Zakupione bronie</h3>
+                    <div id="inventory-weapons" class="shop-items"></div>
+                </article>
+            </div>
+
+            <div id="inventory-message" class="shop-message" aria-live="polite">Wybierz broń.</div>
+            <div class="inventory-actions">
+                <button id="inventory-back-btn" class="secondary-button" type="button">Wróć do menu</button>
+                <button id="inventory-sell-btn" type="button">💰 Sprzedaj broń</button>
+            </div>
         </section>
 
         <section id="battle-screen" class="hidden" aria-live="polite">
@@ -170,6 +203,7 @@
     <script src="script/saveSystem.js"></script>
     <script src="script/mainMenu.js"></script>
     <script src="script/shop.js"></script>
+    <script src="script/inventory.js"></script>
     <script src="script/battle.js"></script>
     <script src="script/battleUI.js"></script>
 </body>

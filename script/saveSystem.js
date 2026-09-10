@@ -26,6 +26,13 @@
 
     return typeof player.nickname === "string"
       && typeof player.weaponName === "string"
+      && Array.isArray(player.inventory)
+      && player.inventory.every((weapon) => weapon
+        && typeof weapon.name === "string"
+        && Number.isFinite(weapon.damage)
+        && Number.isFinite(weapon.price)
+        && weapon.damage >= 0
+        && weapon.price >= 0)
       && typeof player.usedEscape === "boolean"
       && typeof player.secondWind === "boolean"
       && numericFields.every((field) => Number.isFinite(player[field]) && player[field] >= 0)
@@ -57,6 +64,8 @@
   function loadSaveCode(code) {
     try {
       const save = JSON.parse(decode(code));
+      if (save.player && !Array.isArray(save.player.inventory)) save.player.inventory = [];
+      if (save.player && typeof save.player.secondWind !== "boolean") save.player.secondWind = false;
       if (save.version !== SAVE_VERSION || !isValidPlayer(save.player)) return false;
       return applyPlayer(save.player);
     } catch (error) {
