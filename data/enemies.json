@@ -217,7 +217,7 @@
   },
   {
     "level": 13,
-    "name": "Yone OTP",
+    "name": "Yone",
     "health": 300,
     "damage": 22,
     "attackChance": 46,
@@ -235,7 +235,7 @@
   },
   {
     "level": 14,
-    "name": "Edgar z Brawl Stars",
+    "name": "Windows 11",
     "health": 340,
     "damage": 25,
     "attackChance": 48,
@@ -253,7 +253,7 @@
   },
   {
     "level": 15,
-    "name": "Kasjerka w Żabce",
+    "name": "Żabka",
     "health": 420,
     "damage": 30,
     "attackChance": 52,
@@ -343,7 +343,7 @@
   },
   {
     "level": 20,
-    "name": "Adam Smasher z Allegro",
+    "name": "Adam Smasher",
     "health": 1000,
     "damage": 60,
     "attackChance": 60,

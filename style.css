@@ -571,7 +571,7 @@ button:disabled {
 
 .skin-layout {
     display: grid;
-    grid-template-columns: 150px minmax(0, 1fr);
+    grid-template-columns: 150px minmax(0, 1fr) minmax(260px, 0.8fr);
     gap: 12px;
     margin-top: 12px;
 }
@@ -626,11 +626,67 @@ button:disabled {
     padding: 8px;
     border: 1px solid black;
     background: var(--shop-card-background);
+    cursor: pointer;
 }
 
 .skin-card-equipped {
     border-color: #f0d36a;
     box-shadow: inset 0 0 0 1px #f0d36a;
+}
+
+.skin-card-selected {
+    border-color: var(--shop-border-color);
+    box-shadow: 0 0 0 2px var(--shop-border-color), 0 0 18px var(--shop-info-background);
+    transform: translateY(-2px);
+}
+
+.skin-card:focus-visible {
+    outline: 2px solid var(--shop-border-color);
+    outline-offset: 3px;
+}
+
+.skin-details {
+    position: sticky;
+    top: 1rem;
+    padding: 1rem;
+    border: 1px solid black;
+    background: var(--shop-card-background);
+}
+
+.skin-details h3 {
+    margin: 0 0 4px;
+    text-align: center;
+}
+
+.skin-details > p {
+    margin: 0 0 10px;
+    text-transform: capitalize;
+}
+
+.skin-variants {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.skin-variants figure {
+    margin: 0;
+    text-align: center;
+}
+
+.skin-variants img {
+    display: block;
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    background: var(--shop-info-background);
+}
+
+.skin-variants figcaption {
+    margin-top: 5px;
+    font-size: 12px;
+    color: var(--control-text-color);
 }
 
 .skin-preview {
@@ -746,6 +802,10 @@ button:disabled {
 
     .skin-layout {
         grid-template-columns: 1fr;
+    }
+
+    .skin-details {
+        position: static;
     }
 
     .skin-filters {

@@ -61,5 +61,32 @@
     "modelAlive": "res/skins/sa6.png",
     "modelDead": "res/skins/sd6.png",
     "sellable": true
+  },
+  {
+    "id": "skin7",
+    "name": "David Martinez",
+    "rarity": "legendary",
+    "cost": 15,
+    "modelAlive": "res/skins/sa7.png",
+    "modelDead": "res/skins/sd7.png",
+    "sellable": true
+  },
+  {
+    "id": "skin8",
+    "name": "Rebecca",
+    "rarity": "ultimate",
+    "cost": 20,
+    "modelAlive": "res/skins/sa8.png",
+    "modelDead": "res/skins/sd8.png",
+    "sellable": true
+  },
+  {
+    "id": "skin9",
+    "name": "Triple T",
+    "rarity": "rare",
+    "cost": 3,
+    "modelAlive": "res/skins/sa9.png",
+    "modelDead": "res/skins/sd9.png",
+    "sellable": true
   }
 ]
