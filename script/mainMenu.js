@@ -15,7 +15,7 @@ function refreshMainMenu() {
   mainMoney.textContent = `💸 Hajs: ${window.player.money} $`;
   mainLevel.textContent = `⚡ LVL: ${window.player.level}`;
   mainSkinPoints.textContent = `🎨 SP: ${window.player.skinPoints}`;
-  mainWeapon.textContent = `🔫 Broń ${window.player.weaponName} | ${window.player.weaponDmg} DMG`;
+  mainWeapon.textContent = `⚔️ Broń: ${window.player.weaponName} | ${window.player.weaponDmg} DMG`;
   mainDefenseStats.textContent = `❤️ HP: ${window.player.healthPoints} | 🛡️ Pancerz: ${window.player.armorPoints}`;
   mainOffenseStats.textContent = `💥 Crit: ${window.player.critChance}% | 🗡️ Armor Pen: ${window.player.armorPenetration}`;
   mainMagicStats.textContent = `🔷 Mana: ${window.player.manaPoints} | ⭐ Moc umiejętności: ${window.player.abilityPower}`;
