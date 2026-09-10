@@ -52,5 +52,14 @@
     "modelAlive": "res/skins/sa5.png",
     "modelDead": "res/skins/sd5.png",
     "sellable": true
+  },
+  {
+    "id": "skin6",
+    "name": "Dante",
+    "rarity": "epic",
+    "cost": 5,
+    "modelAlive": "res/skins/sa6.png",
+    "modelDead": "res/skins/sd6.png",
+    "sellable": true
   }
 ]
