@@ -91,7 +91,7 @@
   },
   {
     "id": "skin10",
-    "name": "Diddy",
+    "name": "Big D.",
     "rarity": "epic",
     "cost": 4,
     "modelAlive": "res/skins/sa10.png",
@@ -100,7 +100,7 @@
   },
   {
     "id": "skin11",
-    "name": "goku",
+    "name": "Goku",
     "rarity": "legendary",
     "cost": 10,
     "modelAlive": "res/skins/sa11.png",
@@ -118,11 +118,20 @@
   },
   {
     "id": "skin13",
-    "name": "akali",
+    "name": "KDA Akali",
     "rarity": "ultimate",
     "cost": 15,
     "modelAlive": "res/skins/sa13.png",
     "modelDead": "res/skins/sd13.png",
+    "sellable": true
+  },
+    {
+    "id": "skin14",
+    "name": "Natsuki",
+    "rarity": "legendary",
+    "cost": 10,
+    "modelAlive": "res/skins/sa14.png",
+    "modelDead": "res/skins/sd14.png",
     "sellable": true
   }
 ]
