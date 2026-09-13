@@ -89,11 +89,12 @@
     playerHp.textContent = `${player.healthPoints} / ${player.maxHealthPoints}`;
     setBar(playerHealthBar, player.healthPoints, player.maxHealthPoints);
     renderPlayerModel(false);
-    playerWeapon.textContent = `⚔️: ${player.weaponName} | ${player.weaponDmg} DMG | 💥: ${player.critChance}% | 🗡: ${player.armorPenetration}`;
+    playerWeapon.textContent = `Broń: ${player.weaponName} | ${player.weaponDmg} DMG | Crit: ${player.critChance}% | Pen: ${player.armorPenetration}`;
+    playerMana.textContent = `Mana: ${player.manaPoints} / ${player.maxManaPoints} | AP: ${player.abilityPower + player.adeptBookStacks} | MR: ${player.magicResistance}`;
     enemyName.textContent = enemy.name;
-    enemyHp.textContent = `${state.enemyHealth} / ${enemy.health}`;
-    setBar(enemyHealthBar, state.enemyHealth, enemy.health);
-    enemyStats.textContent = `⚔️: ${enemy.damage} | ⚔️%: ${enemy.attackChance}% | 💥: ${enemy.critChance}% | 🛡: ${enemy.armorPoints} | 🗡: ${enemy.armorPenetration}`;
+    enemyHp.textContent = `${state.enemyHealth} / ${state.enemyMaxHealth}`;
+    setBar(enemyHealthBar, state.enemyHealth, state.enemyMaxHealth);
+    enemyStats.textContent = `DMG: ${state.enemyDamage} | Atak: ${state.enemyAttackChance}% | Crit: ${enemy.critChance}% | Pancerz: ${state.enemyArmor} | MR: ${state.enemyMagicResistance} | Pen: ${enemy.armorPenetration}`;
     renderEnemyModel(enemy, state.enemyDefeated === true);
     escapeButton.disabled = player.usedEscape;
     attackButton.classList.toggle("hidden", player.classId === "mage");

@@ -1,0 +1,23 @@
+{
+  "assassin": [
+    {"id":"primalStrike","name":"Primal Strike","type":"physical","cost":200,"description":"Pasywnie przechowuje Overkill. Manualnie wymusza krytyka; krytyk zadaje 2,25x obrażeń.","icon":"ability1.png"},
+    {"id":"undodgeableSpeed","name":"Un-Dodgable Speed","type":"utility","cost":80,"cooldown":4,"description":"+25% celności gracza i -30% celności wroga przez 3 tury.","icon":"ability2.png"},
+    {"id":"slayerOfTheSlowest","name":"Slayer of the Slowest","type":"magic","cost":20,"cooldown":1,"description":"Gdy Twoja celność jest większa od celności wroga, zadaje magiczne obrażenia zależne od maksymalnego HP wroga i obrażeń broni.","icon":"ability3.png"}
+  ],
+  "mage": [
+    {"id":"stormBreeze","name":"Powiew Burzy","type":"magic","cost":25,"description":"Zadaje 15 + 25% AP obrażeń magicznych.","icon":"ability1.png"},
+    {"id":"starStrike","name":"Gwiezdne Uderzenie","type":"magic","cost":100,"cooldown":1,"description":"Zadaje 60 + 90% AP obrażeń magicznych.","icon":"ability2.png"},
+    {"id":"deadlyVines","name":"Zabójcze Pnącza","type":"magic","cost":70,"cooldown":4,"description":"Ogłusza na 3 tury i zadaje 10 + 10% AP obrażeń co turę.","icon":"ability3.png"},
+    {"id":"deadlyMirror","name":"Śmiertelne Lustro","type":"physical","cost":50,"cooldown":5,"description":"Przygotowuje redukcję następnego ataku i odbicie części obrażeń.","icon":"ability4.png"}
+  ],
+  "tank": [
+    {"id":"stoneBastion","name":"Kamienny Bastion","type":"utility","cost":50,"cooldown":1,"description":"Ogłusza na 2 tury i przez 5 tur zwiększa pancerz o 2% na turę.","icon":"ability1.png"},
+    {"id":"accumulatedRage","name":"Skumulowany Gniew","type":"hybrid","cost":50,"cooldown":2,"description":"Magazynuje otrzymane obrażenia. Może automatycznie wyzwolić atak albo zostać użyty ręcznie.","icon":"ability2.png"},
+    {"id":"ironTaunt","name":"Żelazna Prowokacja","type":"utility","cost":45,"cooldown":2,"description":"Przez 2 tury zmniejsza karę broni, uniki wroga i zwiększa celność.","icon":"ability3.png"}
+  ],
+  "samurai": [
+    {"id":"mushin","name":"Mushin","type":"utility","cost":50,"cooldown":1,"description":"Leczy 2% (+0,5% za AP) maksymalnego HP. Następny atak wroga zadaje 30% mniej obrażeń.","icon":"ability1.png"},
+    {"id":"senNoKata","name":"Sen no Kata","type":"toggle","cost":0,"description":"Przełącza tryb Bōei/Chikara. Nie zużywa tury ani many.","icon":"ability2.png"},
+    {"id":"kōgeki","name":"Kōgeki","type":"hybrid","cost":30,"cooldown":2,"description":"Normalny atak fizyczny oraz 50% bazowych obrażeń broni jako obrażenia magiczne.","icon":"ability3.png"}
+  ]
+}

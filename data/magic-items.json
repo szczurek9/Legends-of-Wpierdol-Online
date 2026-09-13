@@ -1,0 +1,10 @@
+[
+  {"id":"enchantedBook","name":"Zaklęta Księga","price":300,"description":"+100 many, +50 mocy umiejętności.","effects":{"mana":100,"abilityPower":50}},
+  {"id":"wandOfDestruction","name":"Różdżka Zniszczenia","price":500,"description":"+120 mocy umiejętności, +300 many, +15 magicznej penetracji.","effects":{"abilityPower":120,"mana":300,"magicPenetration":15}},
+  {"id":"healerNecklace","name":"Naszyjnik Uzdrowicielki","price":220,"description":"+100 many, +5 mocy umiejętności, +300% bazowej regeneracji many.","effects":{"mana":100,"abilityPower":5,"manaRegenPercent":300}},
+  {"id":"angelShield","name":"Tarcza Anioła","price":450,"description":"+30 odporności magicznej, +100% bazowej regeneracji many.","effects":{"magicResistance":30,"manaRegenPercent":100}},
+  {"id":"vampireHands","name":"Dłonie Wampira","price":520,"description":"Leczy za 15% obrażeń magicznych, maksymalnie 30%.","effects":{"magicLifesteal":15},"maxMagicLifesteal":30},
+  {"id":"adeptsBook","name":"Księga Adeptów","price":30,"description":"Po rzuceniu czaru: +5 AP. Limit 30 AP. Mag otrzymuje zniżkę klasową.","effects":{"adeptBook":true},"unique":true},
+  {"id":"adeptsBookUpgrade","name":"Ulepszenie Księgi Adeptów","price":55,"description":"Zwiększa limit AP Księgi Adeptów do 150.","effects":{"adeptBookUpgrade":true},"unique":true},
+  {"id":"staffOfDoom","name":"Kostur Zagłady","price":550,"description":"+20% do całkowitej mocy umiejętności. Brak zniżki Maga.","effects":{"abilityPowerMultiplier":20},"unique":true,"noMageDiscount":true}
+]

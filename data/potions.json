@@ -1,0 +1,5 @@
+[
+  {"id":"precisionElixir","name":"Eliksir Precyzji","price":120,"description":"+50% szansy trafienia przez 7 tur. Nie kumuluje się.","duration":7,"effect":"accuracyPotion","value":50},
+  {"id":"vampireCocktail","name":"Koktajl Wampira","price":150,"description":"+10% lifestealu przez 10 tur. Nie kumuluje się.","duration":10,"effect":"lifestealPotion","value":10},
+  {"id":"healthPotion","name":"Mikstura Zdrowia","price":60,"description":"Leczy 25 + 7% maksymalnego HP, maksymalnie 250 HP.","effect":"healthPotion","value":25}
+]

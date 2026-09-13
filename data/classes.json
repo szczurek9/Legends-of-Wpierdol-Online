@@ -1,0 +1,30 @@
+[
+  {
+    "id": "assassin",
+    "name": "Zabójca",
+    "armorCap": 60,
+    "description": "+10% obrażeń broni, +5% lifestealu, +10% celności, pancerz maks. 60.",
+    "iconPath": "res/abilities/assasin/ability1.png"
+  },
+  {
+    "id": "mage",
+    "name": "Mag",
+    "armorCap": 90,
+    "description": "250 many, większa regeneracja many, magiczna penetracja i 8 slotów magicznych.",
+    "iconPath": "res/abilities/mage/ability1.png"
+  },
+  {
+    "id": "tank",
+    "name": "Tank",
+    "armorCap": 150,
+    "description": "+200 HP, +20 pancerza poza limitem, 150 pancerza maksymalnego.",
+    "iconPath": "res/abilities/tank/ability1.png"
+  },
+  {
+    "id": "samurai",
+    "name": "Samurai",
+    "armorCap": 50,
+    "description": "+15% obrażeń, +15% celności, +10% uniku, pancerz maks. 50.",
+    "iconPath": "res/abilities/samurai/ability1.png"
+  }
+]
