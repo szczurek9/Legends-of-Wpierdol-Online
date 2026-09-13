@@ -199,6 +199,18 @@ button:disabled {
     background: var(--shop-control-background);
 }
 
+#login-screen select,
+#class-description {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#class-description {
+    margin: 2px 0;
+    padding: 6px;
+    background: var(--shop-info-background);
+}
+
 /* Menu główne. */
 #main-menu {
     width: 80%;
@@ -412,6 +424,57 @@ button:disabled {
     gap: 8px;
 }
 
+.battle-abilities,
+.battle-potions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.ability-button,
+.potion-button {
+    display: flex;
+    min-width: 0;
+    min-height: 70px;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-direction: column;
+    text-align: center;
+}
+
+.ability-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border: 1px solid var(--shop-border-color);
+    background: var(--shop-info-background);
+}
+
+.shop-ability-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 6px;
+}
+
+.ability-mode-boei {
+    background: #c8a83d;
+}
+
+.ability-mode-chikara {
+    background: #b64343;
+}
+
+.battle-effects {
+    margin-top: 8px;
+    padding: 7px;
+    border: 1px solid black;
+    background: var(--shop-info-background);
+    text-align: center;
+    font-size: 12px;
+}
+
 .secondary-button {
     width: 100%;
 }
@@ -442,6 +505,34 @@ button:disabled {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
+}
+
+.shop-search-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.shop-category-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-self: start;
+    padding: 8px;
+    border: 1px solid black;
+    background: var(--shop-card-background);
+}
+
+.shop-layout {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 12px;
+}
+
+.shop-category.active {
+    outline: 2px solid var(--shop-border-color);
+    filter: brightness(1.2);
 }
 
 .shop-section {
@@ -498,6 +589,30 @@ button:disabled {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
+}
+
+.inventory-magic,
+.inventory-abilities {
+    min-width: 0;
+    margin-top: 14px;
+}
+
+.inventory-magic h3,
+.inventory-abilities h3 {
+    margin: 2px 0 8px;
+    font-family: "New Rocker", system-ui;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.inventory-ability-card {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    column-gap: 8px;
+}
+
+.inventory-ability-card .ability-icon {
+    grid-row: span 2;
 }
 
 .inventory-current,
@@ -824,6 +939,11 @@ button:disabled {
     .shop-items {
         max-height: 260px;
     }
+
+    .battle-abilities,
+    .battle-potions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 520px) {
@@ -901,6 +1021,20 @@ button:disabled {
 
     .shop-items {
         max-height: 230px;
+    }
+
+    .shop-category-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .shop-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .battle-abilities,
+    .battle-potions {
+        grid-template-columns: 1fr 1fr;
     }
 
     .skin-list {

@@ -4,6 +4,8 @@ const mainMenu = document.getElementById("main-menu");
 const mainSkinPoints = document.getElementById("mainSkinPoints");
 const mainPlayerModelImage = document.querySelector("#main-playerModel img");
 const input = document.getElementById("nickname");
+const classSelect = document.getElementById("class-select");
+const classDescription = document.getElementById("class-description");
 const startButton = document.getElementById("start-game");
 const startMessage = document.getElementById("start-message");
 const optionsModal = document.getElementById("options-modal");
@@ -43,11 +45,18 @@ function showNewGameLogin() {
   window.SaveSystem.resetPlayer();
   if (window.applyInterfaceTheme) window.applyInterfaceTheme(window.player.theme);
   input.value = "";
+  classSelect.value = "assassin";
+  updateClassDescription();
   startMessage.textContent = "";
   startScreen.classList.add("hidden");
   mainMenu.classList.add("hidden");
   loginScreen.classList.remove("hidden");
   input.focus();
+}
+
+function updateClassDescription() {
+  const selected = window.gameClasses?.find((item) => item.id === classSelect.value);
+  classDescription.textContent = selected ? selected.description : "Wybierz klasę.";
 }
 
 function showOptionsMessage(text, type) {
@@ -90,6 +99,7 @@ window.startNewGame = showNewGameLogin;
 
 document.getElementById("new-game-btn").addEventListener("click", showNewGameLogin);
 document.getElementById("load-game-btn").addEventListener("click", loadFromPrompt);
+classSelect.addEventListener("change", updateClassDescription);
 
 startButton.addEventListener("click", () => {
   const enteredName = input.value.trim();
@@ -99,6 +109,27 @@ startButton.addEventListener("click", () => {
   }
 
   window.player.nickname = enteredName;
+  window.player.classId = classSelect.value;
+  const selectedClass = window.gameClasses?.find((item) => item.id === window.player.classId);
+  window.player.armorCap = selectedClass?.armorCap || 90;
+  window.player.magicItemSlots = window.player.classId === "mage" ? 8 : 4;
+  if (window.player.classId === "mage") {
+    window.player.maxManaPoints = 250;
+    window.player.manaPoints = 250;
+    window.player.manaRegenPercent = 125;
+    window.player.magicPenetration = 5;
+    window.player.armorPoints = 15;
+  } else if (window.player.classId === "tank") {
+    window.player.maxHealthPoints += 200;
+    window.player.healthPoints += 200;
+    window.player.bonusArmor = 20;
+  } else if (window.player.classId === "assassin") {
+    window.player.bonusAccuracy = 10;
+    window.player.bonusLifesteal = 5;
+  } else if (window.player.classId === "samurai") {
+    window.player.bonusAccuracy = 15;
+    window.player.bonusDodge = 10;
+  }
   showMainMenu();
 });
 

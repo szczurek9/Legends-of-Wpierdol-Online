@@ -20,12 +20,15 @@
 
     const numericFields = [
       "money", "skinPoints", "level", "weaponDmg", "healthPoints", "maxHealthPoints",
-      "armorPoints", "critChance", "armorPenetration", "manaPoints",
-      "abilityPower", "lifesteal", "bonusAccuracy",
+      "armorPoints", "bonusArmor", "magicResistance", "critChance", "armorPenetration", "magicPenetration",
+      "manaPoints", "maxManaPoints", "manaRegenPercent", "abilityPower", "magicAbilityPower",
+      "lifesteal", "bonusLifesteal", "magicLifesteal", "bonusAccuracy", "bonusDodge", "armorCap", "overkillPool",
+      "adeptBookStacks", "adeptBookStackLimit",
     ];
 
     return typeof player.nickname === "string"
       && typeof player.weaponName === "string"
+      && typeof player.classId === "string"
       && ["prism", "night", "neon", "nature"].includes(player.theme)
       && typeof player.skinName === "string"
       && Array.isArray(player.skinInventory)
@@ -37,6 +40,12 @@
         && Number.isFinite(weapon.price)
         && weapon.damage >= 0
         && weapon.price >= 0)
+      && Array.isArray(player.magicInventory)
+      && player.magicInventory.every((item) => item && typeof item.id === "string")
+      && Array.isArray(player.equippedMagicItems)
+      && player.equippedMagicItems.every((id) => typeof id === "string")
+      && Array.isArray(player.potionInventory)
+      && player.potionInventory.every((id) => typeof id === "string")
       && typeof player.usedEscape === "boolean"
       && typeof player.secondWind === "boolean"
       && numericFields.every((field) => Number.isFinite(player[field]) && player[field] >= 0)
@@ -70,6 +79,25 @@
     try {
       const save = JSON.parse(decode(code));
       if (save.player && !Array.isArray(save.player.inventory)) save.player.inventory = [];
+      if (save.player && typeof save.player.classId !== "string") save.player.classId = "";
+      if (save.player && !Array.isArray(save.player.magicInventory)) save.player.magicInventory = [];
+      if (save.player && !Array.isArray(save.player.equippedMagicItems)) save.player.equippedMagicItems = [];
+      if (save.player && !Array.isArray(save.player.potionInventory)) save.player.potionInventory = [];
+      if (save.player && typeof save.player.magicItemSlots !== "number") save.player.magicItemSlots = save.player.classId === "mage" ? 8 : 4;
+      if (save.player && typeof save.player.magicResistance !== "number") save.player.magicResistance = 0;
+      if (save.player && typeof save.player.bonusArmor !== "number") save.player.bonusArmor = 0;
+      if (save.player && typeof save.player.magicPenetration !== "number") save.player.magicPenetration = 0;
+      if (save.player && typeof save.player.maxManaPoints !== "number") save.player.maxManaPoints = 100;
+      if (save.player && typeof save.player.manaRegenPercent !== "number") save.player.manaRegenPercent = 0;
+      if (save.player && typeof save.player.magicAbilityPower !== "number") save.player.magicAbilityPower = 0;
+      if (save.player && typeof save.player.magicAbilityPower !== "number") save.player.magicAbilityPower = 0;
+      if (save.player && typeof save.player.magicLifesteal !== "number") save.player.magicLifesteal = 0;
+      if (save.player && typeof save.player.bonusLifesteal !== "number") save.player.bonusLifesteal = 0;
+      if (save.player && typeof save.player.bonusDodge !== "number") save.player.bonusDodge = 0;
+      if (save.player && typeof save.player.armorCap !== "number") save.player.armorCap = 90;
+      if (save.player && typeof save.player.overkillPool !== "number") save.player.overkillPool = 0;
+      if (save.player && typeof save.player.adeptBookStacks !== "number") save.player.adeptBookStacks = 0;
+      if (save.player && typeof save.player.adeptBookStackLimit !== "number") save.player.adeptBookStackLimit = 30;
       if (save.player && typeof save.player.secondWind !== "boolean") save.player.secondWind = false;
       if (save.player && typeof save.player.skinPoints !== "number") save.player.skinPoints = 1;
       if (save.player && !["prism", "night", "neon", "nature"].includes(save.player.theme)) save.player.theme = "prism";

@@ -27,6 +27,14 @@
         <div id="login-screen" class="hidden">
             <a>Podaj swój nick:</a>
             <input type="text" id="nickname" placeholder="Nick" autocomplete="off">
+            <label for="class-select">Wybierz klasę (nie można jej później zmienić):</label>
+            <select id="class-select">
+                <option value="assassin">Zabójca</option>
+                <option value="mage">Mag</option>
+                <option value="tank">Tank</option>
+                <option value="samurai">Samurai</option>
+            </select>
+            <p id="class-description" class="screen-message"></p>
             <button id="start-game">Graj</button>
         </div>
 
@@ -57,7 +65,7 @@
         </div>
 
         <section id="shop-screen" class="hidden" aria-live="polite">
-            <div class="shop-header">
+                <div class="shop-header">
                 <div>
                     <span class="eyebrow">EKWIPUNEK</span>
                     <h2>Sklep</h2>
@@ -65,20 +73,47 @@
                 <div id="shop-money">💸 Hajs: 0 $</div>
             </div>
 
+            <div class="shop-search-row">
+                <label for="shop-search">Szukaj w sklepie</label>
+                <input id="shop-search" type="search" placeholder="Wpisz nazwę przedmiotu..." autocomplete="off">
+            </div>
+
             <div class="shop-current-weapon">
                 Aktualna broń: <strong id="shop-current-weapon-value">Pięści</strong>
             </div>
 
+            <div class="shop-layout">
+            <div class="shop-category-tabs" role="tablist" aria-label="Kategorie sklepu">
+                <button class="shop-category active" data-category="weapons" type="button">⚔️ Bronie</button>
+                <button class="shop-category" data-category="magic" type="button">🔮 Magiczne</button>
+                <button class="shop-category" data-category="skills" type="button">✨ Wzmocnienia</button>
+                <button class="shop-category" data-category="abilities" type="button">📜 Umiejętności</button>
+                <button class="shop-category" data-category="potions" type="button">🧪 Mikstury</button>
+            </div>
+
             <div class="shop-sections">
-                <div class="shop-section">
+                <div id="shop-weapons-section" class="shop-section">
                     <h3>⚔️ Broń</h3>
                     <div id="shop-weapons" class="shop-items"></div>
                 </div>
 
-                <div class="shop-section">
+                <div id="shop-skills-section" class="shop-section hidden">
                     <h3>✨ Wzmocnienia i umiejętności</h3>
                     <div id="shop-skills" class="shop-items"></div>
                 </div>
+                <div id="shop-magic-section" class="shop-section hidden">
+                    <h3>🔮 Przedmioty magiczne</h3>
+                    <div id="shop-magic-items" class="shop-items"></div>
+                </div>
+                <div id="shop-abilities-section" class="shop-section hidden">
+                    <h3>📜 Umiejętności klasowe</h3>
+                    <div id="shop-abilities" class="shop-items"></div>
+                </div>
+                <div id="shop-potions-section" class="shop-section hidden">
+                    <h3>🧪 Mikstury</h3>
+                    <div id="shop-potions" class="shop-items"></div>
+                </div>
+            </div>
             </div>
 
             <div id="shop-message" class="shop-message" aria-live="polite">Wybierz przedmiot.</div>
@@ -156,6 +191,14 @@
                     <h3>Zakupione bronie</h3>
                     <div id="inventory-weapons" class="shop-items"></div>
                 </article>
+                <article class="inventory-magic">
+                    <h3>Magiczne przedmioty</h3>
+                    <div id="inventory-magic-items" class="shop-items"></div>
+                </article>
+                <article class="inventory-abilities">
+                    <h3>Umiejętności klasowe</h3>
+                    <div id="inventory-abilities" class="shop-items"></div>
+                </article>
             </div>
 
             <div id="inventory-message" class="shop-message" aria-live="polite">Wybierz broń.</div>
@@ -184,6 +227,7 @@
                     <div class="stat-line"><span>HP</span><strong id="battle-player-hp">100 / 100</strong></div>
                     <div class="health-bar"><span id="battle-player-health-bar"></span></div>
                     <p id="battle-player-weapon">Broń: nic | 0 DMG</p>
+                    <p id="battle-player-mana">Mana: 100 / 100 | AP: 0</p>
                 </article>
 
                 <div class="battle-versus">VS</div>
@@ -207,6 +251,9 @@
                 <button id="attack-btn" type="button">⚔️ Atakuj</button>
                 <button id="escape-btn" type="button">🏃 Uciekaj</button>
             </div>
+            <div id="battle-abilities" class="battle-abilities"></div>
+            <div id="battle-potions" class="battle-potions"></div>
+            <div id="battle-effects" class="battle-effects">Brak aktywnych efektów.</div>
             <button id="battle-back-btn" class="secondary-button hidden" type="button">Wróć do menu</button>
 
             <div id="battle-death-panel" class="battle-death-panel hidden">

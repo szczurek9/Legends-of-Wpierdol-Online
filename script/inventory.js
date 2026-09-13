@@ -10,6 +10,8 @@
   const currentNote = document.getElementById("inventory-current-note");
   const weapons = document.getElementById("inventory-weapons");
   const message = document.getElementById("inventory-message");
+  const magicItems = document.getElementById("inventory-magic-items");
+  const abilities = document.getElementById("inventory-abilities");
   let selectedIndex = null;
 
   function showMessage(text, type) {
@@ -71,6 +73,61 @@
     return card;
   }
 
+  function createMagicCard(item, index) {
+    const card = document.createElement("article");
+    card.className = "shop-item inventory-item";
+    if (item.equipped) card.classList.add("inventory-item-equipped");
+    const title = document.createElement("h4"); title.textContent = item.name; card.appendChild(title);
+    const details = document.createElement("p"); details.textContent = `${item.equipped ? "Wyposażony" : "W torbie"} | Sprzedaż: ${Math.round((item.paidPrice || item.price) * 0.4)} $`; card.appendChild(details);
+    const description = document.createElement("p"); description.className = "shop-description"; description.textContent = item.description; card.appendChild(description);
+    const equip = document.createElement("button"); equip.type = "button"; equip.textContent = item.equipped ? "Zdejmij" : "Wyposaż";
+    equip.addEventListener("click", (event) => { event.stopPropagation(); toggleMagicItem(index); }); card.appendChild(equip);
+    const sell = document.createElement("button"); sell.type = "button"; sell.textContent = `Sprzedaj (${Math.round((item.paidPrice || item.price) * 0.4)} $)`;
+    sell.addEventListener("click", (event) => { event.stopPropagation(); sellMagicItem(index); }); card.appendChild(sell);
+    return card;
+  }
+
+  function toggleMagicItem(index) {
+    const item = window.player.magicInventory[index];
+    if (!item) return;
+    if (item.equipped) {
+      item.equipped = false;
+      window.player.equippedMagicItems = window.player.equippedMagicItems.filter((uid) => uid !== item.uid);
+      window.adjustMagicEffects(item, -1);
+      showMessage(`Zdjęto: ${item.name}.`, "success");
+    } else if (window.player.equippedMagicItems.length >= window.player.magicItemSlots) {
+      showMessage("Brak wolnego slotu magicznego.", "warning");
+      return;
+    } else {
+      item.equipped = true;
+      window.player.equippedMagicItems.push(item.uid);
+      window.adjustMagicEffects(item, 1);
+      showMessage(`Wyposażono: ${item.name}.`, "success");
+    }
+    refresh();
+  }
+
+  function sellMagicItem(index) {
+    const item = window.player.magicInventory[index];
+    if (!item) return;
+    if (item.equipped) window.adjustMagicEffects(item, -1);
+    window.player.equippedMagicItems = window.player.equippedMagicItems.filter((uid) => uid !== item.uid);
+    window.player.magicInventory.splice(index, 1);
+    const salePrice = Math.round((item.paidPrice || item.price) * 0.4);
+    window.player.money += salePrice;
+    refresh();
+    showMessage(`Sprzedano ${item.name} za ${salePrice} $.`, "success");
+  }
+
+  function createAbilityCard(ability) {
+    const card = document.createElement("article"); card.className = "shop-item inventory-ability-card";
+    const image = document.createElement("img"); image.className = "ability-icon"; const folder = window.player.classId === "assassin" ? "assasin" : window.player.classId; image.src = `res/abilities/${folder}/${ability.icon}`; image.alt = ability.name;
+    image.onerror = () => { image.onerror = null; image.src = "res/img/background.png"; }; card.appendChild(image);
+    const title = document.createElement("h4"); title.textContent = ability.name; card.appendChild(title);
+    const description = document.createElement("p"); description.className = "shop-description"; description.textContent = `${ability.description} Koszt: ${ability.cost} many${ability.cooldown ? ` | CD: ${ability.cooldown} tur` : ""}.`; card.appendChild(description);
+    return card;
+  }
+
   function refresh() {
     const player = window.player;
     money.textContent = `💸 Hajs: ${player.money} $`;
@@ -82,6 +139,9 @@
 
     if (selectedIndex !== null && !player.inventory[selectedIndex]) selectedIndex = null;
     weapons.replaceChildren(...player.inventory.map(createWeaponCard));
+    magicItems.replaceChildren(...(player.magicInventory || []).map(createMagicCard));
+    const classAbilities = window.classAbilities?.[player.classId] || [];
+    abilities.replaceChildren(...classAbilities.map(createAbilityCard));
     sellButton.disabled = selectedIndex === null;
     window.refreshMainMenu();
   }

@@ -28,12 +28,20 @@
       if (!response.ok) throw new Error(`Nie udało się wczytać skinów: ${response.status}`);
       return response.json();
     }),
+    fetch("data/classes.json").then((response) => response.json()),
+    fetch("data/magic-items.json").then((response) => response.json()),
+    fetch("data/potions.json").then((response) => response.json()),
+    fetch("data/abilities.json").then((response) => response.json()),
   ])
-    .then(([weapons, enemies, skills, skins]) => {
+    .then(([weapons, enemies, skills, skins, classes, magicItems, potions, abilities]) => {
       window.shopWeapons = weapons;
       window.enemies = enemies;
       window.shopSkills = skills;
       window.skinCatalog = skins;
+      window.gameClasses = classes;
+      window.magicItems = magicItems;
+      window.shopPotions = potions;
+      window.classAbilities = abilities;
 
       gameplayButtons.forEach((button) => { button.disabled = false; });
       if (startButton) startButton.textContent = "Graj";

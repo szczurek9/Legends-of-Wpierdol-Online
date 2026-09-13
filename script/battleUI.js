@@ -6,6 +6,9 @@
   const escapeButton = document.getElementById("escape-btn");
   const backButton = document.getElementById("battle-back-btn");
   const actions = document.getElementById("battle-actions");
+  const abilitiesPanel = document.getElementById("battle-abilities");
+  const potionsPanel = document.getElementById("battle-potions");
+  const effectsPanel = document.getElementById("battle-effects");
   const battleLog = document.getElementById("battle-log");
   const deathPanel = document.getElementById("battle-death-panel");
   const deathNewGameButton = document.getElementById("death-new-game-btn");
@@ -17,6 +20,7 @@
   const playerHp = document.getElementById("battle-player-hp");
   const playerHealthBar = document.getElementById("battle-player-health-bar");
   const playerWeapon = document.getElementById("battle-player-weapon");
+  const playerMana = document.getElementById("battle-player-mana");
   const enemyName = document.getElementById("battle-enemy-name");
   const enemyModel = document.getElementById("battle-enemy-model");
   const enemyModelFallback = document.getElementById("enemy-model-fallback");
@@ -92,16 +96,60 @@
     enemyStats.textContent = `⚔️: ${enemy.damage} | ⚔️%: ${enemy.attackChance}% | 💥: ${enemy.critChance}% | 🛡: ${enemy.armorPoints} | 🗡: ${enemy.armorPenetration}`;
     renderEnemyModel(enemy, state.enemyDefeated === true);
     escapeButton.disabled = player.usedEscape;
+    attackButton.classList.toggle("hidden", player.classId === "mage");
+    renderAbilities();
+    renderPotions();
+    const effectLabels = { potionAccuracy: "Eliksir Precyzji", potionLifesteal: "Koktajl Wampira", accuracy: "Celność", enemyAccuracy: "Celność wroga", stun: "Ogłuszenie", vines: "Pnącza", mirror: "Śmiertelne Lustro", mushin: "Mushin", ironTaunt: "Prowokacja", bastionTurns: "Bastion", bastionArmor: "Bonus pancerza" };
+    const effectNames = Object.entries(state.effects || {}).map(([name, turns]) => `${effectLabels[name] || name}: ${turns} tur`);
+    effectsPanel.textContent = effectNames.length ? effectNames.join(" | ") : "Brak aktywnych efektów.";
+  }
+
+  function createActionIcon(path, alt) {
+    const image = document.createElement("img");
+    image.className = "ability-icon"; image.src = path; image.alt = alt;
+    image.onerror = () => { image.onerror = null; image.src = "res/img/background.png"; };
+    return image;
+  }
+
+  function renderAbilities() {
+    abilitiesPanel.replaceChildren();
+    const classAbilities = window.classAbilities?.[window.player.classId] || [];
+    classAbilities.forEach((ability) => {
+      const button = document.createElement("button");
+      button.type = "button"; button.className = "ability-button";
+      button.title = `${ability.description} Koszt: ${ability.cost} many${ability.cooldown ? ` | CD: ${ability.cooldown} tur` : ""}`;
+      const folder = window.player.classId === "assassin" ? "assasin" : window.player.classId;
+      button.appendChild(createActionIcon(`res/abilities/${folder}/${ability.icon}`, ability.name));
+      const label = document.createElement("span"); label.textContent = ability.id === "senNoKata" ? `${ability.name} (${state.senMode === "boei" ? "Bōei" : "Chikara"})` : ability.name; button.appendChild(label);
+      const cooldown = state.cooldowns?.[ability.id] || 0;
+      button.disabled = cooldown > 0 || window.player.manaPoints < ability.cost;
+      if (ability.id === "senNoKata") button.classList.add(state.senMode === "boei" ? "ability-mode-boei" : "ability-mode-chikara");
+      button.addEventListener("click", () => useAbility(ability.id)); abilitiesPanel.appendChild(button);
+    });
+  }
+
+  function renderPotions() {
+    potionsPanel.replaceChildren();
+    const counts = {};
+    (window.player.potionInventory || []).forEach((id) => { counts[id] = (counts[id] || 0) + 1; });
+    Object.entries(counts).forEach(([id, count]) => {
+      const potion = window.shopPotions.find((item) => item.id === id); if (!potion) return;
+      const button = document.createElement("button"); button.type = "button"; button.className = "potion-button"; button.title = potion.description; button.textContent = `🧪 ${potion.name} (${count})`; button.addEventListener("click", () => usePotion(id)); potionsPanel.appendChild(button);
+    });
   }
 
   function finish(message, type) {
     actions.classList.add("hidden");
+    abilitiesPanel.classList.add("hidden"); potionsPanel.classList.add("hidden"); effectsPanel.classList.add("hidden");
     backButton.classList.remove("hidden");
     showMessage(message, type);
   }
 
   function showDeathPanel() {
     actions.classList.add("hidden");
+    abilitiesPanel.classList.add("hidden");
+    potionsPanel.classList.add("hidden");
+    effectsPanel.classList.add("hidden");
     backButton.classList.add("hidden");
     deathPanel.classList.remove("hidden");
     renderPlayerModel(true);
@@ -114,6 +162,10 @@
     mainMenu.classList.add("hidden");
     battleScreen.classList.remove("hidden");
     actions.classList.remove("hidden");
+    abilitiesPanel.classList.remove("hidden");
+    potionsPanel.classList.remove("hidden");
+    effectsPanel.classList.remove("hidden");
+    abilitiesPanel.classList.remove("hidden"); potionsPanel.classList.remove("hidden"); effectsPanel.classList.remove("hidden");
     backButton.classList.add("hidden");
     deathPanel.classList.add("hidden");
 
@@ -154,8 +206,7 @@
       return;
     }
 
-    const enemyResult = window.BattleSystem.enemyTurn(state);
-    state = enemyResult;
+    const enemyResult = attackResult;
     render();
 
     if (window.player.healthPoints <= 0) {
@@ -164,6 +215,36 @@
     }
 
     showMessage(`${formatPlayerAttack(attackResult)} ${formatEnemyAttack(enemyResult)}`);
+  }
+
+  function actionResult(result, actionMessage) {
+    state = result;
+    if (result.enemyDefeated) {
+      window.player.money += window.enemies[state.enemyIndex].reward;
+      isTransitioning = true; actions.classList.add("hidden"); abilitiesPanel.classList.add("hidden"); potionsPanel.classList.add("hidden"); render();
+      showMessage(`${actionMessage || result.message} Pokonano przeciwnika!`, "success");
+      window.setTimeout(() => {
+        state = window.BattleSystem.nextWave(state); render(); isTransitioning = false;
+        if (state.levelUp) finish(`${state.message} Otrzymujesz nagrodę: ${state.reward} $.`, "success");
+        else { actions.classList.remove("hidden"); abilitiesPanel.classList.remove("hidden"); potionsPanel.classList.remove("hidden"); showMessage(`${state.message} Otrzymujesz ${state.reward} $.`, "success"); }
+      }, 700);
+      return;
+    }
+    render();
+    if (window.player.healthPoints <= 0) { showDeathPanel(); return; }
+    showMessage(actionMessage || result.message);
+  }
+
+  function useAbility(abilityId) {
+    if (!state || state.finished || isTransitioning) return;
+    const result = window.BattleSystem.useAbility(state, abilityId);
+    actionResult(result, result.message);
+  }
+
+  function usePotion(potionId) {
+    if (!state || state.finished || isTransitioning) return;
+    const result = window.BattleSystem.usePotion(state, potionId);
+    state = result; render(); showMessage(result.message, "success");
   }
 
   function escape() {
