@@ -109,7 +109,12 @@
     renderAbilities();
     renderPotions();
     const effectLabels = { potionAccuracy: "Eliksir Precyzji", potionLifesteal: "Koktajl Wampira", accuracy: "Celność", enemyAccuracy: "Celność wroga", stun: "Ogłuszenie", vines: "Pnącza", mirror: "Śmiertelne Lustro", mushin: "Mushin", ironTaunt: "Prowokacja", bastionTurns: "Bastion", bastionArmor: "Bonus pancerza" };
-    const effectNames = Object.entries(state.effects || {}).map(([name, turns]) => `${effectLabels[name] || name}: ${turns} tur`);
+    const effectNames = Object.entries(state.effects || {})
+      .filter(([name]) => !["accuracy", "enemyAccuracy", "bastionArmor"].includes(name))
+      .map(([name, value]) => {
+        const label = name.endsWith("Turns") ? name.slice(0, -5) : name;
+        return `${effectLabels[label] || label}: ${name.endsWith("Turns") ? value : `${value} tur`}`;
+      });
     effectsPanel.textContent = effectNames.length ? effectNames.join(" | ") : "Brak aktywnych efektów.";
   }
 
@@ -133,7 +138,11 @@
       const label = document.createElement("span"); label.textContent = ability.id === "senNoKata" ? `${ability.name} (${state.senMode === "boei" ? "Bōei" : "Chikara"})` : ability.name; button.appendChild(label);
       const cooldown = state.cooldowns?.[ability.id] || 0;
       button.disabled = cooldown > 0 || window.player.manaPoints < ability.cost;
-      if (ability.id === "senNoKata") button.classList.add(state.senMode === "boei" ? "ability-mode-boei" : "ability-mode-chikara");
+      if (ability.id !== "senNoKata" && cooldown > 0) label.textContent += ` — CD: ${cooldown}`;
+      if (ability.id === "senNoKata") {
+        button.classList.add(state.senMode === "boei" ? "ability-mode-boei" : "ability-mode-chikara");
+        label.textContent += state.senMode === "boei" ? ` | atak: ${state.senAttackCount}/3` : "";
+      }
       button.addEventListener("click", () => useAbility(ability.id)); abilitiesPanel.appendChild(button);
     });
   }

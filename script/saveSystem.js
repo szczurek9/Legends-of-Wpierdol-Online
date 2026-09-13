@@ -79,20 +79,20 @@
     try {
       const save = JSON.parse(decode(code));
       if (save.player && !Array.isArray(save.player.inventory)) save.player.inventory = [];
-      if (save.player && typeof save.player.classId !== "string") save.player.classId = "";
+      if (save.player && !["assassin", "mage", "tank", "samurai"].includes(save.player.classId)) save.player.classId = "assassin";
       if (save.player && !Array.isArray(save.player.magicInventory)) save.player.magicInventory = [];
       if (save.player && !Array.isArray(save.player.equippedMagicItems)) save.player.equippedMagicItems = [];
       if (save.player && !Array.isArray(save.player.potionInventory)) save.player.potionInventory = [];
       if (save.player && typeof save.player.magicItemSlots !== "number") save.player.magicItemSlots = save.player.classId === "mage" ? 8 : 4;
+      if (save.player && save.player.classId === "assassin" && typeof save.player.armorCap !== "number") save.player.armorCap = 60;
       if (save.player && typeof save.player.magicResistance !== "number") save.player.magicResistance = 0;
-      if (save.player && typeof save.player.bonusArmor !== "number") save.player.bonusArmor = 0;
+      if (save.player && typeof save.player.bonusArmor !== "number") save.player.bonusArmor = save.player.classId === "tank" ? 20 : 0;
       if (save.player && typeof save.player.magicPenetration !== "number") save.player.magicPenetration = 0;
       if (save.player && typeof save.player.maxManaPoints !== "number") save.player.maxManaPoints = 100;
       if (save.player && typeof save.player.manaRegenPercent !== "number") save.player.manaRegenPercent = 0;
       if (save.player && typeof save.player.magicAbilityPower !== "number") save.player.magicAbilityPower = 0;
-      if (save.player && typeof save.player.magicAbilityPower !== "number") save.player.magicAbilityPower = 0;
       if (save.player && typeof save.player.magicLifesteal !== "number") save.player.magicLifesteal = 0;
-      if (save.player && typeof save.player.bonusLifesteal !== "number") save.player.bonusLifesteal = 0;
+      if (save.player && typeof save.player.bonusLifesteal !== "number") save.player.bonusLifesteal = save.player.classId === "assassin" ? 5 : 0;
       if (save.player && typeof save.player.bonusDodge !== "number") save.player.bonusDodge = 0;
       if (save.player && typeof save.player.armorCap !== "number") save.player.armorCap = 90;
       if (save.player && typeof save.player.overkillPool !== "number") save.player.overkillPool = 0;

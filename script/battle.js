@@ -35,7 +35,7 @@
       enemyHealth: enemy.health, enemyMaxHealth: enemy.health, enemyDamage: enemy.damage,
       enemyArmor: enemy.armorPoints || 0, enemyMagicResistance: enemy.magicResistance || 0,
       enemyAttackChance: enemy.attackChance, cooldowns: {}, effects: {}, senMode: "boei",
-      rage: 0, guaranteedCrit: false, enemyDefeated: false,
+      senAttackCount: 0, rage: 0, guaranteedCrit: false, enemyDefeated: false,
     };
   }
 
@@ -55,7 +55,7 @@
     const cooldowns = Object.fromEntries(Object.entries(state.cooldowns).map(([id, value]) => [id, Math.max(0, value - 1)]));
     const effects = { ...state.effects };
     Object.keys(effects).forEach((key) => {
-      if (key === "bastionArmor" || key === "bastionTurns") return;
+      if (["bastionArmor", "bastionTurns", "accuracy", "enemyAccuracy", "accuracyTurns", "enemyAccuracyTurns"].includes(key)) return;
       effects[key] -= 1;
       if (effects[key] <= 0) {
         if (key === "potionLifesteal") window.player.lifesteal = Math.max(0, window.player.lifesteal - 10);
@@ -67,6 +67,15 @@
       effects.bastionTurns -= 1;
       if (effects.bastionTurns <= 0) { delete effects.bastionTurns; delete effects.bastionArmor; }
     }
+    ["accuracy", "enemyAccuracy"].forEach((key) => {
+      const durationKey = `${key}Turns`;
+      if (!effects[durationKey]) return;
+      effects[durationKey] -= 1;
+      if (effects[durationKey] <= 0) {
+        delete effects[key];
+        delete effects[durationKey];
+      }
+    });
     return { ...state, cooldowns, effects };
   }
 
@@ -114,13 +123,23 @@
     let multiplier = 1;
     if (classId() === "assassin") multiplier += 0.10;
     if (classId() === "samurai") multiplier += 0.15;
-    if (classId() === "tank" && player.weaponDmg > 500 && !state.effects.ironTaunt) multiplier -= 0.25;
+    if (classId() === "tank" && player.weaponDmg > 500) multiplier -= state.effects.ironTaunt ? 0.20 : 0.25;
     if (state.senMode === "chikara") multiplier += 0.075;
-    const critical = options.forceCritical || roll() < player.critChance;
-    if (critical) multiplier *= options.forceCritical === "double" ? 2.25 : 1.5;
-    const rawDamage = Math.max(1, Math.floor(player.weaponDmg * multiplier));
+    let senBōeiAttack = false;
+    let nextSenAttackCount = state.senAttackCount;
+    if (classId() === "samurai" && state.senMode === "boei") {
+      nextSenAttackCount += 1;
+      if (nextSenAttackCount >= 3) {
+        senBōeiAttack = true;
+        nextSenAttackCount = 0;
+      }
+    }
+    const naturalCritical = roll() < player.critChance;
+    const critical = Boolean(options.forceCritical) || naturalCritical;
+    if (critical) multiplier *= options.forceCritical && naturalCritical ? 2.25 : 1.5;
+    const rawDamage = Math.max(1, Math.floor(player.weaponDmg * multiplier * (senBōeiAttack ? 0.1 : 1)));
     const primalReady = classId() === "assassin" && player.overkillPool >= state.enemyMaxHealth * 0.5;
-    const armorPen = primalReady ? player.armorPenetration + Math.floor(state.enemyArmor * 0.8) : player.armorPenetration;
+    const armorPen = player.armorPenetration;
     const damage = physicalDamage(rawDamage, state.enemyArmor * (primalReady ? 0.2 : 1), armorPen);
     const result = applyDamageToEnemy(state, damage);
     const heal = damageHeal(result.dealt, false);
@@ -129,33 +148,69 @@
       : 0;
     if (overkillHeal > 0) player.healthPoints = clamp(player.healthPoints + overkillHeal, 0, player.maxHealthPoints);
     if (primalReady) player.overkillPool = 0;
-    return { ...result.state, damage: result.dealt, rawDamage, heal: heal + overkillHeal, critical, overkill: result.overkill, message: `Zadałeś ${result.dealt} obrażeń!` };
+    const nextState = { ...result.state, senAttackCount: nextSenAttackCount, damage: result.dealt, rawDamage, heal: heal + overkillHeal, critical, overkill: result.overkill, message: `Zadałeś ${result.dealt} obrażeń!` };
+    if (senBōeiAttack) nextState.effects = { ...nextState.effects, stun: 1 };
+    return nextState;
   }
 
   function enemyTurn(state) {
     const player = window.player;
     const enemy = window.enemies[state.enemyIndex];
     if (state.enemyDefeated) return state;
-    if (state.effects.stun > 0) return { ...state, enemyHit: false, message: "Przeciwnik jest ogłuszony!" };
-    const chance = clamp((state.enemyAttackChance || enemy.attackChance) + (state.effects.enemyAccuracy || 0) - player.bonusDodge, 0, 100);
-    if (roll() >= chance) return { ...state, enemyHit: false, message: "Przeciwnik nie trafił!" };
+    let next = state;
+    let effectMessage = "";
+    if (state.effects.vines > 0) {
+      const vineDamage = magicDamage(10 + effectiveAbilityPower() * 0.10, state.enemyMagicResistance, player.magicPenetration);
+      const vineResult = applyDamageToEnemy(next, vineDamage);
+      next = vineResult.state;
+      effectMessage = ` Pnącza zadają ${vineResult.dealt} magicznych obrażeń.`;
+      if (next.enemyDefeated) return { ...next, enemyHit: false, message: effectMessage.trim() };
+    }
+    if (next.effects.stun > 0) return { ...next, enemyHit: false, message: `Przeciwnik jest ogłuszony!${effectMessage}` };
+    const chance = clamp((next.enemyAttackChance || enemy.attackChance) + (next.effects.enemyAccuracy || 0) - player.bonusDodge, 0, 100);
+    if (roll() >= chance) return { ...next, enemyHit: false, message: `Przeciwnik nie trafił!${effectMessage}` };
     const critical = roll() < enemy.critChance;
-    let rawDamage = critical ? Math.floor(state.enemyDamage * 1.5) : state.enemyDamage;
-    if (state.effects.mushin) rawDamage = Math.floor(rawDamage * 0.7);
-    if (state.senMode === "chikara") rawDamage = Math.floor(rawDamage * 1.045);
-    if (state.effects.mirror) rawDamage = Math.floor(rawDamage * (state.effects.mirrorFatal ? 0.01 : 0.9));
-    const finalDamage = physicalDamage(rawDamage, Math.min(player.armorPoints, player.armorCap) + player.bonusArmor + (state.effects.bastionArmor || 0), enemy.armorPenetration || 0);
+    let rawDamage = critical ? Math.floor(next.enemyDamage * 1.5) : next.enemyDamage;
+    if (next.effects.mushin) rawDamage = Math.floor(rawDamage * 0.7);
+    if (next.senMode === "chikara") rawDamage = Math.floor(rawDamage * 1.045);
+    const baseArmor = Math.min(player.armorPoints, player.armorCap) + player.bonusArmor + (next.effects.rageArmor || 0);
+    const armor = baseArmor * (1 + (next.effects.bastionArmor || 0) / 100);
+    const unmitigatedDamage = physicalDamage(rawDamage, armor, enemy.armorPenetration || 0);
+    const mirrorActive = Boolean(next.effects.mirror);
+    const mirrorFatal = mirrorActive && unmitigatedDamage >= player.healthPoints;
+    const blockedDamage = mirrorFatal ? Math.floor(unmitigatedDamage * 0.99) : mirrorActive ? Math.floor(unmitigatedDamage * 0.10) : 0;
+    const finalDamage = Math.max(1, unmitigatedDamage - blockedDamage);
     player.healthPoints = clamp(player.healthPoints - finalDamage, 0, player.maxHealthPoints);
-    state.rage += finalDamage;
-    if (state.effects.bastionTurns) { delete state.effects.bastionTurns; delete state.effects.bastionArmor; }
-    const reflected = state.effects.mirror ? Math.floor(rawDamage * (state.effects.mirrorFatal ? 0.05 : 0.2)) : 0;
-    if (reflected > 0) state.enemyHealth = Math.max(0, state.enemyHealth - magicDamage(reflected, state.enemyMagicResistance, player.magicPenetration));
-    return { ...state, enemyHit: true, enemyCritical: critical, enemyRawDamage: rawDamage, enemyFinalDamage: finalDamage, reflected, message: `Przeciwnik zadał Ci ${finalDamage} obrażeń!` };
+    const rage = next.rage + finalDamage;
+    let nextState = { ...next, enemyHit: true, enemyCritical: critical, enemyRawDamage: rawDamage, enemyFinalDamage: finalDamage, reflected: 0, rage, message: `Przeciwnik zadał Ci ${finalDamage} obrażeń!${effectMessage}` };
+
+    if (next.effects.bastionTurns) { delete nextState.effects.bastionTurns; delete nextState.effects.bastionArmor; }
+    if (mirrorActive) {
+      const reflected = Math.floor(blockedDamage * (mirrorFatal ? 0.05 : 0.20));
+      nextState.enemyHealth = Math.max(0, nextState.enemyHealth - reflected);
+      nextState.enemyDefeated = nextState.enemyHealth <= 0;
+      nextState.reflected = reflected;
+      if (mirrorFatal) player.healthPoints = clamp(player.healthPoints + Math.floor(blockedDamage * 0.15), 0, player.maxHealthPoints);
+      delete nextState.effects.mirror;
+      delete nextState.effects.mirrorFatal;
+    }
+
+    if (classId() === "tank" && rage >= player.weaponDmg * 1.5) {
+      const rageDamage = physicalDamage(rage * 0.70, nextState.enemyArmor, player.armorPenetration);
+      nextState.enemyHealth = Math.max(0, nextState.enemyHealth - rageDamage);
+      player.healthPoints = clamp(player.healthPoints + Math.floor(rage * 0.35), 0, player.maxHealthPoints);
+      nextState.effects.rageArmor = Math.floor(rage * 0.0005);
+      nextState.rage = 0;
+      nextState.enemyDefeated = nextState.enemyHealth <= 0;
+      nextState.message += ` Skumulowany Gniew automatycznie zadaje ${rageDamage} obrażeń i leczy ${Math.floor(rage * 0.35)} HP.`;
+    }
+    if (next.effects.rageArmor) delete nextState.effects.rageArmor;
+    return nextState;
   }
 
-  function finishPlayerAction(state, message, cooldownAbility) {
+  function finishPlayerAction(state, message, cooldownAbility, isSpell = false) {
     let next = { ...state, message };
-    recordSpellCast();
+    if (isSpell) recordSpellCast();
     const manaRestored = regenMana();
     next = enemyTurn(next);
     next = tickCooldowns(next);
@@ -177,12 +232,15 @@
     let message = `${ability.name} aktywowane.`;
     const ap = effectiveAbilityPower();
     if (ability.id === "primalStrike") next = { ...state, guaranteedCrit: true };
-    else if (ability.id === "undodgeableSpeed") next = { ...state, effects: { ...state.effects, accuracy: 25, enemyAccuracy: -30 } };
+    else if (ability.id === "undodgeableSpeed") next = { ...state, effects: { ...state.effects, accuracy: 25, accuracyTurns: 3, enemyAccuracy: -30, enemyAccuracyTurns: 3 } };
     else if (ability.id === "slayerOfTheSlowest") {
       const enemy = window.enemies[state.enemyIndex];
-      const accuracy = (enemy.playerAttackChance || 0) + window.player.bonusAccuracy;
-      if (accuracy <= enemy.attackChance) return { ...state, message: "Twoja celność nie jest większa od celności wroga." };
-      const damage = magicDamage(enemy.health * (0.01 + (window.player.weaponDmg / 750) * 0.008), state.enemyMagicResistance, window.player.magicPenetration);
+      const accuracy = (enemy.playerAttackChance || 0) + window.player.bonusAccuracy + (state.effects.accuracy || 0);
+      if (accuracy <= state.enemyAttackChance) {
+        window.player.manaPoints += ability.cost;
+        return { ...state, message: "Twoja celność nie jest większa od celności wroga." };
+      }
+      const damage = magicDamage(state.enemyMaxHealth * (0.01 + (window.player.weaponDmg / 750) * 0.008), state.enemyMagicResistance, window.player.magicPenetration);
       const result = applyDamageToEnemy(state, damage); next = result.state; message = `Slayer of the Slowest zadaje ${result.dealt} magicznych obrażeń.`; damageHeal(result.dealt, true);
     } else if (ability.id === "stormBreeze" || ability.id === "starStrike") {
       const raw = ability.id === "stormBreeze" ? 15 + ap * 0.25 : 60 + ap * 0.9;
@@ -192,10 +250,16 @@
     else if (ability.id === "stoneBastion") next = { ...state, effects: { ...state.effects, stun: 2, bastionTurns: 5, bastionArmor: 0 } };
     else if (ability.id === "accumulatedRage") {
       const damage = magicDamage(state.rage * 0.25, state.enemyMagicResistance, window.player.magicPenetration); const result = applyDamageToEnemy(state, damage); next = result.state; window.player.healthPoints = clamp(window.player.healthPoints + Math.floor(state.rage * 0.3), 0, window.player.maxHealthPoints); next.rage = 0; message = `Skumulowany Gniew zadaje ${result.dealt} magicznych obrażeń.`;
-    } else if (ability.id === "ironTaunt") next = { ...state, effects: { ...state.effects, ironTaunt: 2, accuracy: 10, enemyAccuracy: -15 } };
+    } else if (ability.id === "ironTaunt") next = { ...state, effects: { ...state.effects, ironTaunt: 2, accuracy: 25, accuracyTurns: 2 } };
     else if (ability.id === "mushin") { const heal = Math.floor(window.player.maxHealthPoints * (0.02 + ap * 0.005)); window.player.healthPoints = clamp(window.player.healthPoints + heal, 0, window.player.maxHealthPoints); next = { ...state, effects: { ...state.effects, mushin: true } }; message = `Mushin przywraca ${heal} HP.`; }
-    else if (ability.id === "kōgeki") { next = playerAttack(state); const bonus = magicDamage(window.player.weaponDmg * 0.5, state.enemyMagicResistance, window.player.magicPenetration); const result = applyDamageToEnemy(next, bonus); next = result.state; damageHeal(result.dealt, true); message = `Kōgeki zadaje łącznie obrażenia fizyczne i ${result.dealt} magicznych.`; }
-    return finishPlayerAction(next, message, ability);
+    else if (ability.id === "kōgeki") {
+      next = playerAttack(state);
+      if (!next.missed && !next.enemyDefeated) {
+        const bonus = magicDamage(window.player.weaponDmg * 0.5, state.enemyMagicResistance, window.player.magicPenetration);
+        const result = applyDamageToEnemy(next, bonus); next = result.state; damageHeal(result.dealt, true); message = `Kōgeki zadaje łącznie obrażenia fizyczne i ${result.dealt} magicznych.`;
+      } else if (next.missed) message = "Kōgeki nie trafiło.";
+    }
+    return finishPlayerAction(next, message, ability, true);
   }
 
   function usePotion(state, potionId) {
