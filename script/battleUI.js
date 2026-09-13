@@ -30,6 +30,14 @@
   let state;
   let isTransitioning = false;
 
+  abilitiesPanel.appendChild(attackButton);
+  attackButton.classList.add("ability-button");
+  const battleHeaderActions = document.createElement("div");
+  battleHeaderActions.className = "battle-header-actions";
+  battleWave.replaceWith(battleHeaderActions);
+  battleHeaderActions.append(battleWave, escapeButton);
+  escapeButton.classList.add("battle-escape-top");
+
   function showMessage(message, type) {
     battleLog.textContent = message;
     battleLog.className = `battle-log ${type || ""}`.trim();
@@ -114,6 +122,7 @@
 
   function renderAbilities() {
     abilitiesPanel.replaceChildren();
+    abilitiesPanel.appendChild(attackButton);
     const classAbilities = window.classAbilities?.[window.player.classId] || [];
     classAbilities.forEach((ability) => {
       const button = document.createElement("button");
@@ -141,6 +150,7 @@
 
   function finish(message, type) {
     actions.classList.add("hidden");
+    escapeButton.classList.add("hidden");
     abilitiesPanel.classList.add("hidden"); potionsPanel.classList.add("hidden"); effectsPanel.classList.add("hidden");
     backButton.classList.remove("hidden");
     showMessage(message, type);
@@ -148,6 +158,7 @@
 
   function showDeathPanel() {
     actions.classList.add("hidden");
+    escapeButton.classList.add("hidden");
     abilitiesPanel.classList.add("hidden");
     potionsPanel.classList.add("hidden");
     effectsPanel.classList.add("hidden");
@@ -163,6 +174,7 @@
     mainMenu.classList.add("hidden");
     battleScreen.classList.remove("hidden");
     actions.classList.remove("hidden");
+    escapeButton.classList.remove("hidden");
     abilitiesPanel.classList.remove("hidden");
     potionsPanel.classList.remove("hidden");
     effectsPanel.classList.remove("hidden");

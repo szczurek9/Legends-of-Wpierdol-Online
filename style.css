@@ -178,7 +178,8 @@ button:disabled {
 #main-buttons button,
 #main-playerModel button,
 #login-screen button,
-#login-screen input {
+#login-screen input,
+#login-screen select {
     background: var(--menu-control-background) !important;
 }
 
@@ -310,6 +311,16 @@ button:disabled {
     padding: 5px 8px;
     border: 1px solid black;
     background: var(--shop-info-background);
+}
+
+.battle-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.battle-escape-top {
+    white-space: nowrap;
 }
 
 .battle-arena {
@@ -503,7 +514,7 @@ button:disabled {
 
 .shop-sections {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
 }
 
