@@ -194,7 +194,6 @@
     const enemyMessage = `Przeciwnik zadał Ci ${finalDamage} obrażeń!${effectMessage}`;
     let nextState = { ...next, enemyHit: true, enemyCritical: critical, enemyRawDamage: rawDamage, enemyFinalDamage: finalDamage, reflected: 0, rage, enemyMessage, message: enemyMessage };
 
-    if (next.effects.bastionTurns) { delete nextState.effects.bastionTurns; delete nextState.effects.bastionArmor; }
     if (mirrorActive) {
       const reflected = Math.floor(blockedDamage * (mirrorFatal ? 0.05 : 0.20));
       nextState.enemyHealth = Math.max(0, nextState.enemyHealth - reflected);
