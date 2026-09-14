@@ -5,7 +5,10 @@
   const abilitiesForPlayer = () => window.classAbilities?.[classId()] || [];
   const effectiveAbilityPower = () => {
     let power = window.player.abilityPower + window.player.adeptBookStacks;
-    if ((window.player.equippedMagicItems || []).some((uid) => window.player.magicInventory.some((item) => item.uid === uid && item.effects?.abilityPowerMultiplier))) power *= 1.2;
+    const amplifiers = (window.player.magicInventory || []).filter((item) => item.effects?.abilityPowerMultiplier
+      && (item.equipped || (window.player.equippedMagicItems || []).includes(item.uid)));
+    const multiplier = amplifiers.reduce((total, item) => total + Number(item.effects.abilityPowerMultiplier || 0) / 100, 0);
+    power *= 1 + multiplier;
     return power;
   };
 
@@ -23,9 +26,10 @@
 
   function regenMana() {
     const player = window.player;
-    const bonus = 1 + ((player.manaRegenPercent || 0) / 100);
-    const restored = Math.floor(player.maxManaPoints * 0.03 * bonus);
-    player.manaPoints = clamp(player.manaPoints + restored, 0, player.maxManaPoints);
+    const maxMana = Math.max(0, Number(player.maxManaPoints) || 0);
+    const bonus = 1 + Math.max(0, Number(player.manaRegenPercent) || 0) / 100;
+    const restored = Math.floor(maxMana * 0.03 * bonus);
+    player.manaPoints = clamp((Number(player.manaPoints) || 0) + restored, 0, maxMana);
     return restored;
   }
 
@@ -278,6 +282,7 @@
   }
 
   window.BattleSystem = {
+    getEffectiveAbilityPower: effectiveAbilityPower,
     start(level) {
       const enemyIndex = level - 1; const enemy = window.enemies[enemyIndex];
       if (!enemy) return { finished: true, message: "Ukończyłeś wszystkie dostępne poziomy gry!" };

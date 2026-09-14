@@ -65,6 +65,12 @@
     const skill = window.shopSkills[index];
     const player = window.player;
     if (player.money < skill.price) return showMessage("Za mało hajsu!", "danger");
+    if (skill.effect === "armorPenetration" && player.armorPenetration >= skill.maxValue) return showMessage("Osiągnięto maksymalny poziom przebicia pancerza.", "warning");
+    if (skill.effect === "lifesteal" && player.lifesteal >= skill.maxValue) return showMessage("Osiągnięto maksymalny poziom lifestealu.", "warning");
+    if (skill.effect === "accuracy" && player.bonusAccuracy >= skill.maxValue) return showMessage("Osiągnięto maksymalną celność.", "warning");
+    if (skill.effect === "critChance" && player.critChance >= skill.maxValue) return showMessage("Osiągnięto maksymalną szansę krytyczną.", "warning");
+    if (skill.effect === "critChanceAbove50" && player.critChance >= 100) return showMessage("Osiągnięto maksymalną szansę krytyczną.", "warning");
+    if (skill.effect === "secondWind" && player.secondWind) return showMessage("Drugie Tchnienie jest już kupione.", "warning");
     if (skill.effect === "maxHealth") { player.maxHealthPoints += skill.value; player.healthPoints += skill.value; }
     else if (skill.effect === "armor") player.armorPoints = Math.min(player.armorCap, player.armorPoints + skill.value);
     else if (skill.effect === "armorPenetration") player.armorPenetration = Math.min(skill.maxValue, player.armorPenetration + skill.value);
@@ -72,7 +78,7 @@
     else if (skill.effect === "accuracy") player.bonusAccuracy = Math.min(skill.maxValue, player.bonusAccuracy + skill.value);
     else if (skill.effect === "critChance") player.critChance = Math.min(skill.maxValue, player.critChance + skill.value);
     else if (skill.effect === "critChanceAbove50") { if (player.critChance < 50) return showMessage("Najpierw zwiększ krytyki do 50%.", "warning"); player.critChance = Math.min(100, player.critChance + skill.value); }
-    else if (skill.effect === "secondWind") { if (player.secondWind) return showMessage("Drugie Tchnienie jest już kupione.", "warning"); player.secondWind = true; }
+    else if (skill.effect === "secondWind") player.secondWind = true;
     player.money -= skill.price; refresh(); showMessage(`Kupiono: ${skill.name}!`, "success");
   }
 

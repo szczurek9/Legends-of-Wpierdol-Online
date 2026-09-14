@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legends of Wpierdol — Save Editor</title>
+    <link rel="stylesheet" href="save-editor.css">
+</head>
+<body>
+    <main class="editor">
+        <header>
+            <p class="eyebrow">NARZĘDZIE TESTOWE</p>
+            <h1>Save Editor</h1>
+            <p>Twórz i edytuj zapisy kompatybilne z grą.</p>
+        </header>
+
+        <form id="save-form">
+            <section>
+                <h2>Podstawowe dane</h2>
+                <div class="grid">
+                    <label>Nick <input id="nickname" type="text" value="Tester"></label>
+                    <label>Klasa
+                        <select id="classId">
+                            <option value="assassin">Zabójca</option>
+                            <option value="mage">Mag</option>
+                            <option value="tank">Tank</option>
+                            <option value="samurai">Samurai</option>
+                        </select>
+                    </label>
+                    <label>Motyw
+                        <select id="theme">
+                            <option value="prism">Prism</option>
+                            <option value="night">Night</option>
+                            <option value="neon">Neon</option>
+                            <option value="nature">Nature</option>
+                        </select>
+                    </label>
+                    <label>Pieniądze <input id="money" type="number" min="0" value="99999"></label>
+                    <label>Poziom <input id="level" type="number" min="1" value="1"></label>
+                    <label>Skin Points <input id="skinPoints" type="number" min="0" value="99"></label>
+                    <label>HP <input id="healthPoints" type="number" min="0" value="100"></label>
+                    <label>Maks. HP <input id="maxHealthPoints" type="number" min="1" value="100"></label>
+                    <label>Mana <input id="manaPoints" type="number" min="0" value="100"></label>
+                    <label>Maks. mana <input id="maxManaPoints" type="number" min="1" value="100"></label>
+                </div>
+            </section>
+
+            <section>
+                <h2>Statystyki</h2>
+                <div class="grid">
+                    <label>Obrażenia broni <input id="weaponDmg" type="number" min="0" value="3"></label>
+                    <label>Pancerz <input id="armorPoints" type="number" min="0" value="0"></label>
+                    <label>Bonusowy pancerz <input id="bonusArmor" type="number" min="0" value="0"></label>
+                    <label>Odporność magiczna <input id="magicResistance" type="number" min="0" value="0"></label>
+                    <label>Crit % <input id="critChance" type="number" min="0" max="100" value="0"></label>
+                    <label>Armor Pen <input id="armorPenetration" type="number" min="0" value="0"></label>
+                    <label>Magic Pen <input id="magicPenetration" type="number" min="0" value="0"></label>
+                    <label>Regeneracja many % <input id="manaRegenPercent" type="number" min="0" value="0"></label>
+                    <label>AP <input id="abilityPower" type="number" min="0" value="0"></label>
+                    <label>Magic Lifesteal % <input id="magicLifesteal" type="number" min="0" max="30" value="0"></label>
+                    <label>Lifesteal % <input id="lifesteal" type="number" min="0" max="20" value="0"></label>
+                    <label>Bonus lifesteal % <input id="bonusLifesteal" type="number" min="0" value="0"></label>
+                    <label>Celność % <input id="bonusAccuracy" type="number" min="0" value="0"></label>
+                    <label>Unik % <input id="bonusDodge" type="number" min="0" value="0"></label>
+                    <label>Limit pancerza <input id="armorCap" type="number" min="0" value="90"></label>
+                    <label>Sloty magiczne <input id="magicItemSlots" type="number" min="0" value="4"></label>
+                </div>
+                <div class="checks">
+                    <label><input id="secondWind" type="checkbox"> Drugie Tchnienie</label>
+                    <label><input id="usedEscape" type="checkbox"> Ucieczka wykorzystana</label>
+                </div>
+            </section>
+
+            <section>
+                <h2>Broń, skiny i przedmioty</h2>
+                <div class="grid">
+                    <label>Nazwa broni <input id="weaponName" type="text" value="Pięści"></label>
+                    <label>Aktualny skin <input id="skinName" type="text" value="default"></label>
+                    <label>Posiadane skiny — po przecinku <input id="skinInventory" type="text" value="default"></label>
+                </div>
+                <label>Broń w ekwipunku — JSON
+                    <textarea id="inventory" rows="5">[]</textarea>
+                </label>
+                <label>Magiczne przedmioty — JSON
+                    <textarea id="magicInventory" rows="7">[]</textarea>
+                </label>
+                <label>Wyposażone magiczne UID — JSON
+                    <textarea id="equippedMagicItems" rows="3">[]</textarea>
+                </label>
+                <label>Mikstury — identyfikatory po przecinku
+                    <input id="potionInventory" type="text" value="">
+                </label>
+            </section>
+
+            <div class="actions">
+                <button id="generate-btn" type="button">Generuj zapis</button>
+                <button id="copy-btn" type="button">Kopiuj kod</button>
+                <button id="load-btn" type="button">Wczytaj kod do edytora</button>
+            </div>
+            <label>Kod zapisu
+                <textarea id="save-code" rows="8" spellcheck="false" placeholder="Tutaj pojawi się kod Base64..."></textarea>
+            </label>
+            <p id="editor-message" aria-live="polite"></p>
+        </form>
+    </main>
+    <script src="script/saveEditor.js"></script>
+</body>
+</html>

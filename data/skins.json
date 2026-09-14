@@ -133,5 +133,14 @@
     "modelAlive": "res/skins/sa14.png",
     "modelDead": "res/skins/sd14.png",
     "sellable": true
+  },
+  {
+    "id": "skin15",
+    "name": "Yuri",
+    "rarity": "legendary",
+    "cost": 10,
+    "modelAlive": "res/skins/sa15.png",
+    "modelDead": "res/skins/sd15.png",
+    "sellable": true
   }
 ]

@@ -98,7 +98,9 @@
     setBar(playerHealthBar, player.healthPoints, player.maxHealthPoints);
     renderPlayerModel(false);
     playerWeapon.textContent = `Broń: ${player.weaponName} | ${player.weaponDmg} DMG | Crit: ${player.critChance}% | Pen: ${player.armorPenetration}`;
-    playerMana.textContent = `Mana: ${player.manaPoints} / ${player.maxManaPoints} | AP: ${player.abilityPower + player.adeptBookStacks} | MR: ${player.magicResistance}`;
+    const manaRegen = Math.floor(player.maxManaPoints * 0.03 * (1 + Math.max(0, player.manaRegenPercent || 0) / 100));
+    const effectiveAP = window.BattleSystem.getEffectiveAbilityPower ? window.BattleSystem.getEffectiveAbilityPower() : player.abilityPower + player.adeptBookStacks;
+    playerMana.textContent = `Mana: ${player.manaPoints} / ${player.maxManaPoints} | Regen: +${manaRegen} | AP: ${effectiveAP} | MR: ${player.magicResistance}`;
     enemyName.textContent = enemy.name;
     enemyHp.textContent = `${state.enemyHealth} / ${state.enemyMaxHealth}`;
     setBar(enemyHealthBar, state.enemyHealth, state.enemyMaxHealth);
@@ -269,6 +271,32 @@
     state = result; render(); showMessage(result.message, "success");
   }
 
+  function handleBattleShortcut(event) {
+    if (battleScreen.classList.contains("hidden") || event.repeat) return;
+    if (["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
+    const key = event.key.toLowerCase();
+    const classAbilities = window.classAbilities?.[window.player.classId] || [];
+    const keys = ["q", "w", "e", "r"];
+    const abilityIndex = keys.indexOf(key);
+
+    if (window.player.classId === "mage") {
+      if (abilityIndex < 0 || !classAbilities[abilityIndex]) return;
+      event.preventDefault();
+      useAbility(classAbilities[abilityIndex].id);
+      return;
+    }
+
+    if (key === "q") {
+      event.preventDefault();
+      attack();
+      return;
+    }
+    if (abilityIndex > 0 && classAbilities[abilityIndex - 1]) {
+      event.preventDefault();
+      useAbility(classAbilities[abilityIndex - 1].id);
+    }
+  }
+
   function escape() {
     const result = window.BattleSystem.escape();
     if (!result.allowed) {
@@ -295,6 +323,7 @@
   }
 
   playButton.addEventListener("click", openBattle);
+  document.addEventListener("keydown", handleBattleShortcut);
   attackButton.addEventListener("click", attack);
   escapeButton.addEventListener("click", escape);
   backButton.addEventListener("click", closeBattle);
