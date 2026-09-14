@@ -183,6 +183,14 @@
     showMessage("Przegrywasz walkę.", "danger");
   }
 
+  function canAct() {
+    return Boolean(state
+      && !state.finished
+      && !isTransitioning
+      && window.player.healthPoints > 0
+      && deathPanel.classList.contains("hidden"));
+  }
+
   function openBattle() {
     window.SaveSystem.captureBattleState();
     state = window.BattleSystem.start(window.player.level);
@@ -209,7 +217,7 @@
   }
 
   function attack() {
-    if (!state || state.finished || isTransitioning) return;
+    if (!canAct()) return;
     const attackResult = window.BattleSystem.attack(state);
     state = attackResult;
 
@@ -264,13 +272,13 @@
   }
 
   function useAbility(abilityId) {
-    if (!state || state.finished || isTransitioning) return;
+    if (!canAct()) return;
     const result = window.BattleSystem.useAbility(state, abilityId);
     actionResult(result, result.message);
   }
 
   function usePotion(potionId) {
-    if (!state || state.finished || isTransitioning) return;
+    if (!canAct()) return;
     const result = window.BattleSystem.usePotion(state, potionId);
     state = result; render(); showMessage(result.message, "success");
   }
