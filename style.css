@@ -1229,3 +1229,9 @@ button:disabled {
         grid-template-columns: 1fr;
     }
 }
+
+@media (min-width: 1921px) {
+    body {
+        background-image: url("res/img/background_wide.png");
+    }
+}
