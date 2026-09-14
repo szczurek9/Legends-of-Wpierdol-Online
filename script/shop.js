@@ -11,9 +11,11 @@
   const magicItems = document.getElementById("shop-magic-items");
   const abilities = document.getElementById("shop-abilities");
   const potions = document.getElementById("shop-potions");
+  const allItems = document.getElementById("shop-all-items");
   const message = document.getElementById("shop-message");
   const tabs = [...document.querySelectorAll(".shop-category")];
   const sections = {
+    all: document.getElementById("shop-all-section"),
     weapons: document.getElementById("shop-weapons-section"),
     skills: document.getElementById("shop-skills-section"),
     magic: document.getElementById("shop-magic-section"),
@@ -158,10 +160,25 @@
     magicItems.replaceChildren(...visible(window.magicItems).map((item) => createItem(item, window.magicItems.indexOf(item), "magic")));
     potions.replaceChildren(...visible(window.shopPotions).map((item) => createItem(item, window.shopPotions.indexOf(item), "potion")));
     const classSkills = window.classAbilities?.[currentClass()] || []; abilities.replaceChildren(...visible(classSkills).map(createAbilityItem));
+    const combinedItems = [
+      ...window.shopWeapons.map((item, index) => ({ item, index, kind: "weapon" })),
+      ...window.magicItems.map((item, index) => ({ item, index, kind: "magic" })),
+      ...window.shopSkills.map((item, index) => ({ item, index, kind: "skill" })),
+      ...window.shopPotions.map((item, index) => ({ item, index, kind: "potion" })),
+    ].filter(({ item }) => item.name.toLowerCase().includes(search.value.trim().toLowerCase()));
+    allItems.replaceChildren(...combinedItems.map(({ item, index, kind }) => createItem(item, index, kind)));
     window.refreshMainMenu();
   }
 
-  function selectCategory(nextCategory) { category = nextCategory; tabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.category === category)); Object.entries(sections).forEach(([key, section]) => section.classList.toggle("hidden", key !== category)); refresh(); }
+  function selectCategory(nextCategory) {
+    category = nextCategory;
+    tabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.category === category));
+    Object.entries(sections).forEach(([key, section]) => {
+      const showSection = key === category;
+      section.classList.toggle("hidden", !showSection);
+    });
+    refresh();
+  }
   function openShop() { refresh(); selectCategory(category); mainMenu.classList.add("hidden"); shopScreen.classList.remove("hidden"); showMessage("Wybierz przedmiot."); }
   function closeShop() { shopScreen.classList.add("hidden"); mainMenu.classList.remove("hidden"); window.refreshMainMenu(); }
   tabs.forEach((tab) => tab.addEventListener("click", () => selectCategory(tab.dataset.category)));

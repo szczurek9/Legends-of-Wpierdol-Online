@@ -554,6 +554,15 @@ button:disabled {
     margin: 10px 0;
 }
 
+#shop-search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid black;
+    color: var(--control-text-color);
+    background: var(--shop-control-background);
+}
+
 .shop-category-tabs {
     display: flex;
     flex-direction: column;
@@ -562,6 +571,12 @@ button:disabled {
     padding: 8px;
     border: 1px solid black;
     background: var(--shop-card-background);
+}
+
+.shop-category-tabs .shop-category:last-child {
+    margin-top: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.45);
+    padding-top: 9px;
 }
 
 .shop-layout {
@@ -629,6 +644,17 @@ button:disabled {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
+}
+
+.inventory-current,
+.inventory-owned,
+.inventory-magic {
+    grid-column: 1;
+}
+
+.inventory-abilities {
+    grid-column: 2;
+    grid-row: 1 / span 3;
 }
 
 .inventory-magic,
@@ -961,6 +987,14 @@ button:disabled {
         grid-template-columns: 1fr;
     }
 
+    .inventory-current,
+    .inventory-owned,
+    .inventory-magic,
+    .inventory-abilities {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
     .skin-layout {
         grid-template-columns: 1fr;
     }
@@ -1234,4 +1268,42 @@ button:disabled {
     body {
         background-image: url("res/img/background_wide.png");
     }
+}
+
+/* Delikatnie zaokrąglone elementy interfejsu. */
+.main,
+#main-menu,
+#login-screen,
+#start-screen,
+#battle-wave,
+#main-playerSummary,
+#main-playerModel,
+button,
+input,
+select,
+textarea,
+#battle-screen,
+#shop-screen,
+#inventory-screen,
+#skin-screen,
+.combatant,
+.shop-item,
+.shop-category-tabs,
+.shop-current-weapon,
+#shop-money,
+.inventory-current-card,
+.skin-card,
+.skin-details,
+.skin-preview,
+.skin-variants img,
+.battle-header,
+.battle-log,
+.shop-message,
+.screen-message,
+.modal-content,
+.health-bar,
+.enemy-silhouette,
+.battle-model,
+.battle-death-panel {
+    border-radius: 6px;
 }

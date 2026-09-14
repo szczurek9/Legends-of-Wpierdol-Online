@@ -53,6 +53,8 @@
     let message = result.playerMessage || result.message;
     if (result.superCritical) message += " SUPER CRIT!";
     else if (result.critical) message += " KRYTYK!";
+    if (result.overkill > 0) message += ` Overkill: +${result.overkill} do puli.`;
+    if (result.overkillArmorBreak) message += " Overkill ignoruje 80% pancerza!";
     if (result.armorReduced > 0) message += ` Pancerz zmniejszył obrażenia o ${result.armorReduced}.`;
     if (result.heal > 0) message += ` Odzyskujesz ${result.heal} HP.`;
     if (result.secondWindHeal > 0) message += ` Drugie Tchnienie przywraca ${result.secondWindHeal} HP.`;
@@ -322,6 +324,8 @@
       return;
     }
 
+    isTransitioning = true;
+    state = { ...state, escaped: true, finished: true };
     render();
     finish(result.message, "warning");
   }

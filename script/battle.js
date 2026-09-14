@@ -157,7 +157,7 @@
     if (overkillHeal > 0) player.healthPoints = clamp(player.healthPoints + overkillHeal, 0, player.maxHealthPoints);
     if (primalReady) player.overkillPool = 0;
     const playerMessage = `Zadałeś ${result.dealt} obrażeń!`;
-    const nextState = { ...result.state, senAttackCount: nextSenAttackCount, damage: result.dealt, rawDamage, heal: heal + overkillHeal, critical, superCritical, overkill: result.overkill, playerMessage, message: playerMessage };
+    const nextState = { ...result.state, senAttackCount: nextSenAttackCount, damage: result.dealt, rawDamage, heal: heal + overkillHeal, critical, superCritical, overkill: result.overkill, overkillArmorBreak: primalReady, playerMessage, message: playerMessage };
     if (senBōeiAttack) nextState.effects = { ...nextState.effects, stun: 1 };
     return nextState;
   }
