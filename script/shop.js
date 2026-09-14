@@ -75,6 +75,7 @@
   function buySkill(index) {
     const skill = window.shopSkills[index];
     const player = window.player;
+    if (skillBlocked(skill)) return showMessage("Nie można kupić tego ulepszenia przy aktualnych limitach.", "warning");
     if (player.money < skill.price) return showMessage("Za mało hajsu!", "danger");
     if (skill.effect === "armorPenetration" && player.armorPenetration >= skill.maxValue) return showMessage("Osiągnięto maksymalny poziom przebicia pancerza.", "warning");
     if (skill.effect === "lifesteal" && player.lifesteal >= skill.maxValue) return showMessage("Osiągnięto maksymalny poziom lifestealu.", "warning");
@@ -91,6 +92,18 @@
     else if (skill.effect === "critChanceAbove50") { if (player.critChance < 50) return showMessage("Najpierw zwiększ krytyki do 50%.", "warning"); player.critChance = Math.min(100, player.critChance + skill.value); }
     else if (skill.effect === "secondWind") player.secondWind = true;
     player.money -= skill.price; refresh(); showMessage(`Kupiono: ${skill.name}!`, "success");
+  }
+
+  function skillBlocked(skill) {
+    const player = window.player;
+    if (skill.effect === "armor") return player.armorPoints + skill.value > player.armorCap;
+    if (skill.effect === "armorPenetration") return player.armorPenetration >= skill.maxValue;
+    if (skill.effect === "lifesteal") return player.lifesteal >= skill.maxValue;
+    if (skill.effect === "accuracy") return player.bonusAccuracy >= skill.maxValue;
+    if (skill.effect === "critChance") return player.critChance >= skill.maxValue;
+    if (skill.effect === "critChanceAbove50") return player.critChance < 50 || player.critChance >= 100;
+    if (skill.effect === "secondWind") return player.secondWind;
+    return false;
   }
 
   function buyMagicItem(index) {
@@ -121,7 +134,10 @@
     const title = document.createElement("h4"); title.textContent = item.name; card.appendChild(title);
     const details = document.createElement("p"); details.textContent = kind === "weapon" ? `${item.damage} DMG | ${item.price} $` : `${kind === "magic" ? magicPrice(item) : item.price} $`; card.appendChild(details);
     const description = document.createElement("p"); description.className = "shop-description"; description.textContent = item.description || ""; card.appendChild(description);
-    const button = document.createElement("button"); button.type = "button"; button.textContent = kind === "ability" ? "Dostępne" : "Kup"; button.disabled = kind === "ability";
+    const button = document.createElement("button"); button.type = "button";
+    const blocked = kind === "skill" && skillBlocked(item);
+    button.textContent = kind === "ability" ? "Dostępne" : blocked ? "Limit osiągnięty" : "Kup";
+    button.disabled = kind === "ability" || blocked;
     button.addEventListener("click", () => { if (kind === "weapon") buyWeapon(index); if (kind === "skill") buySkill(index); if (kind === "magic") buyMagicItem(index); if (kind === "potion") buyPotion(index); });
     card.appendChild(button); return card;
   }

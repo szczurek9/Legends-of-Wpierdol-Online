@@ -869,6 +869,15 @@ button:disabled {
 }
 
 /* Responsywność. */
+@media (min-width: 761px) and (max-width: 1599px) {
+    .main {
+        width: min(82%, 1180px);
+        max-height: calc(100vh - 70px);
+        box-sizing: border-box;
+        overflow-y: auto;
+    }
+}
+
 @media (max-width: 760px) {
     body {
         justify-content: center;
