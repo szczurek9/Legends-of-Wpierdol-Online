@@ -408,8 +408,15 @@ button:disabled {
     font-size: 12px;
 }
 
-#battle-player-weapon,
-#battle-player-mana {
+#battle-player-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+#battle-player-stats p {
     white-space: nowrap;
 }
 
