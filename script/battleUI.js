@@ -50,8 +50,9 @@
   }
 
   function formatPlayerAttack(result) {
-    let message = result.message;
-    if (result.critical) message += " KRYTYK!";
+    let message = result.playerMessage || result.message;
+    if (result.superCritical) message += " SUPER CRIT!";
+    else if (result.critical) message += " KRYTYK!";
     if (result.armorReduced > 0) message += ` Pancerz zmniejszył obrażenia o ${result.armorReduced}.`;
     if (result.heal > 0) message += ` Odzyskujesz ${result.heal} HP.`;
     if (result.secondWindHeal > 0) message += ` Drugie Tchnienie przywraca ${result.secondWindHeal} HP.`;
@@ -59,7 +60,7 @@
   }
 
   function formatEnemyAttack(result) {
-    let message = result.message;
+    let message = result.enemyMessage || result.message;
     if (result.enemyCritical) message += " KRYTYK!";
     if (result.enemyArmorReduced > 0) message += ` Twój pancerz zmniejszył obrażenia o ${result.enemyArmorReduced}.`;
     return message;
@@ -101,14 +102,14 @@
     playerManaValue.textContent = `${player.manaPoints} / ${player.maxManaPoints}`;
     setBar(playerManaBar, player.manaPoints, player.maxManaPoints);
     renderPlayerModel(false);
-    playerWeapon.textContent = `Broń: ${player.weaponName} | ${player.weaponDmg} DMG | Crit: ${player.critChance}% | Pen: ${player.armorPenetration}`;
+    playerWeapon.textContent = `⚔️: ${player.weaponName} - ${player.weaponDmg} DMG | 💥: ${player.critChance}% | 🗡️: ${player.armorPenetration}`;
     const manaRegen = Math.floor(player.maxManaPoints * 0.03 * (1 + Math.max(0, player.manaRegenPercent || 0) / 100));
     const effectiveAP = window.BattleSystem.getEffectiveAbilityPower ? window.BattleSystem.getEffectiveAbilityPower() : player.abilityPower + player.adeptBookStacks;
-    playerMana.textContent = `⭐ AP: ${effectiveAP} | Regen: +${manaRegen} | MR: ${player.magicResistance}`;
+    playerMana.textContent = `⭐: ${effectiveAP} | 🔷: +${manaRegen}/turn | 🛡️: ${player.armorPoints} | MR: ${player.magicResistance}`;
     enemyName.textContent = enemy.name;
     enemyHp.textContent = `${state.enemyHealth} / ${state.enemyMaxHealth}`;
     setBar(enemyHealthBar, state.enemyHealth, state.enemyMaxHealth);
-    enemyStats.textContent = `DMG: ${state.enemyDamage} | Atak: ${state.enemyAttackChance}% | Crit: ${enemy.critChance}% | Pancerz: ${state.enemyArmor} | MR: ${state.enemyMagicResistance} | Pen: ${enemy.armorPenetration}`;
+    enemyStats.textContent = `⚔️: ${state.enemyDamage} DMG | 💥: ${enemy.critChance}% | 🛡️: ${state.enemyArmor} | MR️: ${state.enemyMagicResistance} | 🗡️: ${enemy.armorPenetration}`;
     renderEnemyModel(enemy, state.enemyDefeated === true);
     escapeButton.disabled = player.usedEscape;
     attackButton.classList.toggle("hidden", player.classId === "mage");
@@ -133,6 +134,8 @@
 
   function renderAbilities() {
     abilitiesPanel.replaceChildren();
+    const isMage = window.player.classId === "mage";
+    attackButton.textContent = "⚔️ Atakuj (Q)";
     abilitiesPanel.appendChild(attackButton);
     const classAbilities = window.classAbilities?.[window.player.classId] || [];
     classAbilities.forEach((ability) => {
@@ -141,7 +144,10 @@
       button.title = `${ability.description} Koszt: ${ability.cost} many${ability.cooldown ? ` | CD: ${ability.cooldown} tur` : ""}`;
       const folder = window.player.classId === "assassin" ? "assasin" : window.player.classId;
       button.appendChild(createActionIcon(`res/abilities/${folder}/${ability.icon}`, ability.name));
-      const label = document.createElement("span"); label.textContent = ability.id === "senNoKata" ? `${ability.name} (${state.senMode === "boei" ? "Bōei" : "Chikara"})` : ability.name; button.appendChild(label);
+      const abilityIndex = classAbilities.indexOf(ability);
+      const shortcut = isMage ? ["Q", "W", "E", "R"][abilityIndex] : ["W", "E", "R"][abilityIndex];
+      const abilityName = ability.id === "senNoKata" ? `${ability.name} (${state.senMode === "boei" ? "Bōei" : "Chikara"})` : ability.name;
+      const label = document.createElement("span"); label.textContent = `${abilityName}${shortcut ? ` (${shortcut})` : ""}`; button.appendChild(label);
       const cooldown = state.cooldowns?.[ability.id] || 0;
       button.disabled = cooldown > 0 || window.player.manaPoints < ability.cost;
       if (ability.id !== "senNoKata" && cooldown > 0) label.textContent += ` — CD: ${cooldown}`;

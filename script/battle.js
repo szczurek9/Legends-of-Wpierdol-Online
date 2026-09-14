@@ -126,7 +126,7 @@
     const enemy = window.enemies[state.enemyIndex];
     const accuracyBonus = (state.effects.accuracy || 0) + (state.effects.potionAccuracy || 0);
     const accuracy = clamp((enemy.playerAttackChance ?? (100 - enemy.dodgeChance)) + player.bonusAccuracy + accuracyBonus, 0, 100);
-    if (roll() >= accuracy) return { ...state, enemyDefeated: false, damage: 0, heal: 0, missed: true, message: "Przeciwnik uniknął twojego ataku!" };
+    if (roll() >= accuracy) return { ...state, enemyDefeated: false, damage: 0, heal: 0, missed: true, playerMessage: "Przeciwnik uniknął twojego ataku!", message: "Przeciwnik uniknął twojego ataku!" };
     let multiplier = 1;
     if (classId() === "assassin") multiplier += 0.10;
     if (classId() === "samurai") multiplier += 0.15;
@@ -143,7 +143,8 @@
     }
     const naturalCritical = roll() < player.critChance;
     const critical = Boolean(options.forceCritical) || naturalCritical;
-    if (critical) multiplier *= options.forceCritical && naturalCritical ? 2.25 : 1.5;
+    const superCritical = Boolean(options.forceCritical && naturalCritical);
+    if (critical) multiplier *= superCritical ? 2.25 : 1.5;
     const rawDamage = Math.max(1, Math.floor(player.weaponDmg * multiplier * (senBōeiAttack ? 0.1 : 1)));
     const primalReady = classId() === "assassin" && player.overkillPool >= state.enemyMaxHealth * 0.5;
     const armorPen = player.armorPenetration;
@@ -155,7 +156,8 @@
       : 0;
     if (overkillHeal > 0) player.healthPoints = clamp(player.healthPoints + overkillHeal, 0, player.maxHealthPoints);
     if (primalReady) player.overkillPool = 0;
-    const nextState = { ...result.state, senAttackCount: nextSenAttackCount, damage: result.dealt, rawDamage, heal: heal + overkillHeal, critical, overkill: result.overkill, message: `Zadałeś ${result.dealt} obrażeń!` };
+    const playerMessage = `Zadałeś ${result.dealt} obrażeń!`;
+    const nextState = { ...result.state, senAttackCount: nextSenAttackCount, damage: result.dealt, rawDamage, heal: heal + overkillHeal, critical, superCritical, overkill: result.overkill, playerMessage, message: playerMessage };
     if (senBōeiAttack) nextState.effects = { ...nextState.effects, stun: 1 };
     return nextState;
   }
@@ -173,9 +175,9 @@
       effectMessage = ` Pnącza zadają ${vineResult.dealt} magicznych obrażeń.`;
       if (next.enemyDefeated) return { ...next, enemyHit: false, message: effectMessage.trim() };
     }
-    if (next.effects.stun > 0) return { ...next, enemyHit: false, message: `Przeciwnik jest ogłuszony!${effectMessage}` };
+    if (next.effects.stun > 0) return { ...next, enemyHit: false, enemyMessage: `Przeciwnik jest ogłuszony!${effectMessage}`, message: `Przeciwnik jest ogłuszony!${effectMessage}` };
     const chance = clamp((next.enemyAttackChance || enemy.attackChance) + (next.effects.enemyAccuracy || 0) - player.bonusDodge, 0, 100);
-    if (roll() >= chance) return { ...next, enemyHit: false, message: `Przeciwnik nie trafił!${effectMessage}` };
+    if (roll() >= chance) return { ...next, enemyHit: false, enemyMessage: `Przeciwnik nie trafił!${effectMessage}`, message: `Przeciwnik nie trafił!${effectMessage}` };
     const critical = roll() < enemy.critChance;
     let rawDamage = critical ? Math.floor(next.enemyDamage * 1.5) : next.enemyDamage;
     if (next.effects.mushin) rawDamage = Math.floor(rawDamage * 0.7);
@@ -189,7 +191,8 @@
     const finalDamage = Math.max(1, unmitigatedDamage - blockedDamage);
     player.healthPoints = clamp(player.healthPoints - finalDamage, 0, player.maxHealthPoints);
     const rage = next.rage + finalDamage;
-    let nextState = { ...next, enemyHit: true, enemyCritical: critical, enemyRawDamage: rawDamage, enemyFinalDamage: finalDamage, reflected: 0, rage, message: `Przeciwnik zadał Ci ${finalDamage} obrażeń!${effectMessage}` };
+    const enemyMessage = `Przeciwnik zadał Ci ${finalDamage} obrażeń!${effectMessage}`;
+    let nextState = { ...next, enemyHit: true, enemyCritical: critical, enemyRawDamage: rawDamage, enemyFinalDamage: finalDamage, reflected: 0, rage, enemyMessage, message: enemyMessage };
 
     if (next.effects.bastionTurns) { delete nextState.effects.bastionTurns; delete nextState.effects.bastionArmor; }
     if (mirrorActive) {
