@@ -381,6 +381,23 @@ button:disabled {
     transition: width 180ms ease;
 }
 
+.battle-resource-bars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.resource-label {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 11px;
+    opacity: 0.85;
+}
+
+.mana-bar span {
+    background: #3d9ee8;
+}
+
 .enemy-health-bar span {
     background: #e15b61;
 }

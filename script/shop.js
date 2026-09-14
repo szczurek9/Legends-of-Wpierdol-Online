@@ -25,7 +25,15 @@
   function showMessage(text, type) { message.textContent = text; message.className = `shop-message ${type || ""}`.trim(); }
   function currentClass() { return window.player.classId || "assassin"; }
   function magicPrice(item) { return currentClass() === "mage" && !item.noMageDiscount ? Math.round(item.price * 0.75) : item.price; }
-  function magicSlotsUsed() { return window.player.equippedMagicItems.length; }
+  function isMagicEquipped(item) {
+    return Boolean(item.equipped
+      || window.player.equippedMagicItems.includes(item.uid)
+      || window.player.equippedMagicItems.includes(item.id));
+  }
+
+  function magicSlotsUsed() {
+    return window.player.magicInventory.filter(isMagicEquipped).length;
+  }
 
   function adjustMagicEffects(item, direction) {
     const effects = item.effects || {};
@@ -38,7 +46,10 @@
     player.magicResistance += amount(effects.magicResistance);
     player.manaRegenPercent += amount(effects.manaRegenPercent);
     player.magicLifesteal = Math.max(0, Math.min(30, player.magicLifesteal + amount(effects.magicLifesteal)));
-    if (effects.adeptBook && direction > 0) player.adeptBookStackLimit = Math.max(player.adeptBookStackLimit, 30);
+    if (effects.adeptBook && direction > 0) {
+      const hasUpgrade = player.magicInventory.some((owned) => owned.id === "adeptsBookUpgrade" && isMagicEquipped(owned));
+      player.adeptBookStackLimit = hasUpgrade ? 150 : Math.max(player.adeptBookStackLimit, 30);
+    }
     if (effects.adeptBookUpgrade && direction > 0) player.adeptBookStackLimit = 150;
   }
 
@@ -85,6 +96,9 @@
   function buyMagicItem(index) {
     const item = window.magicItems[index];
     const player = window.player;
+    if (item.id === "adeptsBookUpgrade" && !player.magicInventory.some((owned) => owned.id === "adeptsBook")) {
+      return showMessage("Najpierw kup Księgę Adeptów.", "warning");
+    }
     if (item.unique && player.magicInventory.some((owned) => owned.id === item.id)) return showMessage("Ten przedmiot można posiadać tylko raz.", "warning");
     const price = magicPrice(item);
     if (player.money < price) return showMessage("Za mało hajsu!", "danger");
@@ -122,6 +136,7 @@
 
   function refresh() {
     const player = window.player; money.textContent = `💸 Hajs: ${player.money} $`; currentWeapon.textContent = `${player.weaponName} | ${player.weaponDmg} DMG`;
+    player.magicItemSlots = player.classId === "mage" ? 8 : 4;
     weapons.replaceChildren(...visible(window.shopWeapons).map((item) => createItem(item, window.shopWeapons.indexOf(item), "weapon")));
     skills.replaceChildren(...visible(window.shopSkills).map((item) => createItem(item, window.shopSkills.indexOf(item), "skill")));
     magicItems.replaceChildren(...visible(window.magicItems).map((item) => createItem(item, window.magicItems.indexOf(item), "magic")));

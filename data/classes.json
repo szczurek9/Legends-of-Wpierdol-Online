@@ -10,7 +10,7 @@
     "id": "mage",
     "name": "Mag",
     "armorCap": 90,
-    "description": "250 many, większa regeneracja many, magiczna penetracja i 8 slotów magicznych.",
+    "description": "320 many, większa regeneracja many, magiczna penetracja i 8 slotów magicznych.",
     "iconPath": "res/abilities/mage/ability1.png"
   },
   {

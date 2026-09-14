@@ -114,8 +114,8 @@ startButton.addEventListener("click", () => {
   window.player.armorCap = selectedClass?.armorCap || 90;
   window.player.magicItemSlots = window.player.classId === "mage" ? 8 : 4;
   if (window.player.classId === "mage") {
-    window.player.maxManaPoints = 250;
-    window.player.manaPoints = 250;
+    window.player.maxManaPoints = 320;
+    window.player.manaPoints = 320;
     window.player.manaRegenPercent = 125;
     window.player.magicPenetration = 5;
     window.player.armorPoints = 15;

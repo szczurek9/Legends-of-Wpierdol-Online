@@ -224,10 +224,18 @@
                     <div class="battle-model battle-model-player">
                         <img src="res/skins/player_model.png" alt="Postać gracza">
                     </div>
-                    <div class="stat-line"><span>HP</span><strong id="battle-player-hp">100 / 100</strong></div>
-                    <div class="health-bar"><span id="battle-player-health-bar"></span></div>
+                    <div class="battle-resource-bars">
+                        <div>
+                            <span class="resource-label">❤️ HP: <strong id="battle-player-hp">100 / 100</strong></span>
+                            <div class="health-bar"><span id="battle-player-health-bar"></span></div>
+                        </div>
+                        <div>
+                            <span class="resource-label">🔷 Mana: <strong id="battle-player-mana-value">100 / 100</strong></span>
+                            <div class="health-bar mana-bar"><span id="battle-player-mana-bar"></span></div>
+                        </div>
+                    </div>
                     <p id="battle-player-weapon">Broń: nic | 0 DMG</p>
-                    <p id="battle-player-mana">Mana: 100 / 100 | AP: 0</p>
+                    <p id="battle-player-mana">⭐ AP: 0 | Regen: +3 | MR: 0</p>
                 </article>
 
                 <div class="battle-versus">VS</div>

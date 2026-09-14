@@ -19,6 +19,8 @@
   const playerModel = document.querySelector(".battle-model-player img");
   const playerHp = document.getElementById("battle-player-hp");
   const playerHealthBar = document.getElementById("battle-player-health-bar");
+  const playerManaBar = document.getElementById("battle-player-mana-bar");
+  const playerManaValue = document.getElementById("battle-player-mana-value");
   const playerWeapon = document.getElementById("battle-player-weapon");
   const playerMana = document.getElementById("battle-player-mana");
   const enemyName = document.getElementById("battle-enemy-name");
@@ -96,11 +98,13 @@
     playerName.textContent = player.nickname || "Gracz";
     playerHp.textContent = `${player.healthPoints} / ${player.maxHealthPoints}`;
     setBar(playerHealthBar, player.healthPoints, player.maxHealthPoints);
+    playerManaValue.textContent = `${player.manaPoints} / ${player.maxManaPoints}`;
+    setBar(playerManaBar, player.manaPoints, player.maxManaPoints);
     renderPlayerModel(false);
     playerWeapon.textContent = `Broń: ${player.weaponName} | ${player.weaponDmg} DMG | Crit: ${player.critChance}% | Pen: ${player.armorPenetration}`;
     const manaRegen = Math.floor(player.maxManaPoints * 0.03 * (1 + Math.max(0, player.manaRegenPercent || 0) / 100));
     const effectiveAP = window.BattleSystem.getEffectiveAbilityPower ? window.BattleSystem.getEffectiveAbilityPower() : player.abilityPower + player.adeptBookStacks;
-    playerMana.textContent = `Mana: ${player.manaPoints} / ${player.maxManaPoints} | Regen: +${manaRegen} | AP: ${effectiveAP} | MR: ${player.magicResistance}`;
+    playerMana.textContent = `⭐ AP: ${effectiveAP} | Regen: +${manaRegen} | MR: ${player.magicResistance}`;
     enemyName.textContent = enemy.name;
     enemyHp.textContent = `${state.enemyHealth} / ${state.enemyMaxHealth}`;
     setBar(enemyHealthBar, state.enemyHealth, state.enemyMaxHealth);

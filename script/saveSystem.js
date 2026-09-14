@@ -82,13 +82,23 @@
       if (save.player && !["assassin", "mage", "tank", "samurai"].includes(save.player.classId)) save.player.classId = "assassin";
       if (save.player && !Array.isArray(save.player.magicInventory)) save.player.magicInventory = [];
       if (save.player && !Array.isArray(save.player.equippedMagicItems)) save.player.equippedMagicItems = [];
+      if (save.player) {
+        save.player.magicInventory.forEach((item) => {
+          if (item && (save.player.equippedMagicItems.includes(item.uid) || save.player.equippedMagicItems.includes(item.id))) item.equipped = true;
+        });
+      }
       if (save.player && !Array.isArray(save.player.potionInventory)) save.player.potionInventory = [];
-      if (save.player && typeof save.player.magicItemSlots !== "number") save.player.magicItemSlots = save.player.classId === "mage" ? 8 : 4;
+      if (save.player) save.player.magicItemSlots = save.player.classId === "mage" ? 8 : 4;
       if (save.player && save.player.classId === "assassin" && typeof save.player.armorCap !== "number") save.player.armorCap = 60;
       if (save.player && typeof save.player.magicResistance !== "number") save.player.magicResistance = 0;
       if (save.player && typeof save.player.bonusArmor !== "number") save.player.bonusArmor = save.player.classId === "tank" ? 20 : 0;
       if (save.player && typeof save.player.magicPenetration !== "number") save.player.magicPenetration = 0;
       if (save.player && typeof save.player.maxManaPoints !== "number") save.player.maxManaPoints = 100;
+      if (save.player && save.player.classId === "mage" && save.player.maxManaPoints < 320) {
+        const manaIncrease = 320 - save.player.maxManaPoints;
+        save.player.maxManaPoints = 320;
+        save.player.manaPoints += manaIncrease;
+      }
       if (save.player && typeof save.player.manaRegenPercent !== "number") save.player.manaRegenPercent = 0;
       if (save.player && typeof save.player.magicAbilityPower !== "number") save.player.magicAbilityPower = 0;
       if (save.player && typeof save.player.magicLifesteal !== "number") save.player.magicLifesteal = 0;
@@ -98,6 +108,11 @@
       if (save.player && typeof save.player.overkillPool !== "number") save.player.overkillPool = 0;
       if (save.player && typeof save.player.adeptBookStacks !== "number") save.player.adeptBookStacks = 0;
       if (save.player && typeof save.player.adeptBookStackLimit !== "number") save.player.adeptBookStackLimit = 30;
+      if (save.player && save.player.magicInventory.some((item) => item
+        && item.id === "adeptsBookUpgrade"
+        && (item.equipped || save.player.equippedMagicItems.includes(item.uid) || save.player.equippedMagicItems.includes(item.id)))) {
+        save.player.adeptBookStackLimit = 150;
+      }
       if (save.player && typeof save.player.secondWind !== "boolean") save.player.secondWind = false;
       if (save.player && typeof save.player.skinPoints !== "number") save.player.skinPoints = 1;
       if (save.player && !["prism", "night", "neon", "nature"].includes(save.player.theme)) save.player.theme = "prism";

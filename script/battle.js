@@ -3,11 +3,14 @@
   const roll = () => Math.floor(Math.random() * 100);
   const classId = () => window.player.classId || "assassin";
   const abilitiesForPlayer = () => window.classAbilities?.[classId()] || [];
+  const magicEffects = (item) => item.effects || window.magicItems?.find((definition) => definition.id === item.id)?.effects || {};
+  const isMagicEquipped = (item) => Boolean(item.equipped
+    || (window.player.equippedMagicItems || []).includes(item.uid)
+    || (window.player.equippedMagicItems || []).includes(item.id));
   const effectiveAbilityPower = () => {
     let power = window.player.abilityPower + window.player.adeptBookStacks;
-    const amplifiers = (window.player.magicInventory || []).filter((item) => item.effects?.abilityPowerMultiplier
-      && (item.equipped || (window.player.equippedMagicItems || []).includes(item.uid)));
-    const multiplier = amplifiers.reduce((total, item) => total + Number(item.effects.abilityPowerMultiplier || 0) / 100, 0);
+    const amplifiers = (window.player.magicInventory || []).filter((item) => magicEffects(item).abilityPowerMultiplier && isMagicEquipped(item));
+    const multiplier = amplifiers.reduce((total, item) => total + Number(magicEffects(item).abilityPowerMultiplier || 0) / 100, 0);
     power *= 1 + multiplier;
     return power;
   };
@@ -91,7 +94,7 @@
 
   function recordSpellCast() {
     const player = window.player;
-    const hasBook = (player.magicInventory || []).some((item) => item.equipped && item.effects?.adeptBook);
+    const hasBook = (player.magicInventory || []).some((item) => magicEffects(item).adeptBook && isMagicEquipped(item));
     if (hasBook) player.adeptBookStacks = Math.min(player.adeptBookStackLimit, player.adeptBookStacks + (classId() === "mage" ? 5 : 3));
   }
 
