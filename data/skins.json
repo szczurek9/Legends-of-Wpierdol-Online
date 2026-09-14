@@ -4,6 +4,7 @@
     "name": "Patyczak",
     "rarity": "basic",
     "cost": 0,
+    "collection": "no",
     "modelAlive": "res/skins/player_model.png",
     "modelDead": "res/skins/player_model.png",
     "sellable": false
@@ -13,6 +14,7 @@
     "name": "Zwykły Ludzik",
     "rarity": "basic",
     "cost": 0,
+    "collection": "no",
     "modelAlive": "res/skins/sa1.png",
     "modelDead": "res/skins/sd1.png",
     "sellable": true
@@ -22,6 +24,7 @@
     "name": "Czarek Kirkowski",
     "rarity": "legendary",
     "cost": 10,
+    "collection": "Social Media",
     "modelAlive": "res/skins/sa2.png",
     "modelDead": "res/skins/sd2.png",
     "sellable": true
@@ -31,6 +34,7 @@
     "name": "Wujek Jerzy",
     "rarity": "legendary",
     "cost": 10,
+    "collection": "no",
     "modelAlive": "res/skins/sa3.png",
     "modelDead": "res/skins/sd3.png",
     "sellable": true
@@ -40,6 +44,7 @@
     "name": "Malarz",
     "rarity": "mythic",
     "cost": 6,
+    "collection": "no",
     "modelAlive": "res/skins/sa4.png",
     "modelDead": "res/skins/sd4.png",
     "sellable": true
@@ -49,6 +54,7 @@
     "name": "Słodka Lisica",
     "rarity": "ultimate",
     "cost": 15,
+    "collection": "Social Media",
     "modelAlive": "res/skins/sa5.png",
     "modelDead": "res/skins/sd5.png",
     "sellable": true
@@ -58,6 +64,7 @@
     "name": "Dante",
     "rarity": "epic",
     "cost": 4,
+    "collection": "Devil May Cry",
     "modelAlive": "res/skins/sa6.png",
     "modelDead": "res/skins/sd6.png",
     "sellable": true
@@ -67,6 +74,7 @@
     "name": "David Martinez",
     "rarity": "legendary",
     "cost": 10,
+    "collection": "Cyberpunk Edgerunners",
     "modelAlive": "res/skins/sa7.png",
     "modelDead": "res/skins/sd7.png",
     "sellable": true
@@ -76,6 +84,7 @@
     "name": "Rebecca",
     "rarity": "ultimate",
     "cost": 15,
+    "collection": "Cyberpunk Edgerunners",
     "modelAlive": "res/skins/sa8.png",
     "modelDead": "res/skins/sd8.png",
     "sellable": true
@@ -85,6 +94,7 @@
     "name": "Triple T",
     "rarity": "rare",
     "cost": 2,
+    "collection": "Brainrot",
     "modelAlive": "res/skins/sa9.png",
     "modelDead": "res/skins/sd9.png",
     "sellable": true
@@ -94,6 +104,7 @@
     "name": "Big D.",
     "rarity": "epic",
     "cost": 4,
+    "collection": "Memy",
     "modelAlive": "res/skins/sa10.png",
     "modelDead": "res/skins/sd10.png",
     "sellable": true
@@ -103,6 +114,7 @@
     "name": "Goku",
     "rarity": "legendary",
     "cost": 10,
+    "collection": "Dragon Ball",
     "modelAlive": "res/skins/sa11.png",
     "modelDead": "res/skins/sd11.png",
     "sellable": true
@@ -112,6 +124,7 @@
     "name": "6pek",
     "rarity": "mythic",
     "cost": 6,
+    "collection": "Memy",
     "modelAlive": "res/skins/sa12.png",
     "modelDead": "res/skins/sd12.png",
     "sellable": true
@@ -121,6 +134,7 @@
     "name": "KDA Akali",
     "rarity": "ultimate",
     "cost": 15,
+    "collection": "League of Legends",
     "modelAlive": "res/skins/sa13.png",
     "modelDead": "res/skins/sd13.png",
     "sellable": true
@@ -130,6 +144,7 @@
     "name": "Natsuki",
     "rarity": "legendary",
     "cost": 10,
+    "collection": "Doki Doki Literature Club",
     "modelAlive": "res/skins/sa14.png",
     "modelDead": "res/skins/sd14.png",
     "sellable": true
@@ -139,6 +154,7 @@
     "name": "Yuri",
     "rarity": "legendary",
     "cost": 10,
+    "collection": "Doki Doki Literature Club",
     "modelAlive": "res/skins/sa15.png",
     "modelDead": "res/skins/sd15.png",
     "sellable": true

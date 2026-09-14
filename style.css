@@ -601,7 +601,7 @@ button:disabled {
 
 .shop-items {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
     max-height: 300px;
     gap: 8px;
     overflow-y: auto;
@@ -1292,6 +1292,7 @@ textarea,
 .shop-current-weapon,
 #shop-money,
 .inventory-current-card,
+.ability-icon,
 .skin-card,
 .skin-details,
 .skin-preview,

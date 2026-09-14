@@ -129,6 +129,7 @@ startButton.addEventListener("click", () => {
   } else if (window.player.classId === "samurai") {
     window.player.bonusAccuracy = 15;
     window.player.bonusDodge = 10;
+    window.player.armorPoints = 5;
   }
   showMainMenu();
 });
