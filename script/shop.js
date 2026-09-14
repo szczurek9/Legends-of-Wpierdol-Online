@@ -26,6 +26,13 @@
 
   function showMessage(text, type) { message.textContent = text; message.className = `shop-message ${type || ""}`.trim(); }
   function currentClass() { return window.player.classId || "assassin"; }
+  function skillMaxValue(skill) {
+    if (skill.effect === "accuracy") {
+      const classAccuracy = currentClass() === "samurai" ? 15 : currentClass() === "assassin" ? 10 : 0;
+      return skill.maxValue + classAccuracy;
+    }
+    return skill.maxValue;
+  }
   function magicPrice(item) { return currentClass() === "mage" && !item.noMageDiscount ? Math.round(item.price * 0.75) : item.price; }
   function isMagicEquipped(item) {
     return Boolean(item.equipped
@@ -81,7 +88,7 @@
     if (player.money < skill.price) return showMessage("Za mało hajsu!", "danger");
     if (skill.effect === "armorPenetration" && player.armorPenetration >= skill.maxValue) return showMessage("Osiągnięto maksymalny poziom przebicia pancerza.", "warning");
     if (skill.effect === "lifesteal" && player.lifesteal >= skill.maxValue) return showMessage("Osiągnięto maksymalny poziom lifestealu.", "warning");
-    if (skill.effect === "accuracy" && player.bonusAccuracy >= skill.maxValue) return showMessage("Osiągnięto maksymalną celność.", "warning");
+    if (skill.effect === "accuracy" && player.bonusAccuracy >= skillMaxValue(skill)) return showMessage("Osiągnięto maksymalną celność.", "warning");
     if (skill.effect === "critChance" && player.critChance >= skill.maxValue) return showMessage("Osiągnięto maksymalną szansę krytyczną.", "warning");
     if (skill.effect === "critChanceAbove50" && player.critChance >= 100) return showMessage("Osiągnięto maksymalną szansę krytyczną.", "warning");
     if (skill.effect === "secondWind" && player.secondWind) return showMessage("Drugie Tchnienie jest już kupione.", "warning");
@@ -89,7 +96,7 @@
     else if (skill.effect === "armor") player.armorPoints = Math.min(player.armorCap, player.armorPoints + skill.value);
     else if (skill.effect === "armorPenetration") player.armorPenetration = Math.min(skill.maxValue, player.armorPenetration + skill.value);
     else if (skill.effect === "lifesteal") player.lifesteal = Math.min(skill.maxValue, player.lifesteal + skill.value);
-    else if (skill.effect === "accuracy") player.bonusAccuracy = Math.min(skill.maxValue, player.bonusAccuracy + skill.value);
+    else if (skill.effect === "accuracy") player.bonusAccuracy = Math.min(skillMaxValue(skill), player.bonusAccuracy + skill.value);
     else if (skill.effect === "critChance") player.critChance = Math.min(skill.maxValue, player.critChance + skill.value);
     else if (skill.effect === "critChanceAbove50") { if (player.critChance < 50) return showMessage("Najpierw zwiększ krytyki do 50%.", "warning"); player.critChance = Math.min(100, player.critChance + skill.value); }
     else if (skill.effect === "secondWind") player.secondWind = true;
@@ -101,7 +108,7 @@
     if (skill.effect === "armor") return player.armorPoints + skill.value > player.armorCap;
     if (skill.effect === "armorPenetration") return player.armorPenetration >= skill.maxValue;
     if (skill.effect === "lifesteal") return player.lifesteal >= skill.maxValue;
-    if (skill.effect === "accuracy") return player.bonusAccuracy >= skill.maxValue;
+    if (skill.effect === "accuracy") return player.bonusAccuracy >= skillMaxValue(skill);
     if (skill.effect === "critChance") return player.critChance >= skill.maxValue;
     if (skill.effect === "critChanceAbove50") return player.critChance < 50 || player.critChance >= 100;
     if (skill.effect === "secondWind") return player.secondWind;
