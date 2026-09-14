@@ -408,6 +408,11 @@ button:disabled {
     font-size: 12px;
 }
 
+#battle-player-weapon,
+#battle-player-mana {
+    white-space: nowrap;
+}
+
 .battle-versus {
     display: flex;
     align-items: center;
