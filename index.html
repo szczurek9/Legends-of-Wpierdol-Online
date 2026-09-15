@@ -8,7 +8,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Web edition of Legends of Wpierdol. Port made by szczurek9 - one of LoW developers.">
     <title>Legends of Wpierdol</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/themes.css">
+    <link rel="stylesheet" href="style/base.css">
+    <link rel="stylesheet" href="style/menu.css">
+    <link rel="stylesheet" href="style/battle.css">
+    <link rel="stylesheet" href="style/shop.css">
+    <link rel="stylesheet" href="style/inventory.css">
+    <link rel="stylesheet" href="style/skins.css">
+    <link rel="stylesheet" href="style/responsive.css">
+    <link rel="stylesheet" href="style/modals.css">
+    <link rel="stylesheet" href="style/utilities.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <meta name="google-site-verification" content="Gbv4APJ06OAJS_wd6GTqZU3BfSvcMRXkq0H_QepaHZs" />
 </head>
@@ -59,7 +68,7 @@
 
             </div> 
             <div id="main-playerModel">
-                <img src="res/skins/player_model.png">
+                <img src="res/skins/player_model.png" alt="Postać gracza">
                 <button id="change-playerModel" type="button">👁️ Zmień skina</button>
             </div>
         </div>
@@ -321,13 +330,18 @@
     <script src="script/variables.js"></script>
     <script src="script/dataLoader.js"></script>
     <script src="script/pullFromHTML.js"></script>
+    <script src="script/saveCodec.js"></script>
     <script src="script/saveSystem.js"></script>
     <script src="script/mainMenu.js"></script>
     <script src="script/themes.js"></script>
     <script src="script/shop.js"></script>
     <script src="script/inventory.js"></script>
     <script src="script/skins.js"></script>
+    <script src="script/battleMath.js"></script>
+    <script src="script/battleState.js"></script>
+    <script src="script/battleActions.js"></script>
     <script src="script/battle.js"></script>
+    <script src="script/battleUIRender.js"></script>
     <script src="script/battleUI.js"></script>
 </body>
 </html>
