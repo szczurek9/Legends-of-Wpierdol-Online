@@ -1,0 +1,94 @@
+/* Ekwipunek. */
+.inventory-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+}
+
+.inventory-current,
+.inventory-owned,
+.inventory-magic {
+    grid-column: 1;
+}
+
+.inventory-abilities {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+}
+
+.inventory-magic,
+.inventory-abilities {
+    min-width: 0;
+    margin-top: 14px;
+}
+
+.inventory-magic h3,
+.inventory-abilities h3 {
+    margin: 2px 0 8px;
+    font-family: "New Rocker", system-ui;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.inventory-ability-card {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    column-gap: 8px;
+}
+
+.inventory-ability-card .ability-icon {
+    grid-row: span 2;
+}
+
+.inventory-current,
+.inventory-owned {
+    min-width: 0;
+    margin-top: 14px;
+}
+
+.inventory-current h3,
+.inventory-owned h3 {
+    margin: 2px 0 8px;
+    font-family: "New Rocker", system-ui;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.inventory-current-card {
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid black;
+    background: var(--shop-info-background);
+}
+
+.inventory-current-card h4 {
+    margin: 0 0 8px;
+    font-family: "New Rocker", system-ui;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.inventory-current-card p {
+    margin: 6px 0;
+}
+
+.inventory-current-card span {
+    font-size: 12px;
+    opacity: 0.85;
+}
+
+.inventory-item-equipped {
+    border-color: #f0d36a;
+    box-shadow: inset 0 0 0 1px #f0d36a;
+}
+
+.inventory-item-selected {
+    outline: 2px solid var(--shop-control-background);
+}
+
+.inventory-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+

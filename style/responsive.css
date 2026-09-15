@@ -1,0 +1,227 @@
+/* Responsywność. */
+@media (min-width: 761px) and (max-width: 1599px) {
+    .main {
+        width: min(82%, 1180px);
+    }
+}
+
+@media (max-width: 760px) {
+    body {
+        justify-content: center;
+        box-sizing: border-box;
+        padding: 12px 12px 44px;
+    }
+
+    .main {
+        width: min(100%, 620px);
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    #main-menu,
+    #battle-screen,
+    #shop-screen,
+    #inventory-screen,
+    #skin-screen {
+        width: 100%;
+    }
+
+    #start-screen,
+    #login-screen {
+        width: 100%;
+    }
+
+    #main-menu {
+        flex-direction: column;
+    }
+
+    #main-playerSummary,
+    #main-playerModel {
+        width: 100%;
+    }
+
+    #main-playerModel img {
+        max-width: 100%;
+        max-height: 220px;
+        object-fit: contain;
+    }
+
+    #battle-screen,
+    #shop-screen {
+        padding: 10px;
+    }
+
+    .battle-arena {
+        grid-template-columns: 1fr;
+    }
+
+    .battle-versus {
+        justify-content: center;
+        height: 24px;
+    }
+
+    .battle-header,
+    .shop-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .battle-header h2,
+    .shop-header h2 {
+        font-size: 22px;
+    }
+
+    .shop-sections {
+        grid-template-columns: 1fr;
+    }
+
+    .inventory-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .inventory-current,
+    .inventory-owned,
+    .inventory-magic,
+    .inventory-abilities {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .skin-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .skin-details {
+        position: static;
+    }
+
+    .skin-filters {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .skin-filters h3 {
+        grid-column: 1 / -1;
+    }
+
+    .skin-filter {
+        text-align: center;
+    }
+
+    .shop-items {
+        max-height: 260px;
+    }
+
+    .battle-abilities,
+    .battle-potions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    body {
+        align-items: flex-start;
+        padding: 8px 8px 44px;
+    }
+
+    .main {
+        width: 100%;
+        margin: 8px 0 0;
+        padding: 8px;
+    }
+
+    #titleheader {
+        margin-bottom: 8px;
+        font-size: 25px;
+        text-align: center;
+    }
+
+    #titleedition {
+        margin-bottom: 14px;
+        font-size: 16px;
+    }
+
+    #main-menu,
+    .battle-arena {
+        flex-direction: column;
+    }
+
+    #main-buttons {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #main-playerSummary,
+    #main-playerModel {
+        width: 100%;
+    }
+
+    .battle-arena {
+        grid-template-columns: 1fr;
+    }
+
+    .battle-versus {
+        justify-content: center;
+        height: 24px;
+    }
+
+    .battle-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .inventory-actions {
+        grid-template-columns: 1fr;
+    }
+
+    button,
+    input {
+        min-height: 42px;
+        box-sizing: border-box;
+        font-size: 15px;
+    }
+
+    input {
+        padding: 8px 10px;
+    }
+
+    .stat-line {
+        gap: 8px;
+    }
+
+    .combatant h3 {
+        min-height: 0;
+    }
+
+    .shop-items {
+        max-height: 230px;
+    }
+
+    .shop-category-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .shop-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .battle-abilities,
+    .battle-potions {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .skin-list {
+        grid-template-columns: 1fr 1fr;
+        max-height: 360px;
+    }
+
+    .skin-preview {
+        height: 130px;
+    }
+
+    .site-footer {
+        padding: 7px 5px;
+        font-size: 10px;
+        line-height: 1.35;
+    }
+}
+

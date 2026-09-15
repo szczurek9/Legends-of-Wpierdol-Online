@@ -1,0 +1,76 @@
+/* Ekran logowania. */
+#login-screen {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 3px;
+    border: 1px solid black;
+    text-align: center;
+    background-color: var(--shop-page-background);
+    box-shadow: 6px 6px rgb(10, 68, 91), inset 0 0 18px rgba(5, 23, 57, 0.28);
+}
+
+#login-screen input {
+    background: var(--shop-control-background);
+}
+
+#login-screen select,
+#class-description {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#class-description {
+    margin: 2px 0;
+    padding: 6px;
+    background: var(--shop-info-background);
+}
+
+/* Menu główne. */
+#main-menu {
+    width: 80%;
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+#main-playerSummary,
+#main-playerModel {
+    width: 50%;
+    box-sizing: border-box;
+    border: 1px solid black;
+    background: var(--shop-page-background);
+    box-shadow: 6px 6px rgb(17, 89, 117), inset 0 0 18px rgba(5, 23, 57, 0.28);
+}
+
+#main-playerSummary {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    text-align: left;
+    font-weight: 300;
+}
+
+#main-playerModel {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 3px;
+    text-align: left;
+    font-weight: 300;
+}
+
+#main-buttons {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+}
+
+#main-buttons #play-btn,
+#main-buttons #options-btn {
+    grid-column: 1 / -1;
+}
+

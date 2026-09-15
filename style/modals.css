@@ -1,0 +1,137 @@
+/* Ekran startowy, modal opcji i ekran śmierci. */
+#start-screen {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    box-sizing: border-box;
+    border: 1px solid black;
+    background: var(--shop-page-background);
+}
+
+.screen-message {
+    min-height: 18px;
+    margin: 4px 0 0;
+    text-align: center;
+}
+
+.screen-message.success {
+    color: #d6f5dd;
+}
+
+.screen-message.warning {
+    color: #fff0b2;
+}
+
+.screen-message.danger {
+    color: #ffd0d0;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.65);
+}
+
+.modal-content {
+    width: min(100%, 560px);
+    box-sizing: border-box;
+    padding: 16px;
+    border: 1px solid black;
+    background: var(--main-background);
+    box-shadow: 8px 8px var(--main-shadow);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+}
+
+.modal-close {
+    width: 36px;
+    padding: 6px;
+}
+
+#save-code {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 6px;
+    padding: 8px;
+    resize: vertical;
+    border: 1px solid black;
+    color: var(--control-text-color);
+    background: var(--shop-info-background);
+}
+
+.theme-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+#theme-select {
+    padding: 8px 10px;
+    border: 1px solid var(--shop-border-color);
+    color: var(--control-text-color);
+    background: var(--shop-control-background);
+}
+
+.modal-actions,
+.death-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.battle-death-panel {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid black;
+    background: var(--shop-info-background);
+    text-align: center;
+}
+
+.battle-death-panel h3 {
+    margin: 0 0 6px;
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+}
+
+.battle-death-panel p {
+    margin: 6px 0;
+}
+
+.death-actions {
+    grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 520px) {
+    .modal-actions,
+    .death-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 1921px) {
+    body {
+        background-image: url("res/img/background_wide.png");
+    }
+}
+

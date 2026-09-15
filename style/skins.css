@@ -1,0 +1,173 @@
+/* Skins. */
+.skin-search-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 14px;
+}
+
+#skin-search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid black;
+    color: var(--control-text-color);
+    background: var(--shop-control-background);
+}
+
+.skin-layout {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) minmax(260px, 0.8fr);
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.skin-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    border: 1px solid black;
+    background: var(--shop-card-background);
+}
+
+.skin-filters h3 {
+    margin: 0 0 4px;
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+}
+
+.skin-filter {
+    padding: 6px 8px;
+    text-align: left;
+}
+
+.skin-filter.active {
+    outline: 2px solid var(--shop-info-background);
+    filter: brightness(1.2);
+}
+
+.skin-filter[data-rarity="basic"] { color: #d7eeee; }
+.skin-filter[data-rarity="rare"] { color: #72b7ff; }
+.skin-filter[data-rarity="epic"] { color: #d39cff; }
+.skin-filter[data-rarity="mythic"] { color: #ff8cd8; }
+.skin-filter[data-rarity="legendary"] { color: #ffd45c; }
+.skin-filter[data-rarity="ultimate"] { color: #ff8a5b; }
+
+.skin-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    max-height: 430px;
+    gap: 8px;
+    overflow-y: auto;
+    align-content: start;
+    padding: 2px 6px 6px 2px;
+    scrollbar-color: var(--shop-border-color) rgba(5, 28, 69, 0.28);
+}
+
+.skin-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 8px;
+    border: 1px solid black;
+    background: var(--shop-card-background);
+    cursor: pointer;
+}
+
+.skin-card-equipped {
+    border-color: #f0d36a;
+    box-shadow: inset 0 0 0 1px #f0d36a;
+}
+
+.skin-card-selected {
+    border-color: var(--shop-border-color);
+    box-shadow: 0 0 0 2px var(--shop-border-color), 0 0 18px var(--shop-info-background);
+    transform: translateY(-2px);
+}
+
+.skin-card:focus-visible {
+    outline: 2px solid var(--shop-border-color);
+    outline-offset: 3px;
+}
+
+.skin-details {
+    position: sticky;
+    top: 1rem;
+    padding: 1rem;
+    border: 1px solid black;
+    background: var(--shop-card-background);
+}
+
+.skin-details h3 {
+    margin: 0 0 4px;
+    text-align: center;
+}
+
+.skin-details > p {
+    margin: 0 0 10px;
+    text-transform: capitalize;
+}
+
+.skin-variants {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.skin-variants figure {
+    margin: 0;
+    text-align: center;
+}
+
+.skin-variants img {
+    display: block;
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    background: var(--shop-info-background);
+}
+
+.skin-variants figcaption {
+    margin-top: 5px;
+    font-size: 12px;
+    color: var(--control-text-color);
+}
+
+.skin-preview {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    background: var(--shop-info-background);
+}
+
+.skin-card h3 {
+    min-height: 38px;
+    margin: 7px 0 2px;
+    font-family: "New Rocker", system-ui;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.skin-rarity {
+    margin: 2px 0 8px;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+
+.skin-rarity-basic { color: #d7eeee; }
+.skin-rarity-rare { color: #72b7ff; }
+.skin-rarity-epic { color: #d39cff; }
+.skin-rarity-mythic { color: #ff8cd8; }
+.skin-rarity-legendary { color: #ffd45c; }
+.skin-rarity-ultimate { color: #ff8a5b; }
+
+.skin-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: auto;
+}
+

@@ -1,0 +1,108 @@
+/* Elementy ukrywane przez logikę ekranów. */
+.hidden {
+    display: none !important;
+}
+
+/* Podstawowy układ strony. */
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Tagesschrift", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    background-image: url(res/img/background.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.site-footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    padding: 6px 12px;
+    color: var(--control-text-color);
+    background: var(--main-background);
+    border-top: 1px solid rgb(11, 37, 75);
+    box-shadow: 0 -4px 10px rgba(5, 23, 57, 0.3);
+    text-align: center;
+    font-size: 12px;
+}
+
+.site-footer a {
+    color: var(--control-text-color);
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Kolor tego kontenera pozostaje bez zmian. */
+.main {
+    width: 50%;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--main-background);
+    box-shadow: 10px 10px var(--main-shadow);
+    border: 1px solid var(--shop-border-color);
+}
+
+#titleheader {
+    margin-top: 0.67em;
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 30px;
+    text-shadow: 0 2px 5px var(--title-glow);
+}
+
+#titleedition {
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-shadow: 0 2px 5px var(--title-glow);
+}
+
+button,
+input,
+select {
+    font-family: "Tagesschrift", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+button {
+    border: 1px solid var(--shop-border-color);
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 7px 10px;
+    background: var(--shop-control-background);
+    transition: transform 120ms ease, filter 120ms ease, background-color 120ms ease;
+}
+
+button:hover:not(:disabled) {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+#main-buttons button,
+#main-playerModel button,
+#login-screen button,
+#login-screen input,
+#login-screen select {
+    background: var(--menu-control-background) !important;
+}
+

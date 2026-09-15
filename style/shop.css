@@ -1,0 +1,120 @@
+/* Sklep. */
+.shop-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+}
+
+#shop-money,
+.shop-current-weapon {
+    padding: 7px 9px;
+    border: 1px solid black;
+    background: var(--shop-info-background);
+}
+
+.shop-current-weapon {
+    margin-bottom: 12px;
+}
+
+.shop-sections {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+}
+
+.shop-search-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 10px 0;
+}
+
+#shop-search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid black;
+    color: var(--control-text-color);
+    background: var(--shop-control-background);
+}
+
+.shop-category-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-self: start;
+    padding: 8px;
+    border: 1px solid black;
+    background: var(--shop-card-background);
+}
+
+.shop-category-tabs .shop-category:last-child {
+    margin-top: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.45);
+    padding-top: 9px;
+}
+
+.shop-layout {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 12px;
+}
+
+.shop-category.active {
+    outline: 2px solid var(--shop-border-color);
+    filter: brightness(1.2);
+}
+
+.shop-section {
+    margin-top: 14px;
+}
+
+.shop-section h3 {
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.shop-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    max-height: 300px;
+    gap: 8px;
+    overflow-y: auto;
+    align-content: start;
+    padding: 2px 6px 6px 2px;
+    overscroll-behavior: contain;
+    scrollbar-color: var(--shop-border-color) rgba(5, 28, 69, 0.28);
+}
+
+.shop-item {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 8px;
+    border: 1px solid black;
+    background: var(--shop-card-background);
+}
+
+.shop-item h4 {
+    min-height: 38px;
+    font-size: 15px;
+}
+
+.shop-item p {
+    margin: 4px 0;
+    font-size: 12px;
+}
+
+.shop-item .shop-description {
+    min-height: 42px;
+    color: var(--text-color);
+}
+
+.shop-message {
+    margin: 12px 0 8px;
+}
+
