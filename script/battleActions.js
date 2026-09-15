@@ -155,14 +155,22 @@
   // Wraps up a player action (basic attack or ability): records spell-cast
   // stacks if relevant, regenerates mana, lets the enemy respond, ticks
   // cooldowns/effects, and applies the ability's own cooldown if any.
+  //
+  // enemyTurn() always overwrites `.message` with its own text (counter-
+  // attack, stun, dodge...). Without keeping the action's own message under
+  // its own key, that overwrite would silently erase it whenever the enemy
+  // survives — exactly what was happening to every damage-dealing ability.
   function finishPlayerAction(state, message, cooldownAbility, isSpell = false) {
-    let next = { ...state, message };
+    let next = { ...state, message, actionMessage: message };
     if (isSpell) M.recordSpellCast();
     const manaRestored = M.regenMana();
     next = enemyTurn(next);
     next = S.tickCooldowns(next);
     next.manaRestored = manaRestored;
     if (cooldownAbility) next = S.setCooldown(next, cooldownAbility, cooldownAbility.cooldown || 0);
+    if (!next.enemyDefeated && next.message !== next.actionMessage) {
+      next.message = `${next.actionMessage} ${next.message}`;
+    }
     return next;
   }
 
