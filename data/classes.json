@@ -4,7 +4,7 @@
     "name": "Zabójca",
     "armorCap": 60,
     "description": "+10% obrażeń broni, +5% lifestealu, +10% celności, pancerz maks. 60.",
-    "iconPath": "res/abilities/assasin/ability1.png"
+    "iconPath": "res/abilities/assassin/ability1.png"
   },
   {
     "id": "mage",

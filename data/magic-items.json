@@ -6,5 +6,8 @@
   {"id":"vampireHands","name":"Dłonie Wampira","price":520,"description":"Leczy za 15% obrażeń magicznych, maksymalnie 30%.","effects":{"magicLifesteal":15},"maxMagicLifesteal":30},
   {"id":"adeptsBook","name":"Księga Adeptów","price":30,"description":"Po rzuceniu czaru: +5 AP. Limit 30 AP. Mag otrzymuje zniżkę klasową.","effects":{"adeptBook":true},"unique":true},
   {"id":"adeptsBookUpgrade","name":"Ulepszenie Księgi Adeptów","price":75,"description":"Zwiększa limit AP Księgi Adeptów do 150.","effects":{"adeptBookUpgrade":true},"unique":true},
-  {"id":"staffOfDoom","name":"Kostur Zagłady","price":550,"description":"+30% do całkowitej mocy umiejętności. Brak zniżki Maga.","effects":{"abilityPowerMultiplier":30},"unique":true,"noMageDiscount":true}
+  {"id":"staffOfDoom","name":"Kostur Zagłady","price":650,"description":"+30% do całkowitej mocy umiejętności. Brak zniżki Maga.","effects":{"abilityPowerMultiplier":30},"unique":true,"noMageDiscount":true},
+  {"id":"deadStarScepter","name":"Kostur Martwej Gwiazdy","price":1200,"description":"+420 mocy umiejętności, +100 many, +20 magicznej penetracji.","effects":{"abilityPower":420,"mana":100,"magicPenetration":20}},
+  {"id":"manaFountain","name":"Fontanna Many","price":31600,"description":"+200 many, +60 mocy umiejętności, +400% bazowej regeneracji many.","effects":{"mana":200,"abilityPower":60,"manaRegenPercent":400}},
+  {"id":"worldDestroyer","name":"Niszczyciel Światów","price":3600,"description":"Leczy za 25% obrażeń magicznych, maksymalnie 50%. Daje +300 mocy umiejętności, +150 many oraz +30 magicznej penetracji.","effects":{"magicLifesteal":25,"abilityPower":300,"mana":150,"magicPenetration":30},"maxMagicLifesteal":50}
 ]
