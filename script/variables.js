@@ -45,6 +45,15 @@ window.createDefaultPlayer = function () {
 
 window.player = window.createDefaultPlayer();
 
+// Shared by every screen's status/message line: sets the text and applies
+// the status class (success/warning/danger/etc.) alongside the element's
+// base class. Used by shop.js, inventory.js, skins.js, mainMenu.js and
+// battleUI.js instead of each repeating the same two lines.
+window.setStatusMessage = function (element, text, baseClass, type) {
+  element.textContent = text;
+  element.className = `${baseClass} ${type || ""}`.trim();
+};
+
 window.battle = {
   currentWave: 0,
   totalWaves: 0,

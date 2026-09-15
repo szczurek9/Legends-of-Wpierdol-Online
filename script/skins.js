@@ -18,8 +18,7 @@
   let selectedSkinId = null;
 
   function showMessage(text, type) {
-    message.textContent = text;
-    message.className = `shop-message ${type || ""}`.trim();
+    window.setStatusMessage(message, text, "shop-message", type);
   }
 
   function getSkin(id) {
@@ -48,17 +47,21 @@
     image.src = path || fallback;
   }
 
+  function skinBadgeText(skin) {
+    const attributes = skin.id === "default"
+      ? "Basic | Darmowy"
+      : `${skin.rarity} | ${skin.cost} SP`;
+    return skin.collection && skin.collection !== "no"
+      ? `Kolekcja: ${skin.collection} | ${attributes}`
+      : attributes;
+  }
+
   function selectSkin(skin) {
     selectedSkinId = skin.id;
     details.classList.remove("hidden");
     variants.classList.remove("hidden");
     detailsName.textContent = skin.name;
-    const detailsAttributes = skin.id === "default"
-      ? "Basic | Darmowy"
-      : `${skin.rarity} | ${skin.cost} SP`;
-    detailsRarity.textContent = skin.collection && skin.collection !== "no"
-      ? `Kolekcja: ${skin.collection} | ${detailsAttributes}`
-      : detailsAttributes;
+    detailsRarity.textContent = skinBadgeText(skin);
     detailsRarity.className = `skin-rarity skin-rarity-${skin.rarity}`;
     setVariantPreview(alivePreview, skin.modelAlive, "res/skins/player_model.png", `${skin.name} — żywy`);
     setVariantPreview(deadPreview, skin.modelDead, "res/skins/player_model.png", `${skin.name} — martwy`);
@@ -139,12 +142,7 @@
     card.appendChild(title);
 
     const rarity = document.createElement("p");
-    const skinAttributes = skin.id === "default"
-      ? "Basic | Darmowy"
-      : `${skin.rarity} | ${skin.cost} SP`;
-    rarity.textContent = skin.collection && skin.collection !== "no"
-      ? `Kolekcja: ${skin.collection} | ${skinAttributes}`
-      : skinAttributes;
+    rarity.textContent = skinBadgeText(skin);
     rarity.className = `skin-rarity skin-rarity-${skin.rarity}`;
     card.appendChild(rarity);
 

@@ -2,19 +2,6 @@
   const SAVE_VERSION = 1;
   let battleSnapshot = null;
 
-  function encode(text) {
-    const bytes = new TextEncoder().encode(text);
-    let binary = "";
-    bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
-    return btoa(binary);
-  }
-
-  function decode(code) {
-    const binary = atob(code.trim());
-    const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
-    return new TextDecoder().decode(bytes);
-  }
-
   function isValidPlayer(player) {
     if (!player || typeof player !== "object") return false;
 
@@ -68,57 +55,74 @@
   }
 
   function createSaveCode() {
-    return encode(JSON.stringify({
+    return window.SaveCodec.encode(JSON.stringify({
       version: SAVE_VERSION,
       savedAt: new Date().toISOString(),
       player: copyPlayer(window.player),
     }));
   }
 
+  // Older save codes may predate fields that were added later. This backfills
+  // any missing/invalid fields with sensible defaults so old saves keep
+  // working, in the same order the checks always ran in.
+  function migrateLoadedPlayer(player) {
+    if (!Array.isArray(player.inventory)) player.inventory = [];
+    if (!["assassin", "mage", "tank", "samurai"].includes(player.classId)) player.classId = "assassin";
+    if (!Array.isArray(player.magicInventory)) player.magicInventory = [];
+    if (!Array.isArray(player.equippedMagicItems)) player.equippedMagicItems = [];
+
+    player.magicInventory.forEach((item) => {
+      if (item && (player.equippedMagicItems.includes(item.uid) || player.equippedMagicItems.includes(item.id))) {
+        item.equipped = true;
+      }
+    });
+
+    if (!Array.isArray(player.potionInventory)) player.potionInventory = [];
+    player.magicItemSlots = player.classId === "mage" ? 8 : 4;
+
+    if (player.classId === "assassin" && typeof player.armorCap !== "number") player.armorCap = 60;
+    if (typeof player.magicResistance !== "number") player.magicResistance = 0;
+    if (typeof player.bonusArmor !== "number") player.bonusArmor = player.classId === "tank" ? 20 : 0;
+    if (typeof player.magicPenetration !== "number") player.magicPenetration = 0;
+    if (typeof player.maxManaPoints !== "number") player.maxManaPoints = 100;
+
+    if (player.classId === "mage" && player.maxManaPoints < 320) {
+      const manaIncrease = 320 - player.maxManaPoints;
+      player.maxManaPoints = 320;
+      player.manaPoints += manaIncrease;
+    }
+
+    if (typeof player.manaRegenPercent !== "number") player.manaRegenPercent = 0;
+    if (typeof player.magicAbilityPower !== "number") player.magicAbilityPower = 0;
+    if (typeof player.magicLifesteal !== "number") player.magicLifesteal = 0;
+    if (typeof player.bonusLifesteal !== "number") player.bonusLifesteal = player.classId === "assassin" ? 5 : 0;
+    if (typeof player.bonusDodge !== "number") player.bonusDodge = 0;
+    if (typeof player.armorCap !== "number") player.armorCap = 90;
+    if (typeof player.overkillPool !== "number") player.overkillPool = 0;
+    if (typeof player.adeptBookStacks !== "number") player.adeptBookStacks = 0;
+    if (typeof player.adeptBookStackLimit !== "number") player.adeptBookStackLimit = 30;
+
+    const hasEquippedAdeptUpgrade = player.magicInventory.some((item) => item
+      && item.id === "adeptsBookUpgrade"
+      && (item.equipped || player.equippedMagicItems.includes(item.uid) || player.equippedMagicItems.includes(item.id)));
+    if (hasEquippedAdeptUpgrade) player.adeptBookStackLimit = 150;
+
+    if (typeof player.secondWind !== "boolean") player.secondWind = false;
+    if (typeof player.skinPoints !== "number") player.skinPoints = 1;
+    if (!["prism", "night", "neon", "nature"].includes(player.theme)) player.theme = "prism";
+    if (typeof player.skinName !== "string") player.skinName = "default";
+    if (!Array.isArray(player.skinInventory)) player.skinInventory = ["default"];
+    if (!player.skinInventory.includes("default")) player.skinInventory.push("default");
+
+    return player;
+  }
+
   function loadSaveCode(code) {
     try {
-      const save = JSON.parse(decode(code));
-      if (save.player && !Array.isArray(save.player.inventory)) save.player.inventory = [];
-      if (save.player && !["assassin", "mage", "tank", "samurai"].includes(save.player.classId)) save.player.classId = "assassin";
-      if (save.player && !Array.isArray(save.player.magicInventory)) save.player.magicInventory = [];
-      if (save.player && !Array.isArray(save.player.equippedMagicItems)) save.player.equippedMagicItems = [];
-      if (save.player) {
-        save.player.magicInventory.forEach((item) => {
-          if (item && (save.player.equippedMagicItems.includes(item.uid) || save.player.equippedMagicItems.includes(item.id))) item.equipped = true;
-        });
-      }
-      if (save.player && !Array.isArray(save.player.potionInventory)) save.player.potionInventory = [];
-      if (save.player) save.player.magicItemSlots = save.player.classId === "mage" ? 8 : 4;
-      if (save.player && save.player.classId === "assassin" && typeof save.player.armorCap !== "number") save.player.armorCap = 60;
-      if (save.player && typeof save.player.magicResistance !== "number") save.player.magicResistance = 0;
-      if (save.player && typeof save.player.bonusArmor !== "number") save.player.bonusArmor = save.player.classId === "tank" ? 20 : 0;
-      if (save.player && typeof save.player.magicPenetration !== "number") save.player.magicPenetration = 0;
-      if (save.player && typeof save.player.maxManaPoints !== "number") save.player.maxManaPoints = 100;
-      if (save.player && save.player.classId === "mage" && save.player.maxManaPoints < 320) {
-        const manaIncrease = 320 - save.player.maxManaPoints;
-        save.player.maxManaPoints = 320;
-        save.player.manaPoints += manaIncrease;
-      }
-      if (save.player && typeof save.player.manaRegenPercent !== "number") save.player.manaRegenPercent = 0;
-      if (save.player && typeof save.player.magicAbilityPower !== "number") save.player.magicAbilityPower = 0;
-      if (save.player && typeof save.player.magicLifesteal !== "number") save.player.magicLifesteal = 0;
-      if (save.player && typeof save.player.bonusLifesteal !== "number") save.player.bonusLifesteal = save.player.classId === "assassin" ? 5 : 0;
-      if (save.player && typeof save.player.bonusDodge !== "number") save.player.bonusDodge = 0;
-      if (save.player && typeof save.player.armorCap !== "number") save.player.armorCap = 90;
-      if (save.player && typeof save.player.overkillPool !== "number") save.player.overkillPool = 0;
-      if (save.player && typeof save.player.adeptBookStacks !== "number") save.player.adeptBookStacks = 0;
-      if (save.player && typeof save.player.adeptBookStackLimit !== "number") save.player.adeptBookStackLimit = 30;
-      if (save.player && save.player.magicInventory.some((item) => item
-        && item.id === "adeptsBookUpgrade"
-        && (item.equipped || save.player.equippedMagicItems.includes(item.uid) || save.player.equippedMagicItems.includes(item.id)))) {
-        save.player.adeptBookStackLimit = 150;
-      }
-      if (save.player && typeof save.player.secondWind !== "boolean") save.player.secondWind = false;
-      if (save.player && typeof save.player.skinPoints !== "number") save.player.skinPoints = 1;
-      if (save.player && !["prism", "night", "neon", "nature"].includes(save.player.theme)) save.player.theme = "prism";
-      if (save.player && typeof save.player.skinName !== "string") save.player.skinName = "default";
-      if (save.player && !Array.isArray(save.player.skinInventory)) save.player.skinInventory = ["default"];
-      if (save.player && !save.player.skinInventory.includes("default")) save.player.skinInventory.push("default");
+      const save = JSON.parse(window.SaveCodec.decode(code));
+      if (!save.player) return false;
+
+      migrateLoadedPlayer(save.player);
       if (save.version !== SAVE_VERSION || !isValidPlayer(save.player)) return false;
       return applyPlayer(save.player);
     } catch (error) {

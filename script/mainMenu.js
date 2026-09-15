@@ -60,8 +60,7 @@ function updateClassDescription() {
 }
 
 function showOptionsMessage(text, type) {
-  optionsMessage.textContent = text;
-  optionsMessage.className = `screen-message ${type || ""}`.trim();
+  window.setStatusMessage(optionsMessage, text, "screen-message", type);
 }
 
 function openOptions() {
