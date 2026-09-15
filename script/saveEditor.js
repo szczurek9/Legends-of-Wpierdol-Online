@@ -69,7 +69,7 @@
     if (numberFields.some((name) => !Number.isFinite(player[name]) || player[name] < 0)) {
       throw new Error("Wartości liczbowe muszą być nieujemne.");
     }
-    if (player.lifesteal > 20 || player.magicLifesteal > 30 || player.critChance > 100 || player.bonusAccuracy > 30) {
+    if (player.lifesteal > 20 || player.magicLifesteal > window.SaveCodec.magicLifestealCap(player) || player.critChance > 100 || player.bonusAccuracy > 30) {
       throw new Error("Przekroczono limit jednej ze statystyk.");
     }
     return player;

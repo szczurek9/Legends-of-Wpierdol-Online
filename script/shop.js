@@ -54,15 +54,6 @@
     return window.player.magicInventory.filter(isMagicEquipped).length;
   }
 
-  // The lifesteal cap isn't fixed: it's the highest maxMagicLifesteal among
-  // the magic items currently equipped that grant magicLifesteal at all.
-  function magicLifestealCap() {
-    const caps = window.player.magicInventory
-      .filter((owned) => isMagicEquipped(owned) && (owned.effects || {}).magicLifesteal)
-      .map((owned) => Number(owned.maxMagicLifesteal || 0));
-    return caps.length ? Math.max(...caps) : 0;
-  }
-
   function adjustMagicEffects(item, direction) {
     const effects = item.effects || {};
     const player = window.player;
@@ -74,7 +65,7 @@
     player.magicPenetration += amount(effects.magicPenetration);
     player.magicResistance += amount(effects.magicResistance);
     player.manaRegenPercent += amount(effects.manaRegenPercent);
-    player.magicLifesteal = Math.max(0, Math.min(magicLifestealCap(), player.magicLifesteal + amount(effects.magicLifesteal)));
+    player.magicLifesteal = Math.max(0, Math.min(window.SaveCodec.magicLifestealCap(player), player.magicLifesteal + amount(effects.magicLifesteal)));
 
     if (effects.adeptBook && direction > 0) {
       const hasUpgrade = player.magicInventory.some((owned) => owned.id === "adeptsBookUpgrade" && isMagicEquipped(owned));

@@ -17,5 +17,21 @@
     return new TextDecoder().decode(bytes);
   }
 
-  window.SaveCodec = { encode, decode };
+  // Shared by shop.js (in-game) and saveEditor.js (standalone editor): the
+  // magicLifesteal cap isn't a fixed number — it's the highest
+  // maxMagicLifesteal among the currently equipped magic items that grant
+  // magicLifesteal at all. Takes a plain player-shaped object (works for
+  // both window.player and the editor's form-built player).
+  function magicLifestealCap(player) {
+    const equippedIds = player.equippedMagicItems || [];
+    const isEquipped = (item) => Boolean(item.equipped
+      || equippedIds.includes(item.uid)
+      || equippedIds.includes(item.id));
+    const caps = (player.magicInventory || [])
+      .filter((item) => item && isEquipped(item) && (item.effects || {}).magicLifesteal)
+      .map((item) => Number(item.maxMagicLifesteal || 0));
+    return caps.length ? Math.max(...caps) : 0;
+  }
+
+  window.SaveCodec = { encode, decode, magicLifestealCap };
 })();
