@@ -188,18 +188,16 @@
       next = { ...state, guaranteedCrit: true };
     } else if (ability.id === "undodgeableSpeed") {
       next = { ...state, effects: { ...state.effects, accuracy: 25, accuracyTurns: 3, enemyAccuracy: -30, enemyAccuracyTurns: 3 } };
-    } else if (ability.id === "slayerOfTheSlowest") {
-      const enemy = window.enemies[state.enemyIndex];
-      const accuracy = (enemy.playerAttackChance || 0) + window.player.bonusAccuracy + (state.effects.accuracy || 0);
-      if (accuracy <= state.enemyAttackChance) {
+    } else if (ability.id === "overkillRelease") {
+      if (window.player.overkillPool <= 0) {
         window.player.manaPoints += ability.cost;
-        return { ...state, message: "Twoja celność nie jest większa od celności wroga." };
+        return { ...state, message: "Nie posiadasz zgromadzonego Overkill." };
       }
-      const damage = M.magicDamage(state.enemyMaxHealth * (0.01 + (window.player.weaponDmg / 750) * 0.008), state.enemyMagicResistance, window.player.magicPenetration);
+      const damage = M.physicalDamage(window.player.overkillPool, state.enemyArmor * 0.2, window.player.armorPenetration);
       const result = M.applyDamageToEnemy(state, damage);
       next = result.state;
-      message = `Slayer of the Slowest zadaje ${result.dealt} magicznych obrażeń.`;
-      M.damageHeal(result.dealt, true);
+      window.player.overkillPool = 0;
+      message = `Overkill Release zadaje ${result.dealt} obrażeń, ignorując 80% pancerza wroga.`;
     } else if (ability.id === "stormBreeze" || ability.id === "starStrike") {
       const raw = ability.id === "stormBreeze" ? 15 + ap * 0.25 : 60 + ap * 0.9;
       const result = M.applyDamageToEnemy(state, M.magicDamage(raw, state.enemyMagicResistance, window.player.magicPenetration));
