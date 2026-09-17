@@ -4,7 +4,7 @@
     "active": [
       {"id":"primalStrike","name":"Primal Strike","type":"physical","cost":200,"description":"Wymusza krytyczne trafienie na następnym ataku. Jeśli trafienie i tak byłoby krytykiem, zadaje super-krytyka za x2,25 obrażeń zamiast standardowego x1,5.","icon":"ability1.png"},
       {"id":"undodgeableSpeed","name":"Un-Dodgable Speed","type":"utility","cost":80,"cooldown":4,"description":"+25% celności gracza i -30% celności wroga przez 3 tury.","icon":"ability2.png"},
-      {"id":"slayerOfTheSlowest","name":"Slayer of the Slowest","type":"magic","cost":20,"cooldown":1,"description":"Aktywuje się tylko gdy Twoja celność przewyższa celność ataku wroga. Zadaje obrażenia magiczne równe 1% maksymalnego HP wroga, rosnące wraz z obrażeniami Twojej broni (do ok. +0,8 pkt proc. przy 750 DMG).","icon":"ability3.png"}
+      {"id":"overkillRelease","name":"Overkill Release","type":"physical","cost":120,"cooldown":5,"description":"Manualnie uwalnia całą zgromadzoną pulę Overkill jako obrażenia fizyczne, ignorując 80% pancerza wroga, i zeruje pulę.","icon":"ability3.png"}
     ]
   },
   "mage": {
