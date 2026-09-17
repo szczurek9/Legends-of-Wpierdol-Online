@@ -227,15 +227,18 @@
       message = `Mushin przywraca ${heal} HP.`;
     } else if (ability.id === "kōgeki") {
       next = playerAttack(state, { forceCritical: true, critMultiplierOverride: 1.5 });
-      if (!next.missed && !next.enemyDefeated) {
+      const physicalMessage = next.playerMessage;
+      if (next.missed) {
+        message = "Kōgeki nie trafiło.";
+      } else if (next.enemyDefeated) {
+        message = `${physicalMessage} KRYTYK!`;
+      } else {
         const bonusPercent = 0.5 + window.player.armorPenetration * 0.002;
         const bonus = M.magicDamage(window.player.weaponDmg * bonusPercent, state.enemyMagicResistance, window.player.magicPenetration);
         const result = M.applyDamageToEnemy(next, bonus);
         next = result.state;
         M.damageHeal(result.dealt, true);
-        message = `Kōgeki zadaje łącznie obrażenia fizyczne i ${result.dealt} magicznych.`;
-      } else if (next.missed) {
-        message = "Kōgeki nie trafiło.";
+        message = `${physicalMessage} KRYTYK! Dodatkowo ${result.dealt} magicznych obrażeń.`;
       }
     }
 
