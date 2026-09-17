@@ -1,23 +1,35 @@
 {
-  "assassin": [
-    {"id":"primalStrike","name":"Primal Strike","type":"physical","cost":200,"description":"Pasywnie przechowuje Overkill. Manualnie wymusza krytyka; krytyk zadaje 2,25x obrażeń.","icon":"ability1.png"},
-    {"id":"undodgeableSpeed","name":"Un-Dodgable Speed","type":"utility","cost":80,"cooldown":4,"description":"+25% celności gracza i -30% celności wroga przez 3 tury.","icon":"ability2.png"},
-    {"id":"slayerOfTheSlowest","name":"Slayer of the Slowest","type":"magic","cost":20,"cooldown":1,"description":"Gdy Twoja celność jest większa od celności wroga, zadaje magiczne obrażenia zależne od maksymalnego HP wroga i obrażeń broni.","icon":"ability3.png"}
-  ],
-  "mage": [
-    {"id":"stormBreeze","name":"Powiew Burzy","type":"magic","cost":25,"description":"Zadaje 15 + 25% AP obrażeń magicznych.","icon":"ability1.png"},
-    {"id":"starStrike","name":"Gwiezdne Uderzenie","type":"magic","cost":100,"cooldown":1,"description":"Zadaje 60 + 90% AP obrażeń magicznych.","icon":"ability2.png"},
-    {"id":"deadlyVines","name":"Zabójcze Pnącza","type":"magic","cost":70,"cooldown":4,"description":"Ogłusza na 3 tury i zadaje 10 + 10% AP obrażeń co turę.","icon":"ability3.png"},
-    {"id":"deadlyMirror","name":"Śmiertelne Lustro","type":"physical","cost":50,"cooldown":5,"description":"Przygotowuje redukcję następnego ataku i odbicie części obrażeń.","icon":"ability4.png"}
-  ],
-  "tank": [
-    {"id":"stoneBastion","name":"Kamienny Bastion","type":"utility","cost":50,"cooldown":1,"description":"Ogłusza na 2 tury i przez 5 tur zwiększa pancerz o 2% na turę.","icon":"ability1.png"},
-    {"id":"accumulatedRage","name":"Skumulowany Gniew","type":"hybrid","cost":50,"cooldown":2,"description":"Magazynuje otrzymane obrażenia. Może automatycznie wyzwolić atak albo zostać użyty ręcznie.","icon":"ability2.png"},
-    {"id":"ironTaunt","name":"Żelazna Prowokacja","type":"utility","cost":45,"cooldown":2,"description":"Przez 2 tury zmniejsza karę broni, uniki wroga i zwiększa celność.","icon":"ability3.png"}
-  ],
-  "samurai": [
-    {"id":"mushin","name":"Mushin","type":"utility","cost":50,"cooldown":1,"description":"Leczy 2% (+0,5% za AP) maksymalnego HP. Następny atak wroga zadaje 30% mniej obrażeń.","icon":"ability1.png"},
-    {"id":"senNoKata","name":"Sen no Kata","type":"toggle","cost":0,"description":"Przełącza tryb Bōei/Chikara. Nie zużywa tury ani many.","icon":"ability2.png"},
-    {"id":"kōgeki","name":"Kōgeki","type":"hybrid","cost":30,"cooldown":2,"description":"Normalny atak fizyczny oraz 50% bazowych obrażeń broni jako obrażenia magiczne.","icon":"ability3.png"}
-  ]
+  "assassin": {
+    "passive": {"name":"Overkill","description":"Nadwyżka obrażeń ponad HP pokonanego wroga trafia do puli Overkill. Gdy pula osiągnie 50% maksymalnego HP obecnego przeciwnika, następny atak ignoruje 80% jego pancerza. Zgromadzona pula pasywnie leczy Cię przy każdym ataku fizycznym — im więcej masz pancerza i penetracji pancerza, tym większe leczenie. Pokonanie przeciwnika przywraca dodatkowo 10% maksymalnej many."},
+    "active": [
+      {"id":"primalStrike","name":"Primal Strike","type":"physical","cost":200,"description":"Wymusza krytyczne trafienie na następnym ataku. Jeśli trafienie i tak byłoby krytykiem, zadaje super-krytyka za x2,25 obrażeń zamiast standardowego x1,5.","icon":"ability1.png"},
+      {"id":"undodgeableSpeed","name":"Un-Dodgable Speed","type":"utility","cost":80,"cooldown":4,"description":"+25% celności gracza i -30% celności wroga przez 3 tury.","icon":"ability2.png"},
+      {"id":"slayerOfTheSlowest","name":"Slayer of the Slowest","type":"magic","cost":20,"cooldown":1,"description":"Aktywuje się tylko gdy Twoja celność przewyższa celność ataku wroga. Zadaje obrażenia magiczne równe 1% maksymalnego HP wroga, rosnące wraz z obrażeniami Twojej broni (do ok. +0,8 pkt proc. przy 750 DMG).","icon":"ability3.png"}
+    ]
+  },
+  "mage": {
+    "passive": null,
+    "active": [
+      {"id":"stormBreeze","name":"Powiew Burzy","type":"magic","cost":25,"description":"Zadaje 15 + 25% mocy umiejętności obrażeń magicznych.","icon":"ability1.png"},
+      {"id":"starStrike","name":"Gwiezdne Uderzenie","type":"magic","cost":100,"cooldown":1,"description":"Zadaje 60 + 90% mocy umiejętności obrażeń magicznych.","icon":"ability2.png"},
+      {"id":"deadlyVines","name":"Zabójcze Pnącza","type":"magic","cost":70,"cooldown":4,"description":"Ogłusza na 3 tury i zadaje 10 + 10% mocy umiejętności obrażeń magicznych co turę.","icon":"ability3.png"},
+      {"id":"deadlyMirror","name":"Śmiertelne Lustro","type":"physical","cost":50,"cooldown":5,"description":"Przygotowuje na najbliższy atak wroga blok 10% surowych obrażeń, odbijając 20% zablokowanej wartości na przeciwnika. Jeśli nadchodzący cios byłby śmiertelny, blokuje aż 99% obrażeń i leczy Cię o 15% zablokowanej wartości (odbicie w tym wypadku to tylko 5%).","icon":"ability4.png"}
+    ]
+  },
+  "tank": {
+    "passive": {"name":"Skumulowany Gniew (pasywnie)","description":"Otrzymane obrażenia fizyczne automatycznie budują pulę Gniewu. Gdy pula osiągnie 150% obrażeń Twojej broni, natychmiast eksploduje: zadaje 70% swojej wartości jako obrażenia fizyczne, leczy Cię o 35% tej wartości i chwilowo zwiększa pancerz. Broń zadająca ponad 500 obrażeń nakłada karę -25% do zadawanych obrażeń (-20% pod działaniem Żelaznej Prowokacji)."},
+    "active": [
+      {"id":"stoneBastion","name":"Kamienny Bastion","type":"utility","cost":50,"cooldown":1,"description":"Ogłusza przeciwnika na 2 tury. Przez kolejne 5 tur zwiększa Twój pancerz o 2% na turę, maksymalnie +10% po zakończeniu efektu.","icon":"ability1.png"},
+      {"id":"accumulatedRage","name":"Skumulowany Gniew","type":"hybrid","cost":50,"cooldown":2,"description":"Manualnie detonuje zgromadzoną pulę Gniewu: zadaje 25% jej wartości jako obrażenia magiczne i leczy Cię o 30% tej wartości, zerując pulę.","icon":"ability2.png"},
+      {"id":"ironTaunt","name":"Żelazna Prowokacja","type":"utility","cost":45,"cooldown":2,"description":"Przez 2 tury zmniejsza karę za ciężką broń z -25% do -20% i zwiększa Twoją celność o 25%, co w praktyce ogranicza szansę wroga na unik.","icon":"ability3.png"}
+    ]
+  },
+  "samurai": {
+    "passive": {"name":"Opanowanie","description":"Krytyczne trafienia zadają x1,2 obrażeń zamiast standardowego x1,5 innych klas. Kōgeki jest wyjątkiem i zawsze bije na pełnym x1,5."},
+    "active": [
+      {"id":"mushin","name":"Mushin","type":"utility","cost":50,"cooldown":1,"description":"Leczy 3% (+1% za 10 pkt penetracji pancerza, maks. 10%) maksymalnego HP. Kolejne ataki wroga przez 3 tury zadają 30% mniej obrażeń.","icon":"ability1.png"},
+      {"id":"senNoKata","name":"Sen no Kata","type":"toggle","cost":0,"description":"Przełącza styl walki, nie zużywa tury ani many. Bōei (domyślny): co 3. zwykły atak jest osłabiony do 10% obrażeń, ale ogłusza wroga na 1 turę. Chikara: +7,5% Twoich obrażeń, ale wróg zadaje Ci o 4,5% więcej obrażeń.","icon":"ability2.png"},
+      {"id":"kōgeki","name":"Kōgeki","type":"hybrid","cost":30,"cooldown":2,"description":"Zawsze trafia krytycznie (x1,5, pełna wartość mimo pasywki). Dodatkowo zadaje 50% (+1% za 5 pkt penetracji pancerza) obrażeń broni jako obrażenia magiczne.","icon":"ability3.png"}
+    ]
+  }
 }
