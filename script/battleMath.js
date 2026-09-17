@@ -69,8 +69,8 @@
   // assassin's overkill pool and handling the on-kill mana/HP refunds.
   function applyDamageToEnemy(state, damage) {
     const dealt = Math.min(damage, state.enemyHealth);
-    const overkill = Math.max(0, damage - state.enemyHealth);
-    window.player.overkillPool += overkill;
+    const overkill = classId() === "assassin" ? Math.max(0, damage - state.enemyHealth) : 0;
+    if (overkill > 0) window.player.overkillPool += overkill;
     const nextHealth = state.enemyHealth - dealt;
 
     if (nextHealth <= 0) {
