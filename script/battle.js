@@ -14,12 +14,11 @@
       const enemy = window.enemies[enemyIndex];
       if (!enemy) return { finished: true, message: "Ukończyłeś wszystkie dostępne poziomy gry!" };
       const state = S.startState(enemy, enemyIndex);
-      S.updateBattleState(state);
       return state;
     },
 
     attack(state) {
-      const next = A.playerAttack(state, { forceCritical: state.guaranteedCrit ? (state.guaranteedCrit === "double" ? "double" : true) : false });
+      const next = A.playerAttack(state, { forceCritical: Boolean(state.guaranteedCrit) });
       next.guaranteedCrit = false;
       return next.enemyDefeated ? next : A.finishPlayerAction(next, next.message);
     },
@@ -57,7 +56,6 @@
         reward: enemy.reward,
         message: "Przeciwnik pokonany! Nadchodzi następna fala.",
       };
-      S.updateBattleState(next);
       return next;
     },
 

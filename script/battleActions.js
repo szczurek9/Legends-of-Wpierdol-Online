@@ -11,7 +11,7 @@
 
     if (M.roll() >= accuracy) {
       const missMessage = "Przeciwnik uniknął twojego ataku!";
-      return { ...state, enemyDefeated: false, damage: 0, heal: 0, missed: true, playerMessage: missMessage, message: missMessage };
+      return { ...state, enemyDefeated: false, heal: 0, missed: true, playerMessage: missMessage, message: missMessage };
     }
 
     let multiplier = 1;
@@ -35,7 +35,10 @@
     const naturalCritical = M.roll() < player.critChance;
     const critical = Boolean(options.forceCritical) || naturalCritical;
     const superCritical = Boolean(options.forceCritical && naturalCritical);
-    if (critical) multiplier *= superCritical ? 2.25 : 1.5;
+    if (critical) {
+      const baseCritMultiplier = M.classId() === "samurai" ? 1.2 : 1.5;
+      multiplier *= options.critMultiplierOverride ?? (superCritical ? 2.25 : baseCritMultiplier);
+    }
 
     const rawDamage = Math.max(1, Math.floor(player.weaponDmg * multiplier * (senBōeiAttack ? 0.1 : 1)));
     const primalReady = M.classId() === "assassin" && player.overkillPool >= state.enemyMaxHealth * 0.5;
@@ -54,8 +57,6 @@
     const nextState = {
       ...result.state,
       senAttackCount: nextSenAttackCount,
-      damage: result.dealt,
-      rawDamage,
       heal: heal + overkillHeal,
       critical,
       superCritical,
@@ -81,18 +82,18 @@
       const vineResult = M.applyDamageToEnemy(next, vineDamage);
       next = vineResult.state;
       effectMessage = ` Pnącza zadają ${vineResult.dealt} magicznych obrażeń.`;
-      if (next.enemyDefeated) return { ...next, enemyHit: false, message: effectMessage.trim() };
+      if (next.enemyDefeated) return { ...next, message: effectMessage.trim() };
     }
 
     if (next.effects.stun > 0) {
       const stunMessage = `Przeciwnik jest ogłuszony!${effectMessage}`;
-      return { ...next, enemyHit: false, enemyMessage: stunMessage, message: stunMessage };
+      return { ...next, enemyMessage: stunMessage, message: stunMessage };
     }
 
     const chance = M.clamp((next.enemyAttackChance || enemy.attackChance) + (next.effects.enemyAccuracy || 0) - player.bonusDodge, 0, 100);
     if (M.roll() >= chance) {
       const missMessage = `Przeciwnik nie trafił!${effectMessage}`;
-      return { ...next, enemyHit: false, enemyMessage: missMessage, message: missMessage };
+      return { ...next, enemyMessage: missMessage, message: missMessage };
     }
 
     const critical = M.roll() < enemy.critChance;
@@ -117,11 +118,7 @@
     const enemyMessage = `Przeciwnik zadał Ci ${finalDamage} obrażeń!${effectMessage}`;
     let nextState = {
       ...next,
-      enemyHit: true,
       enemyCritical: critical,
-      enemyRawDamage: rawDamage,
-      enemyFinalDamage: finalDamage,
-      reflected: 0,
       rage,
       enemyMessage,
       message: enemyMessage,
@@ -131,10 +128,8 @@
       const reflected = Math.floor(blockedDamage * (mirrorFatal ? 0.05 : 0.20));
       nextState.enemyHealth = Math.max(0, nextState.enemyHealth - reflected);
       nextState.enemyDefeated = nextState.enemyHealth <= 0;
-      nextState.reflected = reflected;
       if (mirrorFatal) player.healthPoints = M.clamp(player.healthPoints + Math.floor(blockedDamage * 0.15), 0, player.maxHealthPoints);
       delete nextState.effects.mirror;
-      delete nextState.effects.mirrorFatal;
     }
 
     // Tank's passive: once accumulated rage crosses a threshold, it
@@ -163,10 +158,9 @@
   function finishPlayerAction(state, message, cooldownAbility, isSpell = false) {
     let next = { ...state, message, actionMessage: message };
     if (isSpell) M.recordSpellCast();
-    const manaRestored = M.regenMana();
+    M.regenMana();
     next = enemyTurn(next);
     next = S.tickCooldowns(next);
-    next.manaRestored = manaRestored;
     if (cooldownAbility) next = S.setCooldown(next, cooldownAbility, cooldownAbility.cooldown || 0);
     if (!next.enemyDefeated && next.message !== next.actionMessage) {
       next.message = `${next.actionMessage} ${next.message}`;
@@ -215,7 +209,7 @@
     } else if (ability.id === "deadlyVines") {
       next = { ...state, effects: { ...state.effects, stun: 3, vines: 3 } };
     } else if (ability.id === "deadlyMirror") {
-      next = { ...state, effects: { ...state.effects, mirror: true, mirrorFatal: state.enemyHealth <= window.player.maxHealthPoints } };
+      next = { ...state, effects: { ...state.effects, mirror: true } };
     } else if (ability.id === "stoneBastion") {
       next = { ...state, effects: { ...state.effects, stun: 2, bastionTurns: 5, bastionArmor: 0 } };
     } else if (ability.id === "accumulatedRage") {
@@ -228,14 +222,16 @@
     } else if (ability.id === "ironTaunt") {
       next = { ...state, effects: { ...state.effects, ironTaunt: 2, accuracy: 25, accuracyTurns: 2 } };
     } else if (ability.id === "mushin") {
-      const heal = Math.floor(window.player.maxHealthPoints * (0.02 + ap * 0.005));
+      const healPercent = Math.min(0.10, 0.03 + window.player.armorPenetration * 0.001);
+      const heal = Math.floor(window.player.maxHealthPoints * healPercent);
       window.player.healthPoints = M.clamp(window.player.healthPoints + heal, 0, window.player.maxHealthPoints);
-      next = { ...state, effects: { ...state.effects, mushin: true } };
+      next = { ...state, effects: { ...state.effects, mushin: 3 } };
       message = `Mushin przywraca ${heal} HP.`;
     } else if (ability.id === "kōgeki") {
-      next = playerAttack(state);
+      next = playerAttack(state, { forceCritical: true, critMultiplierOverride: 1.5 });
       if (!next.missed && !next.enemyDefeated) {
-        const bonus = M.magicDamage(window.player.weaponDmg * 0.5, state.enemyMagicResistance, window.player.magicPenetration);
+        const bonusPercent = 0.5 + window.player.armorPenetration * 0.002;
+        const bonus = M.magicDamage(window.player.weaponDmg * bonusPercent, state.enemyMagicResistance, window.player.magicPenetration);
         const result = M.applyDamageToEnemy(next, bonus);
         next = result.state;
         M.damageHeal(result.dealt, true);
@@ -258,12 +254,12 @@
     if (potion.effect === "healthPotion") {
       const heal = Math.min(250, potion.value + Math.floor(window.player.maxHealthPoints * 0.07));
       window.player.healthPoints = M.clamp(window.player.healthPoints + heal, 0, window.player.maxHealthPoints);
-      return { ...state, potionUsed: true, message: `Mikstura leczy ${heal} HP.` };
+      return { ...state, message: `Mikstura leczy ${heal} HP.` };
     }
 
     const key = potion.effect === "accuracyPotion" ? "potionAccuracy" : "potionLifesteal";
     if (key === "potionLifesteal") window.player.lifesteal += potion.value;
-    return { ...state, effects: { ...state.effects, [key]: potion.duration }, potionUsed: true, message: `${potion.name} aktywowany na ${potion.duration} tur.` };
+    return { ...state, effects: { ...state.effects, [key]: potion.duration }, message: `${potion.name} aktywowany na ${potion.duration} tur.` };
   }
 
   window.BattleActions = {

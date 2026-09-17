@@ -5,7 +5,7 @@
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const roll = () => Math.floor(Math.random() * 100);
   const classId = () => window.player.classId || "assassin";
-  const abilitiesForPlayer = () => window.classAbilities?.[classId()] || [];
+  const abilitiesForPlayer = () => window.classAbilities?.[classId()]?.active || [];
 
   const magicEffects = (item) => item.effects
     || window.magicItems?.find((definition) => definition.id === item.id)?.effects

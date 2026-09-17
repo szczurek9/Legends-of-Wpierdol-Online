@@ -243,6 +243,22 @@
     return card;
   }
 
+  function createPassiveCard(passive) {
+    const card = document.createElement("article");
+    card.className = "shop-item";
+
+    const title = document.createElement("h4");
+    title.textContent = `${passive.name} (Pasywna)`;
+    card.appendChild(title);
+
+    const description = document.createElement("p");
+    description.className = "shop-description";
+    description.textContent = passive.description;
+    card.appendChild(description);
+
+    return card;
+  }
+
   function refresh() {
     const player = window.player;
     money.textContent = `💸 Hajs: ${player.money} $`;
@@ -254,8 +270,9 @@
     magicItems.replaceChildren(...visible(window.magicItems).map((item) => createItem(item, window.magicItems.indexOf(item), "magic")));
     potions.replaceChildren(...visible(window.shopPotions).map((item) => createItem(item, window.shopPotions.indexOf(item), "potion")));
 
-    const classSkills = window.classAbilities?.[currentClass()] || [];
-    abilities.replaceChildren(...visible(classSkills).map(createAbilityItem));
+    const classData = window.classAbilities?.[currentClass()] || {};
+    const passiveCard = classData.passive ? createPassiveCard(classData.passive) : null;
+    abilities.replaceChildren(...(passiveCard ? [passiveCard] : []), ...visible(classData.active || []).map(createAbilityItem));
 
     const searchTerm = search.value.trim().toLowerCase();
     const combinedItems = [

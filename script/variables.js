@@ -53,10 +53,3 @@ window.setStatusMessage = function (element, text, baseClass, type) {
   element.textContent = text;
   element.className = `${baseClass} ${type || ""}`.trim();
 };
-
-window.battle = {
-  currentWave: 0,
-  totalWaves: 0,
-  enemyHealth: 0,
-  enemyIndex: 0,
-};

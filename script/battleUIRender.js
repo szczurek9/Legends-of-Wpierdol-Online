@@ -120,7 +120,7 @@
     refs.attackButton.textContent = "⚔️ Atakuj (Q)";
     refs.abilitiesPanel.appendChild(refs.attackButton);
 
-    const classAbilities = window.classAbilities?.[window.player.classId] || [];
+    const classAbilities = window.classAbilities?.[window.player.classId]?.active || [];
     classAbilities.forEach((ability, abilityIndex) => {
       const button = document.createElement("button");
       button.type = "button";

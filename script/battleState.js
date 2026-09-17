@@ -23,15 +23,6 @@
     };
   }
 
-  // Keeps the small window.battle summary (used elsewhere for quick reads)
-  // in sync with the authoritative state object.
-  function updateBattleState(state) {
-    window.battle.currentWave = state.currentWave;
-    window.battle.totalWaves = state.totalWaves;
-    window.battle.enemyHealth = state.enemyHealth;
-    window.battle.enemyIndex = state.enemyIndex;
-  }
-
   function setCooldown(state, ability, value) {
     const cooldowns = { ...state.cooldowns, [ability.id]: value };
     return { ...state, cooldowns };
@@ -78,7 +69,6 @@
 
   window.BattleState = {
     startState,
-    updateBattleState,
     setCooldown,
     tickCooldowns,
   };

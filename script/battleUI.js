@@ -203,7 +203,7 @@
     if (["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
 
     const key = event.key.toLowerCase();
-    const classAbilities = window.classAbilities?.[window.player.classId] || [];
+    const classAbilities = window.classAbilities?.[window.player.classId]?.active || [];
     const keys = ["q", "w", "e", "r"];
     const abilityIndex = keys.indexOf(key);
 

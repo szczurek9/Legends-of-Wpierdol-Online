@@ -147,6 +147,22 @@
     return card;
   }
 
+  function createPassiveCard(passive) {
+    const card = document.createElement("article");
+    card.className = "shop-item";
+
+    const title = document.createElement("h4");
+    title.textContent = `${passive.name} (Pasywna)`;
+    card.appendChild(title);
+
+    const description = document.createElement("p");
+    description.className = "shop-description";
+    description.textContent = passive.description;
+    card.appendChild(description);
+
+    return card;
+  }
+
   function createAbilityCard(ability) {
     const card = document.createElement("article");
     card.className = "shop-item inventory-ability-card";
@@ -185,8 +201,9 @@
     if (selectedIndex !== null && !player.inventory[selectedIndex]) selectedIndex = null;
     weapons.replaceChildren(...player.inventory.map(createWeaponCard));
     magicItems.replaceChildren(...(player.magicInventory || []).map(createMagicCard));
-    const classAbilities = window.classAbilities?.[player.classId] || [];
-    abilities.replaceChildren(...classAbilities.map(createAbilityCard));
+    const classData = window.classAbilities?.[player.classId] || {};
+    const passiveCard = classData.passive ? createPassiveCard(classData.passive) : null;
+    abilities.replaceChildren(...(passiveCard ? [passiveCard] : []), ...(classData.active || []).map(createAbilityCard));
     sellButton.disabled = selectedIndex === null;
     window.refreshMainMenu();
   }
