@@ -289,7 +289,7 @@
   },
   {
     "level": 17,
-    "name": "Gracz League po 12 rankedach",
+    "name": "Malphite",
     "health": 550,
     "damage": 40,
     "attackChance": 52,
@@ -307,7 +307,7 @@
   },
   {
     "level": 18,
-    "name": "Akali main (tilt mode)",
+    "name": "Akali",
     "health": 650,
     "damage": 45,
     "attackChance": 54,
