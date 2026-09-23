@@ -24,23 +24,25 @@ body{
   margin:0; background:var(--bg); color:var(--text);
   font-family:"Segoe UI",system-ui,sans-serif;
   transition:background .3s ease;
+  /* Rezerwuje stałe miejsce z lewej strony na menu boczne dla całego widoku */
+  padding-left: 220px;
 }
 h1,h2,h3,.brand,.chip,button,nav a{ font-family:"Tagesschrift",system-ui; }
 h1{ font-family:"New Rocker",system-ui; }
 a{color:inherit;}
 
-/* Domyślny kontener główny dla wersji z lewym panelem */
+/* Kontener główny - idealnie wycentrowany w dostępnej przestrzeni */
 .wrap{
   max-width:960px; 
-  margin:0 auto 0 240px; 
+  margin:0 auto; 
   padding:0 16px 60px;
 }
 
 header.hero{
   background:linear-gradient(180deg, var(--shadow), var(--bg));
   border-bottom:1px solid var(--border);
-  padding:28px 16px 20px; text-align:center;
-  margin-left: 220px; /* Miejsce na panel boczny */
+  padding:28px 16px 20px; 
+  text-align:center;
 }
 header.hero h1{
   font-size:clamp(22px,5vw,34px); margin:0 0 4px; text-shadow:0 2px 8px var(--glow);
@@ -137,21 +139,20 @@ details .inner{padding:10px 14px;}
 .rarity-basic{color:#d7eeee;} .rarity-rare{color:#72b7ff;} .rarity-epic{color:#d39cff;}
 .rarity-mythic{color:#ff8cd8;} .rarity-legendary{color:#ffd45c;} .rarity-ultimate{color:#ff8a5b;}
 
-footer{ text-align:center; padding:24px 16px 40px; color:var(--muted); font-size:12px; margin-left:220px; }
+footer{ text-align:center; padding:24px 16px 40px; color:var(--muted); font-size:12px; }
 
 /* REPOZYCJONOWANIE I HAMBURGER DLA EKRANÓW MOBILNYCH (szerokość <= 768px) */
 @media (max-width: 768px) {
+  body {
+    padding-left: 0; /* Zerujemy lewy padding body na mobilkach */
+  }
+
   .nav-toggle {
     display: block; /* Pokazujemy przycisk na telefonach */
   }
 
   header.hero {
-    margin-left: 0;
-    padding-top: 60px; /* Dodatkowy margines górny, aby przycisk nie przesłaniał tytułu */
-  }
-
-  .wrap, footer {
-    margin-left: 0; /* Resetujemy lewy margines */
+    padding-top: 60px; /* Dodatkowy margines górny dla nagłówka pod przycisk */
   }
 
   nav.toc {
@@ -503,8 +504,6 @@ Kupowane za Skin Pointy, część należy do tematycznych kolekcji (np. Cyberpun
 <footer>Copyright © 2026 <a href="https://github.com/MSLG-Studios" target="_blank" rel="noopener noreferrer">MSLG Studios</a> | Wiki made by: <a href="https://github.com/szczurek9" target="_blank" rel="noopener noreferrer">@szczurek9</a></footer>
 
 <script>
-// Użycie Bloku IIFE (Immediately Invoked Function Expression)
-// zabezpiecza zmienne przed ponowną deklaracją w przypadku zduplikowania skryptu
 (function() {
   const navToggleBtn = document.getElementById('navToggle');
   const tocNavElem = document.querySelector('nav.toc');
