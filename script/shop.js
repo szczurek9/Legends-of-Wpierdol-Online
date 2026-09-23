@@ -7,6 +7,7 @@
   const currentWeapon = document.getElementById("shop-current-weapon-value");
   const search = document.getElementById("shop-search");
   const weapons = document.getElementById("shop-weapons");
+  const adItems = document.getElementById("shop-ad-items");
   const skills = document.getElementById("shop-skills");
   const magicItems = document.getElementById("shop-magic-items");
   const abilities = document.getElementById("shop-abilities");
@@ -17,6 +18,7 @@
   const sections = {
     all: document.getElementById("shop-all-section"),
     weapons: document.getElementById("shop-weapons-section"),
+    ad: document.getElementById("shop-ad-section"),
     skills: document.getElementById("shop-skills-section"),
     magic: document.getElementById("shop-magic-section"),
     abilities: document.getElementById("shop-abilities-section"),
@@ -54,6 +56,18 @@
     return window.player.magicInventory.filter(isMagicEquipped).length;
   }
 
+  function weaponDamage(weapon) {
+    return Math.floor((weapon.baseDamage ?? weapon.damage ?? 0) + (window.player.ad || 0) * (weapon.adScaling || 0));
+  }
+
+  function adjustAdEffects(item, direction) {
+    const p = window.player;
+    const amount = (key) => Number(item[key] || 0) * direction;
+    p.ad += amount("ad"); p.armorPenetration += amount("armorPenetration");
+    p.armorPenetrationPercent += amount("armorPenetrationPercent");
+    p.critChance += amount("critChance"); p.bonusAccuracy += amount("accuracy"); p.lifesteal += amount("lifesteal");
+  }
+
   function adjustMagicEffects(item, direction) {
     const effects = item.effects || {};
     const player = window.player;
@@ -77,10 +91,21 @@
   function buyWeapon(index) {
     const weapon = window.shopWeapons[index];
     const player = window.player;
+    if (player.classId === "mage") return showMessage("Mag nie może korzystać z broni.", "warning");
+    if (weapon.unique) return showMessage("Unikalne bronie można zdobyć wyłącznie z lootboxa.", "warning");
+    if (weapon.lootbox === "uniqueWeapon") {
+      const available = window.shopWeapons.filter((item) => item.unique && !player.inventory.some((owned) => owned.id === item.id));
+      if (!available.length) return showMessage("Posiadasz już wszystkie unikalne bronie.", "warning");
+      if (player.money < weapon.price) return showMessage("Za mało hajsu!", "danger");
+      const reward = available[Math.floor(Math.random() * available.length)];
+      player.money -= weapon.price; player.inventory.push({ ...reward });
+      refresh(); if (window.refreshInventory) window.refreshInventory();
+      return showMessage(`Lootbox zawierał: ${reward.name}!`, "success");
+    }
 
     if (player.inventory.some((ownedWeapon) => ownedWeapon.name === weapon.name)) {
       player.weaponName = weapon.name;
-      player.weaponDmg = weapon.damage;
+      player.weaponId = weapon.id; player.weaponDmg = weaponDamage(weapon); player.weaponBaseDamage = weapon.baseDamage; player.weaponAdScaling = weapon.adScaling; player.weaponType = weapon.type;
       refresh();
       if (window.refreshInventory) window.refreshInventory();
       return showMessage(`Wyposażono: ${weapon.name}.`, "success");
@@ -96,10 +121,23 @@
     player.money -= weapon.price;
     player.inventory.push({ ...weapon });
     player.weaponName = weapon.name;
-    player.weaponDmg = weapon.damage;
+    player.weaponId = weapon.id; player.weaponDmg = weaponDamage(weapon); player.weaponBaseDamage = weapon.baseDamage; player.weaponAdScaling = weapon.adScaling; player.weaponType = weapon.type;
     refresh();
     if (window.refreshInventory) window.refreshInventory();
     showMessage(`Kupiono: ${weapon.name}!`, "success");
+  }
+
+  function buyAdItem(index) {
+    const item = window.adItems[index];
+    const p = window.player;
+    if (p.classId === "mage") return showMessage("Mag nie może korzystać z przedmiotów AD.", "warning");
+    if (item.unique && p.adItemInventory.some((owned) => owned.id === item.id)) return showMessage("Ten przedmiot jest unikalny.", "warning");
+    if (p.money < item.price) return showMessage("Za mało hajsu!", "danger");
+    p.money -= item.price;
+    const instance = { ...item, uid: `${item.id}-${Date.now()}-${Math.random()}`, equipped: false };
+    if (p.equippedAdItems.length < p.adItemSlots) { instance.equipped = true; p.equippedAdItems.push(instance.uid); adjustAdEffects(instance, 1); }
+    p.adItemInventory.push(instance); refresh(); if (window.refreshInventory) window.refreshInventory();
+    showMessage(instance.equipped ? `Kupiono i wyposażono: ${item.name}.` : `Kupiono: ${item.name}. Brak wolnego slotu.`, "success");
   }
 
   function skillBlocked(skill) {
@@ -199,7 +237,7 @@
     card.appendChild(title);
 
     const details = document.createElement("p");
-    details.textContent = kind === "weapon" ? `${item.damage} DMG | ${item.price} $` : `${kind === "magic" ? magicPrice(item) : item.price} $`;
+    details.textContent = kind === "weapon" ? (item.lootbox ? `${item.price} $ | losowa unikalna broń` : `${item.baseDamage} DMG +${Math.round(item.adScaling * 100)}% AD | ${item.price} $`) : `${kind === "magic" ? magicPrice(item) : item.price} $`;
     card.appendChild(details);
 
     const description = document.createElement("p");
@@ -214,6 +252,7 @@
     button.disabled = kind === "ability" || blocked;
     button.addEventListener("click", () => {
       if (kind === "weapon") buyWeapon(index);
+      if (kind === "ad") buyAdItem(index);
       if (kind === "skill") buySkill(index);
       if (kind === "magic") buyMagicItem(index);
       if (kind === "potion") buyPotion(index);
@@ -262,10 +301,15 @@
   function refresh() {
     const player = window.player;
     money.textContent = `💸 Hajs: ${player.money} $`;
-    currentWeapon.textContent = `${player.weaponName} | ${player.weaponDmg} DMG`;
-    player.magicItemSlots = player.classId === "mage" ? 8 : 4;
+    currentWeapon.textContent = `${player.weaponName} | ${weaponDamage({ baseDamage: player.weaponBaseDamage || player.weaponDmg, adScaling: player.weaponAdScaling || 0 })} DMG | ${player.weaponType || "M"}`;
+    player.magicItemSlots = player.classId === "mage" ? 8 : 2;
+    player.adItemSlots = player.classId === "mage" ? 0 : 6;
+    tabs.forEach((tab) => {
+      tab.classList.toggle("hidden", player.classId === "mage" && ["weapons", "ad"].includes(tab.dataset.category));
+    });
 
-    weapons.replaceChildren(...visible(window.shopWeapons).map((item) => createItem(item, window.shopWeapons.indexOf(item), "weapon")));
+    weapons.replaceChildren(...(player.classId === "mage" ? [] : visible(window.shopWeapons.filter((item) => !item.unique || item.lootbox)).map((item) => createItem(item, window.shopWeapons.indexOf(item), "weapon"))));
+    adItems.replaceChildren(...(player.classId === "mage" ? [] : visible(window.adItems || []).map((item) => createItem(item, window.adItems.indexOf(item), "ad"))));
     skills.replaceChildren(...visible(window.shopSkills).map((item) => createItem(item, window.shopSkills.indexOf(item), "skill")));
     magicItems.replaceChildren(...visible(window.magicItems).map((item) => createItem(item, window.magicItems.indexOf(item), "magic")));
     potions.replaceChildren(...visible(window.shopPotions).map((item) => createItem(item, window.shopPotions.indexOf(item), "potion")));
@@ -276,7 +320,8 @@
 
     const searchTerm = search.value.trim().toLowerCase();
     const combinedItems = [
-      ...window.shopWeapons.map((item, index) => ({ item, index, kind: "weapon" })),
+      ...(window.player.classId === "mage" ? [] : window.shopWeapons.filter((item) => !item.unique || item.lootbox).map((item) => ({ item, index: window.shopWeapons.indexOf(item), kind: "weapon" }))),
+      ...(window.player.classId === "mage" ? [] : (window.adItems || []).map((item, index) => ({ item, index, kind: "ad" }))),
       ...window.magicItems.map((item, index) => ({ item, index, kind: "magic" })),
       ...window.shopSkills.map((item, index) => ({ item, index, kind: "skill" })),
       ...window.shopPotions.map((item, index) => ({ item, index, kind: "potion" })),
@@ -315,5 +360,6 @@
   backButton.addEventListener("click", closeShop);
 
   window.adjustMagicEffects = adjustMagicEffects;
+  window.adjustAdEffects = adjustAdEffects;
   window.refreshShop = refresh;
 })();

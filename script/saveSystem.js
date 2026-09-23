@@ -6,7 +6,7 @@
     if (!player || typeof player !== "object") return false;
 
     const numericFields = [
-      "money", "skinPoints", "level", "weaponDmg", "healthPoints", "maxHealthPoints",
+      "money", "skinPoints", "level", "weaponDmg", "weaponBaseDamage", "weaponAdScaling", "ad", "adItemSlots", "armorPenetrationPercent", "yamatoExecuteCap", "healthPoints", "maxHealthPoints",
       "armorPoints", "bonusArmor", "magicResistance", "critChance", "armorPenetration", "magicPenetration",
       "manaPoints", "maxManaPoints", "manaRegenPercent", "abilityPower", "magicAbilityPower",
       "lifesteal", "bonusLifesteal", "magicLifesteal", "bonusAccuracy", "bonusDodge", "armorCap", "overkillPool",
@@ -21,12 +21,9 @@
       && Array.isArray(player.skinInventory)
       && player.skinInventory.every((skinId) => typeof skinId === "string")
       && Array.isArray(player.inventory)
-      && player.inventory.every((weapon) => weapon
-        && typeof weapon.name === "string"
-        && Number.isFinite(weapon.damage)
-        && Number.isFinite(weapon.price)
-        && weapon.damage >= 0
-        && weapon.price >= 0)
+      && player.inventory.every((weapon) => weapon && typeof weapon.name === "string" && Number.isFinite(weapon.price))
+      && Array.isArray(player.adItemInventory)
+      && Array.isArray(player.equippedAdItems)
       && Array.isArray(player.magicInventory)
       && player.magicInventory.every((item) => item && typeof item.id === "string")
       && Array.isArray(player.equippedMagicItems)
@@ -38,8 +35,6 @@
       && numericFields.every((field) => Number.isFinite(player[field]) && player[field] >= 0)
       && player.maxHealthPoints > 0
       && player.healthPoints <= player.maxHealthPoints
-      && player.lifesteal <= 20
-      && player.bonusAccuracy <= 30
       && player.critChance <= 100
       && player.skinPoints >= 0;
   }
@@ -78,7 +73,13 @@
     });
 
     if (!Array.isArray(player.potionInventory)) player.potionInventory = [];
-    player.magicItemSlots = player.classId === "mage" ? 8 : 4;
+    player.magicItemSlots = player.classId === "mage" ? 8 : 2;
+    player.adItemSlots = player.classId === "mage" ? 0 : 6;
+    if (!Array.isArray(player.adItemInventory)) player.adItemInventory = [];
+    if (!Array.isArray(player.equippedAdItems)) player.equippedAdItems = [];
+    if (typeof player.ad !== "number") player.ad = 0;
+    if (typeof player.armorPenetrationPercent !== "number") player.armorPenetrationPercent = 0;
+    if (typeof player.yamatoExecuteCap !== "number") player.yamatoExecuteCap = 5;
 
     if (player.classId === "assassin" && typeof player.armorCap !== "number") player.armorCap = 60;
     if (typeof player.magicResistance !== "number") player.magicResistance = 0;

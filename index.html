@@ -94,6 +94,7 @@
             <div class="shop-layout">
             <div class="shop-category-tabs" role="tablist" aria-label="Kategorie sklepu">
                 <button class="shop-category active" data-category="weapons" type="button">⚔️ Bronie</button>
+                <button class="shop-category" data-category="ad" type="button">🟥 Przedmioty AD</button>
                 <button class="shop-category" data-category="magic" type="button">🔮 Magiczne</button>
                 <button class="shop-category" data-category="skills" type="button">✨ Wzmocnienia</button>
                 <button class="shop-category" data-category="abilities" type="button">📜 Umiejętności</button>
@@ -110,6 +111,11 @@
                 <div id="shop-weapons-section" class="shop-section">
                     <h3>⚔️ Broń</h3>
                     <div id="shop-weapons" class="shop-items"></div>
+                </div>
+
+                <div id="shop-ad-section" class="shop-section hidden">
+                    <h3>🟥 Przedmioty AD</h3>
+                    <div id="shop-ad-items" class="shop-items"></div>
                 </div>
 
                 <div id="shop-skills-section" class="shop-section hidden">
@@ -209,6 +215,10 @@
                 <article class="inventory-magic">
                     <h3>Magiczne przedmioty</h3>
                     <div id="inventory-magic-items" class="shop-items"></div>
+                </article>
+                <article class="inventory-ad">
+                    <h3>Przedmioty AD</h3>
+                    <div id="inventory-ad-items" class="shop-items"></div>
                 </article>
                 <article class="inventory-abilities">
                     <h3>Umiejętności klasowe</h3>

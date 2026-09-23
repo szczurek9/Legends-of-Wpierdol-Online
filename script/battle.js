@@ -24,6 +24,7 @@
     },
 
     useAbility: A.useAbility,
+    useWeaponAbility: A.useWeaponAbility,
     usePotion: A.usePotion,
     enemyTurn: A.enemyTurn,
 
@@ -52,6 +53,10 @@
         enemyHealth: Math.floor(state.enemyMaxHealth * scale),
         enemyMaxHealth: Math.floor(state.enemyMaxHealth * scale),
         enemyDamage: enemy.isBoss ? Math.floor(state.enemyDamage * 1.15) : state.enemyDamage,
+        weaponAttackCount: 0,
+        yamatoJudgementStacks: 0,
+        jhinPool: 0,
+        jhinAttackCount: 0,
         enemyDefeated: false,
         reward: enemy.reward,
         message: "Przeciwnik pokonany! Nadchodzi następna fala.",

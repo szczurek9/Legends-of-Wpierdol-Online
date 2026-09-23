@@ -2,7 +2,7 @@
   const SAVE_VERSION = 1;
 
   const numberFields = [
-    "money", "level", "skinPoints", "weaponDmg", "healthPoints", "maxHealthPoints", "armorPoints", "bonusArmor",
+    "money", "level", "skinPoints", "weaponDmg", "weaponBaseDamage", "weaponAdScaling", "ad", "adItemSlots", "armorPenetrationPercent", "yamatoExecuteCap", "healthPoints", "maxHealthPoints", "armorPoints", "bonusArmor",
     "magicResistance", "critChance", "armorPenetration", "magicPenetration", "manaPoints", "maxManaPoints",
     "manaRegenPercent", "abilityPower", "magicLifesteal", "lifesteal", "bonusLifesteal", "bonusAccuracy", "bonusDodge",
     "armorCap", "magicItemSlots",
@@ -69,7 +69,7 @@
     if (numberFields.some((name) => !Number.isFinite(player[name]) || player[name] < 0)) {
       throw new Error("Wartości liczbowe muszą być nieujemne.");
     }
-    if (player.lifesteal > 20 || player.magicLifesteal > window.SaveCodec.magicLifestealCap(player) || player.critChance > 100 || player.bonusAccuracy > 30) {
+    if (player.magicLifesteal > window.SaveCodec.magicLifestealCap(player) || player.critChance > 100) {
       throw new Error("Przekroczono limit jednej ze statystyk.");
     }
     return player;
@@ -87,6 +87,10 @@
       skinInventory: csvList("skinInventory"),
       weaponName: field("weaponName").value.trim() || "Pięści",
       weaponDmg: number("weaponDmg"),
+      weaponId: "fists",
+      weaponBaseDamage: number("weaponDmg"), weaponAdScaling: 0.01, weaponType: "M",
+      ad: 0, adItemInventory: [], equippedAdItems: [], adItemSlots: field("classId").value === "mage" ? 0 : 6,
+      armorPenetrationPercent: 0, yamatoExecuteCap: 5,
       inventory: jsonArray("inventory", "Ekwipunek broni"),
       magicInventory: jsonArray("magicInventory", "Magiczne przedmioty"),
       equippedMagicItems: jsonArray("equippedMagicItems", "Wyposażone magiczne przedmioty"),
@@ -110,7 +114,7 @@
       bonusAccuracy: number("bonusAccuracy"),
       bonusDodge: number("bonusDodge"),
       armorCap: number("armorCap"),
-      magicItemSlots: number("magicItemSlots"),
+      magicItemSlots: field("classId").value === "mage" ? 8 : 2,
       overkillPool: 0,
       adeptBookStacks: 0,
       adeptBookStackLimit: 30,

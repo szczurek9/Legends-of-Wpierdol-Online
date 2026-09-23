@@ -7,7 +7,8 @@
 
 .inventory-current,
 .inventory-owned,
-.inventory-magic {
+.inventory-magic,
+.inventory-ad {
     grid-column: 1;
 }
 
@@ -17,7 +18,8 @@
 }
 
 .inventory-magic,
-.inventory-abilities {
+.inventory-abilities,
+.inventory-ad {
     min-width: 0;
     margin-top: 14px;
 }
@@ -91,4 +93,3 @@
     grid-template-columns: 1fr 1fr;
     gap: 8px;
 }
-

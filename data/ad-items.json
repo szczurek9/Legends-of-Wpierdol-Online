@@ -1,0 +1,10 @@
+[
+  {"id":"assassinRingAd","name":"Pierścień Zabójcy","price":750,"description":"+65 AD, +10 płaskiego przebicia pancerza, +10% szansy na krytyka.","ad":65,"armorPenetration":10,"critChance":10},
+  {"id":"flameBlade","name":"Ostrze Płomieni","price":1400,"description":"+80 AD, +30% przebicia pancerza, +10 celności.","ad":80,"armorPenetrationPercent":30,"accuracy":10,"unique":true},
+  {"id":"snakeFang","name":"Kieł Węża","price":2100,"description":"+100 AD, +20% lifestealu. Co 5 atak nakłada niezaczepiające się zatrucie.","ad":100,"lifesteal":20,"unique":true,"special":"snakeFang"},
+  {"id":"shadowArrows","name":"Strzały Cienii","price":3000,"description":"+150 AD, +20% szansy na krytyka. Co 2 atak krytyczny zadaje x1.8 obrażeń.","ad":150,"critChance":20,"unique":true,"special":"shadowArrows"},
+  {"id":"bloodyCannon","name":"Krwawa Armata","price":2800,"description":"+200 AD, +20% szansy na krytyka, +15 przebicia pancerza, +5 celności.","ad":200,"critChance":20,"armorPenetration":15,"accuracy":5},
+  {"id":"assassinCloakAd","name":"Płaszcz Zabójcy","price":3600,"description":"+180 AD, +30% szansy na krytyka. Wrogowie poniżej 30% HP otrzymują 20% więcej obrażeń.","ad":180,"critChance":30,"unique":true,"special":"assassinCloakAd"},
+  {"id":"wolfGrip","name":"Uchwyt Wilka","price":2600,"description":"+150 AD, +20% crit, +20% lifestealu. Każdy atak zadaje 10 + 10% AD dodatkowych obrażeń.","ad":150,"critChance":20,"lifesteal":20,"bonusDamage":10,"bonusDamageAdScaling":0.10},
+  {"id":"nightPower","name":"Potęga Nocy","price":3300,"description":"+170 AD, +15 przebicia pancerza. Co 5 atak zadaje 10 + 10% AD obrażeń nieuchronnych.","ad":170,"armorPenetration":15,"unique":true,"special":"nightPower"}
+]

@@ -203,6 +203,16 @@
     if (["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
 
     const key = event.key.toLowerCase();
+    if (event.code === "Space") {
+      event.preventDefault();
+      if (!canAct()) return;
+      const result = window.BattleSystem.useWeaponAbility(state);
+      state = result;
+      render();
+      if (result.enemyDefeated) showMessage(`${result.message} Pokonano przeciwnika!`, "success");
+      else showMessage(result.message);
+      return;
+    }
     const classAbilities = window.classAbilities?.[window.player.classId]?.active || [];
     const keys = ["q", "w", "e", "r"];
     const abilityIndex = keys.indexOf(key);

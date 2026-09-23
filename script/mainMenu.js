@@ -17,7 +17,8 @@ function refreshMainMenu() {
   mainMoney.textContent = `💸 Hajs: ${window.player.money} $`;
   mainLevel.textContent = `⚡ LVL: ${window.player.level}`;
   mainSkinPoints.textContent = `🎨 SP: ${window.player.skinPoints}`;
-  mainWeapon.textContent = `🔫 Broń ${window.player.weaponName} | ${window.player.weaponDmg} DMG`;
+  const currentWeaponDamage = Math.floor((window.player.weaponBaseDamage || window.player.weaponDmg) + (window.player.ad || 0) * (window.player.weaponAdScaling || 0));
+  mainWeapon.textContent = `🔫 Broń ${window.player.weaponName} | ${currentWeaponDamage} DMG | AD: ${window.player.ad || 0}`;
   mainDefenseStats.textContent = `❤️ HP: ${window.player.healthPoints} | 🛡️ Pancerz: ${window.player.armorPoints}`;
   mainOffenseStats.textContent = `💥 Crit: ${window.player.critChance}% | 🗡️ Armor Pen: ${window.player.armorPenetration}`;
   mainMagicStats.textContent = `🔷 Mana: ${window.player.manaPoints} | ⭐ Moc umiejętności: ${window.player.abilityPower}`;
@@ -111,7 +112,8 @@ startButton.addEventListener("click", () => {
   window.player.classId = classSelect.value;
   const selectedClass = window.gameClasses?.find((item) => item.id === window.player.classId);
   window.player.armorCap = selectedClass?.armorCap || 90;
-  window.player.magicItemSlots = window.player.classId === "mage" ? 8 : 4;
+  window.player.magicItemSlots = window.player.classId === "mage" ? 8 : 2;
+  window.player.adItemSlots = window.player.classId === "mage" ? 0 : 6;
   if (window.player.classId === "mage") {
     window.player.maxManaPoints = 320;
     window.player.manaPoints = 320;

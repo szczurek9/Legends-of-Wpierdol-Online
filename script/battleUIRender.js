@@ -97,7 +97,8 @@
     refs.playerManaValue.textContent = `${player.manaPoints} / ${player.maxManaPoints}`;
     setBar(refs.playerManaBar, player.manaPoints, player.maxManaPoints);
     renderPlayerModel(refs, false);
-    refs.playerWeapon.textContent = `⚔️: ${player.weaponName} - ${player.weaponDmg} DMG | 💥: ${player.critChance}% | 🗡️: ${player.armorPenetration}`;
+    const currentWeaponDamage = window.BattleMath.currentWeaponDamage();
+    refs.playerWeapon.textContent = `⚔️: ${player.weaponName} - ${currentWeaponDamage} DMG | AD: ${player.ad} | 💥: ${player.critChance}% | 🗡️: ${player.armorPenetration}`;
 
     const manaRegen = Math.floor(player.maxManaPoints * 0.03 * (1 + Math.max(0, player.manaRegenPercent || 0) / 100));
     const effectiveAP = window.BattleSystem.getEffectiveAbilityPower ? window.BattleSystem.getEffectiveAbilityPower() : player.abilityPower + player.adeptBookStacks;

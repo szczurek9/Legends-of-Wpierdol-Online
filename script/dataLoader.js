@@ -32,8 +32,9 @@
     fetch("data/magic-items.json").then((response) => response.json()),
     fetch("data/potions.json").then((response) => response.json()),
     fetch("data/abilities.json").then((response) => response.json()),
+    fetch("data/ad-items.json").then((response) => response.json()),
   ])
-    .then(([weapons, enemies, skills, skins, classes, magicItems, potions, abilities]) => {
+    .then(([weapons, enemies, skills, skins, classes, magicItems, potions, abilities, adItems]) => {
       window.shopWeapons = weapons;
       window.enemies = enemies;
       window.shopSkills = skills;
@@ -42,6 +43,7 @@
       window.magicItems = magicItems;
       window.shopPotions = potions;
       window.classAbilities = abilities;
+      window.adItems = adItems;
 
       gameplayButtons.forEach((button) => { button.disabled = false; });
       if (startButton) startButton.textContent = "Graj";

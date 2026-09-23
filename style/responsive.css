@@ -82,6 +82,7 @@
     .inventory-current,
     .inventory-owned,
     .inventory-magic,
+    .inventory-ad,
     .inventory-abilities {
         grid-column: 1;
         grid-row: auto;
@@ -224,4 +225,3 @@
         line-height: 1.35;
     }
 }
-

@@ -11,6 +11,7 @@
   const weapons = document.getElementById("inventory-weapons");
   const message = document.getElementById("inventory-message");
   const magicItems = document.getElementById("inventory-magic-items");
+  const adItems = document.getElementById("inventory-ad-items");
   const abilities = document.getElementById("inventory-abilities");
   let selectedIndex = null;
 
@@ -28,7 +29,11 @@
     if (!weapon) return;
 
     window.player.weaponName = weapon.name;
-    window.player.weaponDmg = weapon.damage;
+    window.player.weaponBaseDamage = weapon.baseDamage;
+    window.player.weaponId = weapon.id;
+    window.player.weaponAdScaling = weapon.adScaling;
+    window.player.weaponType = weapon.type;
+    window.player.weaponDmg = Math.floor(weapon.baseDamage + window.player.ad * weapon.adScaling);
     selectedIndex = index;
     refresh();
     showMessage(`Wyposażono: ${weapon.name}.`, "success");
@@ -46,7 +51,7 @@
 
     const details = document.createElement("p");
     const salePrice = Math.round(weapon.price * 0.4);
-    details.textContent = `${weapon.damage} DMG | Sprzedaż: ${salePrice} $`;
+    details.textContent = `${weapon.baseDamage} DMG +${Math.round(weapon.adScaling * 100)}% AD | Sprzedaż: ${weapon.unique ? "brak" : `${salePrice} $`}`;
     card.appendChild(details);
 
     const status = document.createElement("p");
@@ -147,6 +152,31 @@
     return card;
   }
 
+  function toggleAdItem(index) {
+    const item = window.player.adItemInventory[index];
+    if (!item) return;
+    if (item.equipped) {
+      item.equipped = false;
+      window.player.equippedAdItems = window.player.equippedAdItems.filter((uid) => uid !== item.uid);
+      window.adjustAdEffects(item, -1);
+    } else if (window.player.equippedAdItems.length >= window.player.adItemSlots) {
+      showMessage("Brak wolnego slotu AD.", "warning"); return;
+    } else {
+      item.equipped = true; window.player.equippedAdItems.push(item.uid); window.adjustAdEffects(item, 1);
+    }
+    refresh();
+  }
+
+  function createAdCard(item, index) {
+    const card = document.createElement("article"); card.className = "shop-item inventory-item";
+    if (item.equipped) card.classList.add("inventory-item-equipped");
+    const title = document.createElement("h4"); title.textContent = item.name; card.appendChild(title);
+    const details = document.createElement("p"); details.textContent = `${item.equipped ? "Wyposażony" : "W torbie"}${item.unique ? " | Unique" : ""}`; card.appendChild(details);
+    const description = document.createElement("p"); description.className = "shop-description"; description.textContent = item.description; card.appendChild(description);
+    const button = document.createElement("button"); button.type = "button"; button.textContent = item.equipped ? "Zdejmij" : "Wyposaż"; button.addEventListener("click", () => toggleAdItem(index)); card.appendChild(button);
+    return card;
+  }
+
   function createPassiveCard(passive) {
     const card = document.createElement("article");
     card.className = "shop-item";
@@ -193,7 +223,7 @@
     const player = window.player;
     money.textContent = `💸 Hajs: ${player.money} $`;
     currentName.textContent = player.weaponName;
-    currentStats.textContent = `${player.weaponDmg} DMG`;
+    currentStats.textContent = `${Math.floor((player.weaponBaseDamage || player.weaponDmg) + (player.ad || 0) * (player.weaponAdScaling || 0))} DMG | ${player.weaponType || "M"} | AD: ${player.ad || 0}`;
     currentNote.textContent = player.weaponName === "Pięści"
       ? "Broń domyślna — niezbywalna"
       : "Aktualnie wyposażona";
@@ -201,6 +231,7 @@
     if (selectedIndex !== null && !player.inventory[selectedIndex]) selectedIndex = null;
     weapons.replaceChildren(...player.inventory.map(createWeaponCard));
     magicItems.replaceChildren(...(player.magicInventory || []).map(createMagicCard));
+    adItems.replaceChildren(...(player.adItemInventory || []).map(createAdCard));
     const classData = window.classAbilities?.[player.classId] || {};
     const passiveCard = classData.passive ? createPassiveCard(classData.passive) : null;
     abilities.replaceChildren(...(passiveCard ? [passiveCard] : []), ...(classData.active || []).map(createAbilityCard));
@@ -219,8 +250,12 @@
       showMessage("Pięści są bronią domyślną i nie można ich sprzedać.", "warning");
       return;
     }
+    if (weapon.unique) {
+      showMessage("Unikalnych broni nie można sprzedawać.", "warning");
+      return;
+    }
 
-    const salePrice = Math.round(weapon.price * 0.4);
+      const salePrice = Math.round(weapon.price * 0.4);
     const wasEquipped = weapon.name === window.player.weaponName;
     window.player.inventory.splice(selectedIndex, 1);
     window.player.money += salePrice;
@@ -228,7 +263,11 @@
 
     if (wasEquipped) {
       window.player.weaponName = "Pięści";
+      window.player.weaponId = "fists";
       window.player.weaponDmg = 3;
+      window.player.weaponBaseDamage = 3;
+      window.player.weaponAdScaling = 0.01;
+      window.player.weaponType = "M";
     }
 
     refresh();

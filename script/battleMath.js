@@ -24,8 +24,9 @@
     return power;
   }
 
-  function physicalDamage(rawDamage, armor, penetration) {
-    const effectiveArmor = Math.max(0, armor - penetration);
+  function physicalDamage(rawDamage, armor, penetration, penetrationPercent = 0) {
+    const percentReducedArmor = armor * (1 - penetrationPercent / 100);
+    const effectiveArmor = Math.max(0, percentReducedArmor - penetration);
     const reduction = effectiveArmor / (effectiveArmor + 100);
     return Math.max(1, Math.floor(rawDamage * (1 - reduction)));
   }
@@ -43,6 +44,11 @@
     const restored = Math.floor(maxMana * 0.03 * bonus);
     player.manaPoints = clamp((Number(player.manaPoints) || 0) + restored, 0, maxMana);
     return restored;
+  }
+
+  function currentWeaponDamage() {
+    const p = window.player;
+    return Math.max(1, Math.floor((p.weaponBaseDamage || p.weaponDmg || 0) + (p.ad || 0) * (p.weaponAdScaling || 0)));
   }
 
   function payMana(player, amount) {
@@ -101,6 +107,7 @@
     physicalDamage,
     magicDamage,
     regenMana,
+    currentWeaponDamage,
     payMana,
     recordSpellCast,
     damageHeal,

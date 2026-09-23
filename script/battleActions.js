@@ -8,8 +8,19 @@
     const enemy = window.enemies[state.enemyIndex];
     const accuracyBonus = (state.effects.accuracy || 0) + (state.effects.potionAccuracy || 0);
     const accuracy = M.clamp((enemy.playerAttackChance ?? (100 - enemy.dodgeChance)) + player.bonusAccuracy + accuracyBonus, 0, 100);
+    const nextWeaponAttackCount = (state.weaponAttackCount || 0) + 1;
+    const fourthJhinAttack = player.weaponId === "jhinPistol" && nextWeaponAttackCount % 4 === 0;
+    const nextJhinPool = player.weaponId === "jhinPistol" && fourthJhinAttack
+      ? (state.jhinPool || 0) + Math.floor(44 + player.ad * 0.044)
+      : state.jhinPool || 0;
+    const nextYamatoStacks = player.weaponId === "yamato" && nextWeaponAttackCount % 6 === 0
+      ? (state.yamatoJudgementStacks || 0) + 1
+      : state.yamatoJudgementStacks || 0;
+    const equippedAd = (player.adItemInventory || []).filter((item) => item.equipped);
+    const hasAdItem = (id) => equippedAd.some((item) => item.id === id);
+    const snakePoisonAttack = hasAdItem("snakeFang") && nextWeaponAttackCount % 5 === 0;
 
-    if (M.roll() >= accuracy) {
+    if (!fourthJhinAttack && M.roll() >= accuracy) {
       const missMessage = "Przeciwnik uniknął twojego ataku!";
       return { ...state, enemyDefeated: false, heal: 0, missed: true, playerMessage: missMessage, message: missMessage };
     }
@@ -17,7 +28,8 @@
     let multiplier = 1;
     if (M.classId() === "assassin") multiplier += 0.10;
     if (M.classId() === "samurai") multiplier += 0.15;
-    if (M.classId() === "tank" && player.weaponDmg > 500) multiplier -= state.effects.ironTaunt ? 0.20 : 0.25;
+    const weaponDamage = Math.max(1, Math.floor((player.weaponBaseDamage || player.weaponDmg) + player.ad * (player.weaponAdScaling || 0)));
+    if (M.classId() === "tank" && weaponDamage > 500) multiplier -= state.effects.ironTaunt ? 0.20 : 0.25;
     if (state.senMode === "chikara") multiplier += 0.075;
 
     // Samurai's "Sen no Kata" defensive stance: every third attack while in
@@ -33,18 +45,34 @@
     }
 
     const naturalCritical = M.roll() < player.critChance;
-    const critical = Boolean(options.forceCritical) || naturalCritical;
+    const jhinFourCrit = player.weaponId === "jhinPistol" && M.roll() < 4;
+    const critical = Boolean(options.forceCritical) || naturalCritical || jhinFourCrit;
     const superCritical = Boolean(options.forceCritical && naturalCritical);
     if (critical) {
       const baseCritMultiplier = M.classId() === "samurai" ? 1.2 : 1.5;
-      multiplier *= options.critMultiplierOverride ?? (superCritical ? 2.25 : baseCritMultiplier);
+      multiplier *= jhinFourCrit ? 4 : (options.critMultiplierOverride ?? (superCritical ? 2.25 : baseCritMultiplier));
     }
+    if (hasAdItem("shadowArrows") && critical && nextWeaponAttackCount % 2 === 0) multiplier *= 1.8;
+    if (hasAdItem("assassinCloakAd") && state.enemyHealth <= state.enemyMaxHealth * 0.30) multiplier *= 1.2;
 
-    const rawDamage = Math.max(1, Math.floor(player.weaponDmg * multiplier * (senBōeiAttack ? 0.1 : 1)));
+    const wolfCount = equippedAd.filter((item) => item.id === "wolfGrip").length;
+    const rawDamage = Math.max(1, Math.floor((weaponDamage * multiplier + wolfCount * (10 + player.ad * 0.10)) * (senBōeiAttack ? 0.1 : 1)));
+    let extraMagicDamage = 0;
+    if (player.weaponId === "jhinPistol" && fourthJhinAttack) extraMagicDamage = Math.floor(player.ad * 0.44 * (critical ? 1.2 : 1));
+    if (player.weaponId === "yamato") extraMagicDamage = Math.floor(150 + player.abilityPower * 0.60);
     const primalReady = M.classId() === "assassin" && player.overkillPool >= state.enemyMaxHealth * 0.5;
     const armorPen = player.armorPenetration;
-    const damage = M.physicalDamage(rawDamage, state.enemyArmor * (primalReady ? 0.2 : 1), armorPen);
-    const result = M.applyDamageToEnemy(state, damage);
+    const damage = M.physicalDamage(rawDamage, state.enemyArmor * (primalReady ? 0.2 : 1), armorPen, player.armorPenetrationPercent || 0);
+    let result = M.applyDamageToEnemy(state, damage);
+    if (hasAdItem("nightPower") && nextWeaponAttackCount % 5 === 0 && !result.state.enemyDefeated) {
+      const trueDamage = Math.floor(10 + player.ad * 0.10);
+      const trueResult = M.applyDamageToEnemy(result.state, trueDamage);
+      result = { ...trueResult, dealt: result.dealt + trueResult.dealt, overkill: result.overkill + trueResult.overkill };
+    }
+    if (extraMagicDamage > 0 && !result.state.enemyDefeated) {
+      const magicResult = M.applyDamageToEnemy(result.state, M.magicDamage(extraMagicDamage, result.state.enemyMagicResistance, player.magicPenetration));
+      result = { ...magicResult, dealt: result.dealt + magicResult.dealt, overkill: result.overkill + magicResult.overkill };
+    }
     const heal = M.damageHeal(result.dealt, false);
 
     const overkillHeal = M.classId() === "assassin" && player.overkillPool > 0
@@ -56,13 +84,17 @@
     const playerMessage = `Zadałeś ${result.dealt} obrażeń!`;
     const nextState = {
       ...result.state,
+      weaponAttackCount: nextWeaponAttackCount,
+      jhinPool: nextJhinPool,
+      yamatoJudgementStacks: nextYamatoStacks,
+      effects: snakePoisonAttack ? { ...result.state.effects, poison: 2 } : result.state.effects,
       senAttackCount: nextSenAttackCount,
       heal: heal + overkillHeal,
       critical,
       superCritical,
       overkill: result.overkill,
       overkillArmorBreak: primalReady,
-      playerMessage,
+      playerMessage: `${playerMessage}${fourthJhinAttack ? " Czwarty atak Jhina!" : ""}`,
       message: playerMessage,
     };
     if (senBōeiAttack) nextState.effects = { ...nextState.effects, stun: 1 };
@@ -77,6 +109,13 @@
     let next = state;
     let effectMessage = "";
 
+    if (state.effects.poison > 0) {
+      const poisonDamage = M.magicDamage(30 + player.ad * 0.25, state.enemyMagicResistance, player.magicPenetration);
+      const poisonResult = M.applyDamageToEnemy(next, poisonDamage);
+      next = poisonResult.state;
+      effectMessage += ` Zatrucie zadaje ${poisonResult.dealt} magicznych obrażeń.`;
+      if (next.enemyDefeated) return { ...next, enemyMessage: effectMessage.trim(), message: effectMessage.trim() };
+    }
     if (state.effects.vines > 0) {
       const vineDamage = M.magicDamage(10 + M.effectiveAbilityPower() * 0.10, state.enemyMagicResistance, player.magicPenetration);
       const vineResult = M.applyDamageToEnemy(next, vineDamage);
@@ -90,7 +129,7 @@
       return { ...next, enemyMessage: stunMessage, message: stunMessage };
     }
 
-    const chance = M.clamp((next.enemyAttackChance || enemy.attackChance) + (next.effects.enemyAccuracy || 0) - player.bonusDodge, 0, 100);
+    const chance = M.clamp((next.enemyAttackChance || enemy.attackChance) + (next.effects.enemyAccuracy || 0) - player.bonusDodge - (next.effects.poison > 0 ? 10 : 0), 0, 100);
     if (M.roll() >= chance) {
       const missMessage = `Przeciwnik nie trafił!${effectMessage}`;
       return { ...next, enemyMessage: missMessage, message: missMessage };
@@ -134,7 +173,7 @@
 
     // Tank's passive: once accumulated rage crosses a threshold, it
     // automatically detonates for bonus true-ish damage and self-heal.
-    if (M.classId() === "tank" && rage >= player.weaponDmg * 1.5) {
+    if (M.classId() === "tank" && rage >= M.currentWeaponDamage() * 1.5) {
       const rageDamage = M.physicalDamage(rage * 0.70, nextState.enemyArmor, player.armorPenetration);
       nextState.enemyHealth = Math.max(0, nextState.enemyHealth - rageDamage);
       player.healthPoints = M.clamp(player.healthPoints + Math.floor(rage * 0.35), 0, player.maxHealthPoints);
@@ -234,7 +273,7 @@
         message = `${physicalMessage} KRYTYK!`;
       } else {
         const bonusPercent = 0.5 + window.player.armorPenetration * 0.002;
-        const bonus = M.magicDamage(window.player.weaponDmg * bonusPercent, state.enemyMagicResistance, window.player.magicPenetration);
+      const bonus = M.magicDamage(M.currentWeaponDamage() * bonusPercent, state.enemyMagicResistance, window.player.magicPenetration);
         const result = M.applyDamageToEnemy(next, bonus);
         next = result.state;
         M.damageHeal(result.dealt, true);
@@ -243,6 +282,24 @@
     }
 
     return finishPlayerAction(next, message, ability, true);
+  }
+
+  function useWeaponAbility(state) {
+    const player = window.player;
+    if (player.weaponId === "yamato") {
+      const threshold = Math.min(100, (player.yamatoExecuteCap || 5) + (state.yamatoJudgementStacks || 0));
+      if (state.enemyHealth > state.enemyMaxHealth * threshold / 100) {
+        return { ...state, message: `Judgement Cut wymaga celu poniżej ${threshold}% HP.` };
+      }
+      player.yamatoExecuteCap = Math.min(100, (player.yamatoExecuteCap || 5) + 1);
+      return { ...state, enemyHealth: 0, enemyDefeated: true, message: "Judgement Cut! Przeciwnik został natychmiast pokonany!", weaponAbilityUsed: true };
+    }
+    if (player.weaponId === "jhinPistol") {
+      if (!(state.jhinPool > 0)) return { ...state, message: "Pula Pistoletu Jhina jest pusta." };
+      const damage = M.applyDamageToEnemy(state, M.physicalDamage(state.jhinPool, state.enemyArmor, player.armorPenetration, player.armorPenetrationPercent || 0));
+      return { ...damage.state, jhinPool: 0, weaponAbilityUsed: true, message: `Pistolet Jhina uwalnia ${damage.dealt} obrażeń z puli.` };
+    }
+    return { ...state, message: "Ta broń nie ma aktywnej umiejętności." };
   }
 
   function usePotion(state, potionId) {
@@ -268,6 +325,7 @@
     enemyTurn,
     finishPlayerAction,
     useAbility,
+    useWeaponAbility,
     usePotion,
   };
 })();
