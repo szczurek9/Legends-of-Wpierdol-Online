@@ -64,6 +64,10 @@
                     <label>Unik % <input id="bonusDodge" type="number" min="0" value="0"></label>
                     <label>Limit pancerza <input id="armorCap" type="number" min="0" value="90"></label>
                     <label>Sloty magiczne <input id="magicItemSlots" type="number" min="0" value="4"></label>
+                    <label>AD <input id="ad" type="number" min="0" value="0"></label>
+                    <label>Sloty AD <input id="adItemSlots" type="number" min="0" value="6"></label>
+                    <label>Przebicie pancerza % <input id="armorPenetrationPercent" type="number" min="0" value="0"></label>
+                    <label>Licznik Yamato (próg egzekucji %) <input id="yamatoExecuteCap" type="number" min="0" value="5"></label>
                 </div>
                 <div class="checks">
                     <label><input id="secondWind" type="checkbox"> Drugie Tchnienie</label>
@@ -86,6 +90,12 @@
                 </label>
                 <label>Wyposażone magiczne UID — JSON
                     <textarea id="equippedMagicItems" rows="3">[]</textarea>
+                </label>
+                <label>Przedmioty AD w ekwipunku — JSON
+                    <textarea id="adItemInventory" rows="5">[]</textarea>
+                </label>
+                <label>Wyposażone przedmioty AD — UID JSON
+                    <textarea id="equippedAdItems" rows="3">[]</textarea>
                 </label>
                 <label>Mikstury — identyfikatory po przecinku
                     <input id="potionInventory" type="text" value="">

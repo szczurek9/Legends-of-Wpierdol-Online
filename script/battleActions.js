@@ -6,13 +6,22 @@
   function playerAttack(state, options = {}) {
     const player = window.player;
     const enemy = window.enemies[state.enemyIndex];
-    const accuracyBonus = (state.effects.accuracy || 0) + (state.effects.potionAccuracy || 0);
-    const accuracy = M.clamp((enemy.playerAttackChance ?? (100 - enemy.dodgeChance)) + player.bonusAccuracy + accuracyBonus, 0, 100);
+    // Kieł Węża's poison makes the enemy easier to hit (lower evasion),
+    // not less likely to attack — that reduction lives in enemyTurn's own
+    // attack-chance calc, not here.
+    const poisonEvasionBonus = state.effects.poison > 0 ? 10 : 0;
+    const accuracyBonus = (state.effects.accuracy || 0) + (state.effects.potionAccuracy || 0) + poisonEvasionBonus;
+    const accuracy = M.clamp((enemy.playerAttackChance ?? (100 - enemy.dodgeChance)) + player.bonusAccuracy + M.weaponAccuracyBonus() + accuracyBonus, 0, 100);
     const nextWeaponAttackCount = (state.weaponAttackCount || 0) + 1;
     const fourthJhinAttack = player.weaponId === "jhinPistol" && nextWeaponAttackCount % 4 === 0;
     const nextJhinPool = player.weaponId === "jhinPistol" && fourthJhinAttack
       ? (state.jhinPool || 0) + Math.floor(44 + player.ad * 0.044)
       : state.jhinPool || 0;
+    // Pistolet Jhina auto-discharges its accumulated pool every 16 attacks
+    // (four pool-building procs), instead of requiring the manual weapon
+    // ability — jhinAttackCount tracks this independently of the shared
+    // weaponAttackCount so it always resets cleanly per wave.
+    const nextJhinAttackCount = player.weaponId === "jhinPistol" ? (state.jhinAttackCount || 0) + 1 : 0;
     const nextYamatoStacks = player.weaponId === "yamato" && nextWeaponAttackCount % 6 === 0
       ? (state.yamatoJudgementStacks || 0) + 1
       : state.yamatoJudgementStacks || 0;
@@ -52,13 +61,16 @@
       const baseCritMultiplier = M.classId() === "samurai" ? 1.2 : 1.5;
       multiplier *= jhinFourCrit ? 4 : (options.critMultiplierOverride ?? (superCritical ? 2.25 : baseCritMultiplier));
     }
-    if (hasAdItem("shadowArrows") && critical && nextWeaponAttackCount % 2 === 0) multiplier *= 1.8;
+    if (hasAdItem("shadowArrows") && M.classId() !== "samurai" && critical && nextWeaponAttackCount % 2 === 0) multiplier *= 1.8;
     if (hasAdItem("assassinCloakAd") && state.enemyHealth <= state.enemyMaxHealth * 0.30) multiplier *= 1.2;
 
     const wolfCount = equippedAd.filter((item) => item.id === "wolfGrip").length;
     const rawDamage = Math.max(1, Math.floor((weaponDamage * multiplier + wolfCount * (10 + player.ad * 0.10)) * (senBōeiAttack ? 0.1 : 1)));
+    // Jhin's every-4th-attack bonus is physical (it comes off the gun
+    // itself), while Yamato's bonus is genuine magic damage from its AP.
+    let extraPhysicalDamage = 0;
     let extraMagicDamage = 0;
-    if (player.weaponId === "jhinPistol" && fourthJhinAttack) extraMagicDamage = Math.floor(player.ad * 0.44 * (critical ? 1.2 : 1));
+    if (player.weaponId === "jhinPistol" && fourthJhinAttack) extraPhysicalDamage = Math.floor(player.ad * 0.44 * (critical ? 1.2 : 1));
     if (player.weaponId === "yamato") extraMagicDamage = Math.floor(150 + player.abilityPower * 0.60);
     const primalReady = M.classId() === "assassin" && player.overkillPool >= state.enemyMaxHealth * 0.5;
     const armorPen = player.armorPenetration;
@@ -69,9 +81,26 @@
       const trueResult = M.applyDamageToEnemy(result.state, trueDamage);
       result = { ...trueResult, dealt: result.dealt + trueResult.dealt, overkill: result.overkill + trueResult.overkill };
     }
+    if (extraPhysicalDamage > 0 && !result.state.enemyDefeated) {
+      const physicalResult = M.applyDamageToEnemy(result.state, M.physicalDamage(extraPhysicalDamage, result.state.enemyArmor * (primalReady ? 0.2 : 1), armorPen, player.armorPenetrationPercent || 0));
+      result = { ...physicalResult, dealt: result.dealt + physicalResult.dealt, overkill: result.overkill + physicalResult.overkill };
+    }
     if (extraMagicDamage > 0 && !result.state.enemyDefeated) {
       const magicResult = M.applyDamageToEnemy(result.state, M.magicDamage(extraMagicDamage, result.state.enemyMagicResistance, player.magicPenetration));
       result = { ...magicResult, dealt: result.dealt + magicResult.dealt, overkill: result.overkill + magicResult.overkill };
+    }
+
+    let jhinAutoReleaseDamage = 0;
+    let finalJhinPool = nextJhinPool;
+    let finalJhinAttackCount = nextJhinAttackCount;
+    if (player.weaponId === "jhinPistol" && nextJhinAttackCount >= 16) {
+      finalJhinAttackCount = 0;
+      if (finalJhinPool > 0 && !result.state.enemyDefeated) {
+        const autoResult = M.applyDamageToEnemy(result.state, M.physicalDamage(finalJhinPool, result.state.enemyArmor, armorPen, player.armorPenetrationPercent || 0), { noOverkill: true });
+        result = { ...autoResult, dealt: result.dealt + autoResult.dealt, overkill: result.overkill + autoResult.overkill };
+        jhinAutoReleaseDamage = autoResult.dealt;
+      }
+      finalJhinPool = 0;
     }
     const heal = M.damageHeal(result.dealt, false);
 
@@ -85,7 +114,8 @@
     const nextState = {
       ...result.state,
       weaponAttackCount: nextWeaponAttackCount,
-      jhinPool: nextJhinPool,
+      jhinPool: finalJhinPool,
+      jhinAttackCount: finalJhinAttackCount,
       yamatoJudgementStacks: nextYamatoStacks,
       effects: snakePoisonAttack ? { ...result.state.effects, poison: 2 } : result.state.effects,
       senAttackCount: nextSenAttackCount,
@@ -94,7 +124,7 @@
       superCritical,
       overkill: result.overkill,
       overkillArmorBreak: primalReady,
-      playerMessage: `${playerMessage}${fourthJhinAttack ? " Czwarty atak Jhina!" : ""}`,
+      playerMessage: `${playerMessage}${fourthJhinAttack ? " Czwarty atak Jhina!" : ""}${jhinAutoReleaseDamage > 0 ? ` Pula Pistoletu Jhina uwalnia się automatycznie, zadając ${jhinAutoReleaseDamage} obrażeń!` : ""}`,
       message: playerMessage,
     };
     if (senBōeiAttack) nextState.effects = { ...nextState.effects, stun: 1 };
@@ -129,7 +159,7 @@
       return { ...next, enemyMessage: stunMessage, message: stunMessage };
     }
 
-    const chance = M.clamp((next.enemyAttackChance || enemy.attackChance) + (next.effects.enemyAccuracy || 0) - player.bonusDodge - (next.effects.poison > 0 ? 10 : 0), 0, 100);
+    const chance = M.clamp((next.enemyAttackChance || enemy.attackChance) + (next.effects.enemyAccuracy || 0) - player.bonusDodge, 0, 100);
     if (M.roll() >= chance) {
       const missMessage = `Przeciwnik nie trafił!${effectMessage}`;
       return { ...next, enemyMessage: missMessage, message: missMessage };
@@ -296,7 +326,7 @@
     }
     if (player.weaponId === "jhinPistol") {
       if (!(state.jhinPool > 0)) return { ...state, message: "Pula Pistoletu Jhina jest pusta." };
-      const damage = M.applyDamageToEnemy(state, M.physicalDamage(state.jhinPool, state.enemyArmor, player.armorPenetration, player.armorPenetrationPercent || 0));
+      const damage = M.applyDamageToEnemy(state, M.physicalDamage(state.jhinPool, state.enemyArmor, player.armorPenetration, player.armorPenetrationPercent || 0), { noOverkill: true });
       return { ...damage.state, jhinPool: 0, weaponAbilityUsed: true, message: `Pistolet Jhina uwalnia ${damage.dealt} obrażeń z puli.` };
     }
     return { ...state, message: "Ta broń nie ma aktywnej umiejętności." };

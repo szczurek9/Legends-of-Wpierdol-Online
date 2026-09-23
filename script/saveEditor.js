@@ -15,6 +15,7 @@
     "healthPoints", "maxHealthPoints", "armorPoints", "bonusArmor", "magicResistance", "critChance",
     "armorPenetration", "magicPenetration", "manaPoints", "maxManaPoints", "manaRegenPercent", "abilityPower",
     "magicLifesteal", "lifesteal", "bonusLifesteal", "bonusAccuracy", "bonusDodge", "armorCap", "magicItemSlots",
+    "ad", "adItemSlots", "armorPenetrationPercent", "yamatoExecuteCap",
   ];
 
   const field = (id) => document.getElementById(id);
@@ -60,6 +61,15 @@
     if (player.equippedMagicItems.some((id) => typeof id !== "string")) {
       throw new Error("Wyposażone magiczne UID muszą być tekstem.");
     }
+    if (player.adItemInventory.some((item) => !item || typeof item.id !== "string")) {
+      throw new Error("Każdy przedmiot AD musi mieć id.");
+    }
+    if (player.equippedAdItems.some((id) => typeof id !== "string")) {
+      throw new Error("Wyposażone UID przedmiotów AD muszą być tekstem.");
+    }
+    if (player.equippedAdItems.length > player.adItemSlots) {
+      throw new Error("Liczba wyposażonych przedmiotów AD przekracza dostępne sloty.");
+    }
     if (player.maxHealthPoints < 1 || player.healthPoints > player.maxHealthPoints) {
       throw new Error("HP musi być nie większe niż maksymalne HP.");
     }
@@ -89,8 +99,12 @@
       weaponDmg: number("weaponDmg"),
       weaponId: "fists",
       weaponBaseDamage: number("weaponDmg"), weaponAdScaling: 0.01, weaponType: "M",
-      ad: 0, adItemInventory: [], equippedAdItems: [], adItemSlots: field("classId").value === "mage" ? 0 : 6,
-      armorPenetrationPercent: 0, yamatoExecuteCap: 5,
+      ad: number("ad"),
+      adItemInventory: jsonArray("adItemInventory", "Przedmioty AD"),
+      equippedAdItems: jsonArray("equippedAdItems", "Wyposażone przedmioty AD"),
+      adItemSlots: number("adItemSlots"),
+      armorPenetrationPercent: number("armorPenetrationPercent"),
+      yamatoExecuteCap: number("yamatoExecuteCap"),
       inventory: jsonArray("inventory", "Ekwipunek broni"),
       magicInventory: jsonArray("magicInventory", "Magiczne przedmioty"),
       equippedMagicItems: jsonArray("equippedMagicItems", "Wyposażone magiczne przedmioty"),
@@ -141,6 +155,8 @@
     field("inventory").value = JSON.stringify(player.inventory || [], null, 2);
     field("magicInventory").value = JSON.stringify(player.magicInventory || [], null, 2);
     field("equippedMagicItems").value = JSON.stringify(player.equippedMagicItems || [], null, 2);
+    field("adItemInventory").value = JSON.stringify(player.adItemInventory || [], null, 2);
+    field("equippedAdItems").value = JSON.stringify(player.equippedAdItems || [], null, 2);
     field("secondWind").checked = Boolean(player.secondWind);
     field("usedEscape").checked = Boolean(player.usedEscape);
   }

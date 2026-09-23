@@ -1,13 +1,13 @@
 [
-  {"id":"fists","name":"Pięści","price":0,"baseDamage":3,"adScaling":0.01,"type":"M","default":true},
-  {"id":"spear","name":"Włócznia","price":25,"baseDamage":10,"adScaling":0.10,"type":"H"},
-  {"id":"wornSword","name":"Zniszczony miecz","price":55,"baseDamage":15,"adScaling":0.20,"type":"M"},
-  {"id":"bow","name":"Łuk","price":150,"baseDamage":45,"adScaling":0.50,"type":"R"},
-  {"id":"katana","name":"Katana","price":275,"baseDamage":60,"adScaling":0.70,"type":"M"},
-  {"id":"shuriken","name":"Shuriken","price":350,"baseDamage":70,"adScaling":0.60,"type":"H"},
-  {"id":"revolver","name":"Rewolwer","price":475,"baseDamage":75,"adScaling":0.75,"type":"R"},
-  {"id":"rifle","name":"Karabin","price":700,"baseDamage":90,"adScaling":1.00,"type":"R"},
-  {"id":"jhinPistol","name":"Pistolet Jhin'a","price":2200,"baseDamage":444,"adScaling":1.00,"type":"R","unique":true,"special":"jhinPistol"},
-  {"id":"yamato","name":"Yamato","price":5000,"baseDamage":500,"adScaling":1.00,"type":"M","apDamage":150,"apScaling":0.60,"unique":true,"special":"yamato"},
-  {"id":"uniqueWeaponLootbox","name":"Lootbox unikalnej broni","price":4750,"lootbox":"uniqueWeapon"}
+  {"id":"fists","name":"Pięści","price":0,"baseDamage":3,"adScaling":0.01,"type":"M","default":true,"description":"3 obrażenia fizyczne (+1% AD). Broń biała (melee), praktycznie bez skalowania z AD — używasz jej, dopóki nie kupisz czegoś lepszego. Niezbywalna."},
+  {"id":"spear","name":"Włócznia","price":25,"baseDamage":10,"adScaling":0.10,"type":"H","description":"10 obrażeń fizycznych (+10% AD). Broń hybrydowa — tani pierwszy krok poza pięściami."},
+  {"id":"wornSword","name":"Zniszczony miecz","price":55,"baseDamage":15,"adScaling":0.20,"type":"M","description":"15 obrażeń fizycznych (+20% AD). Broń biała (melee) o przyzwoitym skalowaniu jak na tę cenę."},
+  {"id":"bow","name":"Łuk","price":150,"baseDamage":45,"adScaling":0.50,"type":"R","description":"45 obrażeń fizycznych (+50% AD). Broń dystansowa (ranged) — wyraźny skok obrażeń bazowych i skalowania względem wcześniejszych broni."},
+  {"id":"katana","name":"Katana","price":275,"baseDamage":60,"adScaling":0.70,"type":"M","description":"60 obrażeń fizycznych (+70% AD). Broń biała (melee) z wysokim skalowaniem z AD — im więcej AD, tym mocniej rośnie jej obrażenie."},
+  {"id":"shuriken","name":"Shuriken","price":350,"baseDamage":70,"adScaling":0.60,"type":"H","description":"70 obrażeń fizycznych (+60% AD). Broń hybrydowa z mocną bazą obrażeń."},
+  {"id":"revolver","name":"Rewolwer","price":475,"baseDamage":75,"adScaling":0.75,"type":"R","description":"75 obrażeń fizycznych (+75% AD). Broń dystansowa (ranged) z jednym z najwyższych skalowań wśród zwykłych broni."},
+  {"id":"rifle","name":"Karabin","price":700,"baseDamage":90,"adScaling":1.00,"type":"R","description":"90 obrażeń fizycznych (+100% AD). Broń dystansowa (ranged) — najmocniejsza zwykła broń w grze, 1:1 skalowanie z AD."},
+  {"id":"jhinPistol","name":"Pistolet Jhin'a","price":2200,"baseDamage":444,"adScaling":1.00,"type":"R","unique":true,"special":"jhinPistol","description":"444 obrażenia fizyczne (+100% AD). Co 4. atak zadaje dodatkowo 44% AD obrażeń fizycznych (x1,2 jeśli krytujesz) i zawsze trafia. Każdy atak ma też 4% szansy na x4 obrażeń krytycznych. Co 4. atak ładuje też 44 (+4,4% AD) obrażeń do wewnętrznej puli — naciśnij spację, by wystrzelić całą pulę w dowolnym momencie (ten strzał nie krytuje). Jeśli nie zrobisz tego sam, pula uwalnia się automatycznie po 16 atakach. Dostępna tylko z lootboxa unikalnych broni."},
+  {"id":"yamato","name":"Yamato","price":5000,"baseDamage":500,"adScaling":1.00,"type":"M","apDamage":150,"apScaling":0.60,"accuracyBonus":15,"unique":true,"special":"yamato","description":"500 obrażeń fizycznych (+100% AD) oraz 150 obrażeń magicznych (+60% AP) na każdy atak. Zwiększa Twoją szansę na trafienie o 15%. Co 6. atak zdobywasz stack Judgement Cut — naciśnij spację, gdy przeciwnik ma poniżej 5% (+1% za każdy zdobyty stack) maksymalnego HP, by natychmiast go wykończyć. Każde takie wykończenie trwale podnosi ten próg o 1%. Dostępna tylko z lootboxa unikalnych broni."},
+  {"id":"uniqueWeaponLootbox","name":"Lootbox unikalnej broni","price":4750,"lootbox":"uniqueWeapon","description":"Po zakupie natychmiast losuje i dodaje do ekwipunku jedną unikalną broń, której jeszcze nie posiadasz (Pistolet Jhin'a lub Yamato). Unikalnych broni nie da się kupić wprost ani sprzedać. Gdy masz już wszystkie, zakup lootboxa jest zablokowany."}
 ]

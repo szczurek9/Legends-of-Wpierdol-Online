@@ -140,6 +140,11 @@
     showMessage(instance.equipped ? `Kupiono i wyposażono: ${item.name}.` : `Kupiono: ${item.name}. Brak wolnego slotu.`, "success");
   }
 
+  function uniqueWeaponLootboxExhausted() {
+    const player = window.player;
+    return window.shopWeapons.every((item) => !item.unique || player.inventory.some((owned) => owned.id === item.id));
+  }
+
   function skillBlocked(skill) {
     const player = window.player;
     if (skill.effect === "armor") return player.armorPoints + skill.value > player.armorCap;
@@ -236,8 +241,16 @@
     title.textContent = item.name;
     card.appendChild(title);
 
+    const typeLabel = { M: "Melee", R: "Ranged", H: "Hybrid" }[item.type] || item.type;
+    const weaponUniquePreview = kind === "weapon" && item.unique && !item.lootbox;
+    const lootboxExhausted = kind === "weapon" && item.lootbox === "uniqueWeapon" && uniqueWeaponLootboxExhausted();
+
     const details = document.createElement("p");
-    details.textContent = kind === "weapon" ? (item.lootbox ? `${item.price} $ | losowa unikalna broń` : `${item.baseDamage} DMG +${Math.round(item.adScaling * 100)}% AD | ${item.price} $`) : `${kind === "magic" ? magicPrice(item) : item.price} $`;
+    details.textContent = kind === "weapon"
+      ? (item.lootbox
+        ? `${item.price} $ | losowa unikalna broń`
+        : `${item.baseDamage} DMG +${Math.round(item.adScaling * 100)}% AD | ${typeLabel}${weaponUniquePreview ? " | Tylko z lootboxa" : ` | ${item.price} $`}`)
+      : `${kind === "magic" ? magicPrice(item) : item.price} $`;
     card.appendChild(details);
 
     const description = document.createElement("p");
@@ -247,9 +260,9 @@
 
     const button = document.createElement("button");
     button.type = "button";
-    const blocked = kind === "skill" && skillBlocked(item);
-    button.textContent = kind === "ability" ? "Dostępne" : blocked ? "Limit osiągnięty" : "Kup";
-    button.disabled = kind === "ability" || blocked;
+    const blocked = (kind === "skill" && skillBlocked(item)) || lootboxExhausted;
+    button.textContent = kind === "ability" ? "Dostępne" : weaponUniquePreview ? "Tylko z lootboxa" : blocked ? "Limit osiągnięty" : "Kup";
+    button.disabled = kind === "ability" || weaponUniquePreview || blocked;
     button.addEventListener("click", () => {
       if (kind === "weapon") buyWeapon(index);
       if (kind === "ad") buyAdItem(index);
@@ -308,7 +321,7 @@
       tab.classList.toggle("hidden", player.classId === "mage" && ["weapons", "ad"].includes(tab.dataset.category));
     });
 
-    weapons.replaceChildren(...(player.classId === "mage" ? [] : visible(window.shopWeapons.filter((item) => !item.unique || item.lootbox)).map((item) => createItem(item, window.shopWeapons.indexOf(item), "weapon"))));
+    weapons.replaceChildren(...(player.classId === "mage" ? [] : visible(window.shopWeapons).map((item) => createItem(item, window.shopWeapons.indexOf(item), "weapon"))));
     adItems.replaceChildren(...(player.classId === "mage" ? [] : visible(window.adItems || []).map((item) => createItem(item, window.adItems.indexOf(item), "ad"))));
     skills.replaceChildren(...visible(window.shopSkills).map((item) => createItem(item, window.shopSkills.indexOf(item), "skill")));
     magicItems.replaceChildren(...visible(window.magicItems).map((item) => createItem(item, window.magicItems.indexOf(item), "magic")));
@@ -320,7 +333,7 @@
 
     const searchTerm = search.value.trim().toLowerCase();
     const combinedItems = [
-      ...(window.player.classId === "mage" ? [] : window.shopWeapons.filter((item) => !item.unique || item.lootbox).map((item) => ({ item, index: window.shopWeapons.indexOf(item), kind: "weapon" }))),
+      ...(window.player.classId === "mage" ? [] : window.shopWeapons.map((item) => ({ item, index: window.shopWeapons.indexOf(item), kind: "weapon" }))),
       ...(window.player.classId === "mage" ? [] : (window.adItems || []).map((item, index) => ({ item, index, kind: "ad" }))),
       ...window.magicItems.map((item, index) => ({ item, index, kind: "magic" })),
       ...window.shopSkills.map((item, index) => ({ item, index, kind: "skill" })),

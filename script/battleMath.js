@@ -51,6 +51,17 @@
     return Math.max(1, Math.floor((p.weaponBaseDamage || p.weaponDmg || 0) + (p.ad || 0) * (p.weaponAdScaling || 0)));
   }
 
+  // Looks up the equipped weapon's own data-file entry (for flat bonuses
+  // like Yamato's accuracy, rather than duplicating them onto the player
+  // object where they'd need manual equip/unequip bookkeeping).
+  function currentWeaponData() {
+    return (window.shopWeapons || []).find((weapon) => weapon.id === window.player.weaponId) || null;
+  }
+
+  function weaponAccuracyBonus() {
+    return Number(currentWeaponData()?.accuracyBonus || 0);
+  }
+
   function payMana(player, amount) {
     if (player.manaPoints < amount) return false;
     player.manaPoints -= amount;
@@ -73,9 +84,11 @@
 
   // Applies damage to the current enemy, tracking overkill into the
   // assassin's overkill pool and handling the on-kill mana/HP refunds.
-  function applyDamageToEnemy(state, damage) {
+  // noOverkill lets a caller opt a specific damage instance out of feeding
+  // the overkill pool (Jhin's stored-pool release is explicitly excluded).
+  function applyDamageToEnemy(state, damage, options = {}) {
     const dealt = Math.min(damage, state.enemyHealth);
-    const overkill = classId() === "assassin" ? Math.max(0, damage - state.enemyHealth) : 0;
+    const overkill = classId() === "assassin" && !options.noOverkill ? Math.max(0, damage - state.enemyHealth) : 0;
     if (overkill > 0) window.player.overkillPool += overkill;
     const nextHealth = state.enemyHealth - dealt;
 
@@ -108,6 +121,8 @@
     magicDamage,
     regenMana,
     currentWeaponDamage,
+    currentWeaponData,
+    weaponAccuracyBonus,
     payMana,
     recordSpellCast,
     damageHeal,
