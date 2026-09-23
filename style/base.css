@@ -3,6 +3,11 @@
     display: none !important;
 }
 
+/* Kolor zastępczy, widoczny gdy obrazek tła jeszcze się ładuje lub nie zadziała. */
+html {
+    background-color: rgb(42, 20, 63);
+}
+
 /* Podstawowy układ strony. */
 body {
     min-height: 100vh;
@@ -13,9 +18,27 @@ body {
     font-family: "Tagesschrift", system-ui;
     font-weight: 400;
     font-style: normal;
+}
+
+/* Tło jest osobną, stałą warstwą pod całą stroną: zawsze pokrywa cały ekran
+   (niezależnie od wysokości zawartości) i nie znika przy przewijaniu. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     background-image: url(../res/img/background.png);
     background-repeat: no-repeat;
+    background-position: center;
     background-size: cover;
+}
+
+/* Szerokie ekrany. Ścieżka względem tego pliku CSS (style/), dlatego ../res. */
+@media (min-width: 1921px) {
+    body::before {
+        background-image: url(../res/img/background_wide.png);
+    }
 }
 
 .site-footer {
