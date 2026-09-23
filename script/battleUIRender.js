@@ -67,6 +67,7 @@
     accuracy: "Celność",
     enemyAccuracy: "Celność wroga",
     stun: "Ogłuszenie",
+    poison: "Zatrucie",
     vines: "Pnącza",
     mirror: "Śmiertelne Lustro",
     mushin: "Mushin",

@@ -6,12 +6,14 @@
   function playerAttack(state, options = {}) {
     const player = window.player;
     const enemy = window.enemies[state.enemyIndex];
-    // Kieł Węża's poison makes the enemy easier to hit (lower evasion),
+    // Kieł Węża's poison reduces the enemy's dodge chance by 10% (min. 0%),
     // not less likely to attack — that reduction lives in enemyTurn's own
     // attack-chance calc, not here.
-    const poisonEvasionBonus = state.effects.poison > 0 ? 10 : 0;
-    const accuracyBonus = (state.effects.accuracy || 0) + (state.effects.potionAccuracy || 0) + poisonEvasionBonus;
-    const accuracy = M.clamp((enemy.playerAttackChance ?? (100 - enemy.dodgeChance)) + player.bonusAccuracy + M.weaponAccuracyBonus() + accuracyBonus, 0, 100);
+    const baseDodge = enemy.dodgeChance !== undefined ? enemy.dodgeChance : (100 - (enemy.playerAttackChance ?? 100));
+    const effectiveDodge = Math.max(0, baseDodge - (state.effects.poison > 0 ? 10 : 0));
+    const dodgeReduction = baseDodge - effectiveDodge;
+    const accuracyBonus = (state.effects.accuracy || 0) + (state.effects.potionAccuracy || 0);
+    const accuracy = M.clamp((enemy.playerAttackChance ?? (100 - enemy.dodgeChance)) + dodgeReduction + player.bonusAccuracy + M.weaponAccuracyBonus() + accuracyBonus, 0, 100);
     const nextWeaponAttackCount = (state.weaponAttackCount || 0) + 1;
     const fourthJhinAttack = player.weaponId === "jhinPistol" && nextWeaponAttackCount % 4 === 0;
     const nextJhinPool = player.weaponId === "jhinPistol" && fourthJhinAttack
