@@ -171,6 +171,182 @@
     });
   }
 
+  function renderWeaponAbility(refs, state) {
+    if (!refs.weaponPanel || !refs.weaponAbilityButton) return;
+    const player = window.player;
+    if (player.weaponId !== "jhinPistol" && player.weaponId !== "yamato") {
+      refs.weaponPanel.classList.add("hidden");
+      return;
+    }
+
+    refs.weaponPanel.classList.remove("hidden");
+    if (player.weaponId === "jhinPistol") {
+      const pool = state.jhinPool || 0;
+      const autoCount = state.jhinAttackCount || 0;
+      const autoLeft = Math.max(0, 16 - autoCount);
+      if (state.weaponAbilityUsed) {
+        refs.weaponAbilityButton.disabled = true;
+        refs.weaponAbilityButton.className = "weapon-ability-button";
+        refs.weaponAbilityButton.textContent = "🔫 Pistolet Jhina (Spacja) | Zużyto w tej walce";
+        refs.weaponAbilityButton.title = "Umiejętność Pistoletu Jhina została już zużyta w tej walce.";
+      } else if (pool <= 0) {
+        refs.weaponAbilityButton.disabled = true;
+        refs.weaponAbilityButton.className = "weapon-ability-button";
+        refs.weaponAbilityButton.textContent = `🔫 Uwolnij Pulę Jhina (Spacja) | Pusta pula (Auto za: ${autoLeft} atk)`;
+        refs.weaponAbilityButton.title = "Pula jest pusta. Trafiaj wroga, aby gromadzić obrażenia (co 4. strzał).";
+      } else {
+        refs.weaponAbilityButton.disabled = false;
+        refs.weaponAbilityButton.className = "weapon-ability-button ready";
+        refs.weaponAbilityButton.textContent = `🔫 Uwolnij Pulę Jhina (Spacja) | ${pool} DMG (Auto za: ${autoLeft} atk)`;
+        refs.weaponAbilityButton.title = `Uwalnia ${pool} zgromadzonych obrażeń fizycznych. Można użyć raz na walkę.`;
+      }
+    } else if (player.weaponId === "yamato") {
+      const threshold = Math.min(100, (player.yamatoExecuteCap || 5) + (state.yamatoJudgementStacks || 0));
+      const targetPercent = (state.enemyHealth / state.enemyMaxHealth) * 100;
+      const canExecute = targetPercent <= threshold;
+
+      if (state.weaponAbilityUsed) {
+        refs.weaponAbilityButton.disabled = true;
+        refs.weaponAbilityButton.className = "weapon-ability-button";
+        refs.weaponAbilityButton.textContent = "⚔️ Judgement Cut (Spacja) | Zużyto w tej walce";
+        refs.weaponAbilityButton.title = "Judgement Cut został już użyty w tej walce.";
+      } else if (!canExecute) {
+        refs.weaponAbilityButton.disabled = true;
+        refs.weaponAbilityButton.className = "weapon-ability-button";
+        refs.weaponAbilityButton.textContent = `⚔️ Judgement Cut (Spacja) | Wymaga ≤${threshold}% HP (Wróg: ${Math.ceil(targetPercent)}%)`;
+        refs.weaponAbilityButton.title = `Natychmiast wykańcza wroga, gdy ma ≤${threshold}% HP. Atakuj (co 6 ataków +1 stack) lub osłab wroga.`;
+      } else {
+        refs.weaponAbilityButton.disabled = false;
+        refs.weaponAbilityButton.className = "weapon-ability-button ready";
+        refs.weaponAbilityButton.textContent = `⚔️ Judgement Cut (Spacja) | GOTOWY DO EGZEKUCJI! (≤${threshold}% HP)`;
+        refs.weaponAbilityButton.title = `Wykonaj Judgement Cut! Natychmiast zabija wroga i trwale zwiększa próg egzekucji o +1%.`;
+      }
+    }
+  }
+
+  function renderPassives(refs, state) {
+    if (!refs.passivesPanel) return;
+    const player = window.player;
+    const equippedAd = (player.adItemInventory || []).filter((item) => item.equipped);
+    const hasAd = (id) => equippedAd.some((item) => item.id === id);
+    const attackCount = state.weaponAttackCount || 0;
+    const badges = [];
+
+    // Pistolet Jhina
+    if (player.weaponId === "jhinPistol") {
+      const shotInCycle = (attackCount % 4) + 1;
+      if (shotInCycle === 4) {
+        badges.push({ text: "🎯 Jhin: 4. STRZAŁ GOTOWY! (KRYTYK)", className: "ready" });
+      } else {
+        badges.push({ text: `🎯 Jhin: Strzał ${shotInCycle}/4`, className: "" });
+      }
+      const pool = state.jhinPool || 0;
+      const autoCount = state.jhinAttackCount || 0;
+      badges.push({ text: `💥 Pula Jhina: ${pool} DMG (Auto: ${autoCount}/16)`, className: pool > 0 ? "active" : "" });
+    }
+
+    // Yamato
+    if (player.weaponId === "yamato") {
+      const cycle = (attackCount % 6) + 1;
+      const stacks = state.yamatoJudgementStacks || 0;
+      const threshold = Math.min(100, (player.yamatoExecuteCap || 5) + stacks);
+      badges.push({ text: `⚔️ Yamato: Stacki +${stacks} (${cycle}/6) | Próg: ${threshold}% HP`, className: stacks > 0 ? "active" : "" });
+    }
+
+    // Kieł Węża
+    if (hasAd("snakeFang")) {
+      const cycle = (attackCount % 5) + 1;
+      if (cycle === 5) {
+        badges.push({ text: "🐍 Kieł Węża: NASTĘPNY ATAK ZATRUWA!", className: "ready" });
+      } else {
+        badges.push({ text: `🐍 Kieł Węża: ${cycle}/5`, className: "" });
+      }
+    }
+
+    // Potęga Nocy
+    if (hasAd("nightPower")) {
+      const cycle = (attackCount % 5) + 1;
+      if (cycle === 5) {
+        badges.push({ text: "🌙 Potęga Nocy: NASTĘPNY ATAK: TRUE DMG!", className: "ready" });
+      } else {
+        badges.push({ text: `🌙 Potęga Nocy: ${cycle}/5`, className: "" });
+      }
+    }
+
+    // Strzały Cieni
+    if (hasAd("shadowArrows") && window.BattleMath?.classId() !== "samurai") {
+      const cycle = (attackCount % 2) + 1;
+      if (cycle === 2) {
+        badges.push({ text: "🏹 Strzały Cieni: NASTĘPNY KRYTYK x1.8!", className: "ready" });
+      } else {
+        badges.push({ text: "🏹 Strzały Cieni: Ładowanie 1/2", className: "" });
+      }
+    }
+
+    // Płaszcz Zabójcy
+    if (hasAd("assassinCloakAd")) {
+      const enemyLow = state.enemyHealth <= state.enemyMaxHealth * 0.30;
+      if (enemyLow) {
+        badges.push({ text: "🗡️ Płaszcz Zabójcy: AKTYWNY (+20% DMG)", className: "ready" });
+      } else {
+        badges.push({ text: "🗡️ Płaszcz Zabójcy: Wróg ≤30% HP", className: "" });
+      }
+    }
+
+    // Uchwyt Wilka
+    const wolfCount = equippedAd.filter((item) => item.id === "wolfGrip").length;
+    if (wolfCount > 0) {
+      const bonus = wolfCount * Math.floor(10 + player.ad * 0.10);
+      badges.push({ text: `🐺 Uchwyt Wilka: +${bonus} DMG/atak${wolfCount > 1 ? ` (${wolfCount}x)` : ""}`, className: "active" });
+    }
+
+    // Księga Adeptów
+    const hasBook = (player.magicInventory || []).some((item) => window.BattleMath?.magicEffects(item).adeptBook && window.BattleMath?.isMagicEquipped(item));
+    if (hasBook) {
+      const stacks = player.adeptBookStacks || 0;
+      const limit = player.adeptBookStackLimit || 30;
+      badges.push({ text: `📖 Księga Adeptów: ${stacks}/${limit} AP`, className: stacks > 0 ? "active" : "" });
+    }
+
+    // Overkill Zabójcy
+    if (window.BattleMath?.classId() === "assassin") {
+      const overkill = player.overkillPool || 0;
+      const primalReady = overkill >= state.enemyMaxHealth * 0.5;
+      if (primalReady) {
+        badges.push({ text: `☠️ Overkill: ${overkill} (PRIMAL SLASH GOTOWY!)`, className: "ready" });
+      } else if (overkill > 0) {
+        badges.push({ text: `☠️ Overkill: ${overkill} DMG`, className: "active" });
+      }
+    }
+
+    // Gniew Tanka
+    if (window.BattleMath?.classId() === "tank") {
+      const rage = state.rage || 0;
+      const threshold = Math.floor((window.BattleMath?.currentWeaponDamage() || 1) * 1.5);
+      if (rage >= threshold) {
+        badges.push({ text: `🛡️ Gniew: ${rage}/${threshold} (WYBUCH PRZY NASTĘPNYM CIOSIE!)`, className: "ready" });
+      } else if (rage > 0) {
+        badges.push({ text: `🛡️ Gniew: ${rage}/${threshold}`, className: "active" });
+      }
+    }
+
+    if (!badges.length) {
+      refs.passivesPanel.classList.add("hidden");
+      refs.passivesPanel.replaceChildren();
+      return;
+    }
+
+    refs.passivesPanel.classList.remove("hidden");
+    refs.passivesPanel.replaceChildren(
+      ...badges.map((b) => {
+        const badgeElem = document.createElement("span");
+        badgeElem.className = `passive-badge ${b.className || ""}`.trim();
+        badgeElem.textContent = b.text;
+        return badgeElem;
+      })
+    );
+  }
+
   window.BattleUIRender = {
     setBar,
     formatPlayerAttack,
@@ -181,5 +357,7 @@
     render,
     renderAbilities,
     renderPotions,
+    renderWeaponAbility,
+    renderPassives,
   };
 })();

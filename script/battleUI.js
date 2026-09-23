@@ -10,9 +10,12 @@
     attackButton: document.getElementById("attack-btn"),
     escapeButton: document.getElementById("escape-btn"),
     backButton: document.getElementById("battle-back-btn"),
+    weaponPanel: document.getElementById("battle-weapon-panel"),
+    weaponAbilityButton: document.getElementById("weapon-ability-btn"),
     actions: document.getElementById("battle-actions"),
     abilitiesPanel: document.getElementById("battle-abilities"),
     potionsPanel: document.getElementById("battle-potions"),
+    passivesPanel: document.getElementById("battle-passives"),
     effectsPanel: document.getElementById("battle-effects"),
     battleLog: document.getElementById("battle-log"),
     deathPanel: document.getElementById("battle-death-panel"),
@@ -56,15 +59,19 @@
 
   function renderAll() {
     UI.render(refs, state);
+    UI.renderWeaponAbility(refs, state);
     UI.renderAbilities(refs, state, useAbility);
     UI.renderPotions(refs, state, usePotion);
+    UI.renderPassives(refs, state);
   }
 
   function finish(message, type) {
     refs.actions.classList.add("hidden");
     refs.escapeButton.classList.add("hidden");
+    if (refs.weaponPanel) refs.weaponPanel.classList.add("hidden");
     refs.abilitiesPanel.classList.add("hidden");
     refs.potionsPanel.classList.add("hidden");
+    if (refs.passivesPanel) refs.passivesPanel.classList.add("hidden");
     refs.effectsPanel.classList.add("hidden");
     refs.backButton.classList.remove("hidden");
     showMessage(message, type);
@@ -73,8 +80,10 @@
   function showDeathPanel() {
     refs.actions.classList.add("hidden");
     refs.escapeButton.classList.add("hidden");
+    if (refs.weaponPanel) refs.weaponPanel.classList.add("hidden");
     refs.abilitiesPanel.classList.add("hidden");
     refs.potionsPanel.classList.add("hidden");
+    if (refs.passivesPanel) refs.passivesPanel.classList.add("hidden");
     refs.effectsPanel.classList.add("hidden");
     refs.backButton.classList.add("hidden");
     refs.deathPanel.classList.remove("hidden");
@@ -124,6 +133,7 @@
     isTransitioning = true;
     refs.actions.classList.add("hidden");
     if (hideAbilitiesAndPotions) {
+      if (refs.weaponPanel) refs.weaponPanel.classList.add("hidden");
       refs.abilitiesPanel.classList.add("hidden");
       refs.potionsPanel.classList.add("hidden");
     }
@@ -198,6 +208,18 @@
     showMessage(result.message, "success");
   }
 
+  function useWeaponAbility() {
+    if (!canAct()) return;
+    const result = window.BattleSystem.useWeaponAbility(state);
+    state = result;
+    if (result.enemyDefeated) {
+      resolveEnemyDefeated(result.message, true);
+      return;
+    }
+    renderAll();
+    showMessage(result.message, result.weaponAbilityUsed ? "success" : undefined);
+  }
+
   function handleBattleShortcut(event) {
     if (refs.battleScreen.classList.contains("hidden") || event.repeat) return;
     if (["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
@@ -205,12 +227,7 @@
     const key = event.key.toLowerCase();
     if (event.code === "Space") {
       event.preventDefault();
-      if (!canAct()) return;
-      const result = window.BattleSystem.useWeaponAbility(state);
-      state = result;
-      render();
-      if (result.enemyDefeated) showMessage(`${result.message} Pokonano przeciwnika!`, "success");
-      else showMessage(result.message);
+      useWeaponAbility();
       return;
     }
     const classAbilities = window.classAbilities?.[window.player.classId]?.active || [];
@@ -264,6 +281,9 @@
 
   refs.playButton.addEventListener("click", openBattle);
   document.addEventListener("keydown", handleBattleShortcut);
+  if (refs.weaponAbilityButton) {
+    refs.weaponAbilityButton.addEventListener("click", useWeaponAbility);
+  }
   refs.attackButton.addEventListener("click", attack);
   refs.escapeButton.addEventListener("click", escape);
   refs.backButton.addEventListener("click", closeBattle);
