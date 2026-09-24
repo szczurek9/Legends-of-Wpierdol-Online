@@ -11,4 +11,4 @@ Disallow: /style/
 Disallow: /save-editor.html
 Disallow: /save-editor.css
 
-Sitemap: https://legendsofwpierdol-online.pages.dev
+Sitemap: https://legendsofwpierdol-online.pages.dev/sitemap.xml
