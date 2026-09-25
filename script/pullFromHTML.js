@@ -1,11 +1,8 @@
 // Elementy statystyk menu głównego.
 const mainNickname = document.getElementById("mainNickname");
 const mainMoney = document.getElementById("mainMoney");
-const mainLevel = document.getElementById("mainLevel");
+const mainLevelSP = document.getElementById("mainLevelSP");
 const mainWeapon = document.getElementById("mainWeapon");
-const mainHP = document.getElementById("mainHP");
-const mainArmor = document.getElementById("mainArmor");
-const mainCrit = document.getElementById("mainCrit");
-const mainArmorPen = document.getElementById("mainArmorPen");
-const mainMana = document.getElementById("mainMana");
-const mainAbilityPower = document.getElementById("mainAbilityPower");
+const mainDefenseStats = document.getElementById("mainDefenseStats");
+const mainOffenseStats = document.getElementById("mainOffenseStats");
+const mainMagicStats = document.getElementById("mainMagicStats");
