@@ -8,6 +8,7 @@
 @media (max-width: 760px) {
     body {
         justify-content: center;
+        align-items: flex-start;
         box-sizing: border-box;
         padding: 12px 12px calc(44px + env(safe-area-inset-bottom, 0px));
     }
@@ -25,7 +26,7 @@
 
     .main {
         width: min(100%, 620px);
-        margin: 0;
+        margin: 8px 0 0;
         box-sizing: border-box;
     }
 
@@ -51,14 +52,84 @@
         width: 100%;
     }
 
+    /* Portret postaci na górze, jak w aplikacji mobilnej, z przyciskiem
+       zmiany skina jako pływającą "pigułką" na obrazku. */
+    #main-playerModel {
+        order: -1;
+        position: relative;
+        padding: 0;
+        overflow: hidden;
+    }
+
     #main-playerModel img {
         max-width: 100%;
-        max-height: 220px;
+        max-height: 240px;
+        margin: 14px 0 4px;
         object-fit: contain;
     }
 
+    #change-playerModel {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        z-index: 2;
+        min-height: 38px;
+        padding: 6px 12px;
+        font-size: 13px;
+        opacity: 0.94;
+    }
+
+    /* Statystyki gracza jako zgrabna siatka "chipów" 2 na rząd. */
+    #main-playerStats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+
+    #main-playerStats .player-stat {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 12.5px;
+        line-height: 1.3;
+        padding: 8px 6px;
+    }
+
+    #main-playerStats .player-stat:last-child {
+        grid-column: 1 / -1;
+    }
+
+    /* Duży, wyraźny przycisk "Graj", reszta jako rząd mniejszych ikon pod spodem. */
+    #main-buttons {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    #main-buttons #play-btn {
+        grid-column: 1 / -1;
+        min-height: 52px;
+        font-size: 17px;
+        background: var(--shop-border-color) !important;
+        color: var(--control-text-color);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    #main-buttons #options-btn {
+        grid-column: auto;
+    }
+
+    #main-buttons #shop-btn,
+    #main-buttons #inventory-btn,
+    #main-buttons #options-btn {
+        font-size: 12.5px;
+        padding: 8px 4px;
+    }
+
     #battle-screen,
-    #shop-screen {
+    #shop-screen,
+    #inventory-screen,
+    #skin-screen {
         padding: 10px;
     }
 
@@ -158,6 +229,35 @@
         -webkit-overflow-scrolling: touch;
     }
 
+    /* Przyklejone nagłówki - tytuł i licznik hajsu/SP zawsze widoczne
+       podczas przewijania długich list przedmiotów/skinów. */
+    .shop-header,
+    .battle-header {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        margin: -10px -10px 12px;
+        padding: 10px 10px 8px;
+        background: var(--shop-page-background);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* Stały pasek "Atakuj / Uciekaj" na dole ekranu - zawsze w zasięgu kciuka,
+       niezależnie od tego, ile jest umiejętności/mikstur na liście. */
+    #battle-actions {
+        position: sticky;
+        bottom: calc(44px + env(safe-area-inset-bottom, 0px));
+        z-index: 4;
+        margin: 10px -10px 0;
+        padding: 8px 10px;
+        background: var(--shop-page-background);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-top: 1px solid black;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+    }
+
     .modal-close {
         width: 44px;
         min-height: 44px;
@@ -166,6 +266,15 @@
     .modal-content {
         max-height: calc(100vh - 32px);
         overflow-y: auto;
+    }
+
+    .modal-header {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        margin: -16px -16px 10px;
+        padding: 16px 16px 8px;
+        background: var(--main-background);
     }
 }
 
@@ -195,10 +304,6 @@
     #main-menu,
     .battle-arena {
         flex-direction: column;
-    }
-
-    #main-buttons {
-        grid-template-columns: 1fr 1fr;
     }
 
     #main-playerSummary,
