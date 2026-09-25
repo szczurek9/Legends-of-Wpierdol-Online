@@ -16,10 +16,10 @@ function refreshMainMenu() {
   mainMoney.textContent = `💸 Hajs: ${window.player.money} $`;
   mainLevelSP.textContent = `⚡ LVL: ${window.player.level} | 🎨 SP: ${window.player.skinPoints}`;
   const currentWeaponDamage = Math.floor((window.player.weaponBaseDamage || window.player.weaponDmg) + (window.player.ad || 0) * (window.player.weaponAdScaling || 0));
-  mainWeapon.textContent = `🔫 Broń ${window.player.weaponName} | ${currentWeaponDamage} DMG | AD: ${window.player.ad || 0}`;
+  mainWeapon.textContent = `🔫 Broń: ${window.player.weaponName} | ${currentWeaponDamage} DMG | AD: ${window.player.ad || 0}`;
   mainDefenseStats.textContent = `❤️ HP: ${window.player.healthPoints} | 🛡️ Pancerz: ${window.player.armorPoints}`;
   mainOffenseStats.textContent = `💥 Crit: ${window.player.critChance}% | 🗡️ Armor Pen: ${window.player.armorPenetration}`;
-  mainMagicStats.textContent = `🔷 Mana: ${window.player.manaPoints} | ⭐ Moc umiejętności: ${window.player.abilityPower}`;
+  mainMagicStats.textContent = `🔷 Mana: ${window.player.manaPoints} | ⭐ AP: ${window.player.abilityPower}`;
 
   const currentSkin = window.skinCatalog?.find((skin) => skin.id === window.player.skinName);
   if (currentSkin) {
