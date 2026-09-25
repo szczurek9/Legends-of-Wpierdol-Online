@@ -158,5 +158,15 @@
     "modelAlive": "res/skins/sa15.png",
     "modelDead": "res/skins/sd15.png",
     "sellable": true
+  },
+  {
+    "id": "skin15",
+    "name": "Furina",
+    "rarity": "ultimate",
+    "cost": 15,
+    "collection": "Genshin Impact",
+    "modelAlive": "res/skins/sa16.png",
+    "modelDead": "res/skins/sd16.png",
+    "sellable": true
   }
 ]
