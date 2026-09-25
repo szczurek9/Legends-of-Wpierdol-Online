@@ -53,6 +53,20 @@
     font-weight: 300;
 }
 
+#main-playerStats {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.player-stat {
+    display: block;
+    padding: 6px 8px;
+    border: 1px solid black;
+    background: var(--shop-card-background);
+    box-sizing: border-box;
+}
+
 #main-playerModel {
     display: flex;
     flex-direction: column;
