@@ -8,6 +8,12 @@ html {
     background-color: rgb(42, 20, 63);
 }
 
+/* Zabezpieczenie przed przypadkowym przewijaniem w poziomie na telefonach. */
+html,
+body {
+    overflow-x: hidden;
+}
+
 /* Podstawowy układ strony. */
 body {
     min-height: 100vh;
@@ -47,7 +53,7 @@ body::before {
     bottom: 0;
     left: 0;
     z-index: 5;
-    padding: 6px 12px;
+    padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px));
     color: var(--control-text-color);
     background: var(--main-background);
     border-top: 1px solid rgb(11, 37, 75);
@@ -59,6 +65,7 @@ body::before {
 .site-footer a {
     color: var(--control-text-color);
     text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .site-footer a:hover {
@@ -109,6 +116,8 @@ button {
     padding: 7px 10px;
     background: var(--shop-control-background);
     transition: transform 120ms ease, filter 120ms ease, background-color 120ms ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 button:hover:not(:disabled) {

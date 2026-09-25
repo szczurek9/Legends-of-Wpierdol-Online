@@ -9,7 +9,18 @@
     body {
         justify-content: center;
         box-sizing: border-box;
-        padding: 12px 12px 44px;
+        padding: 12px 12px calc(44px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Wygodniejsze cele dotykowe i brak automatycznego zoomu w Safari na iOS
+       (pola tekstowe poniżej 16px potrafią wywoływać przybliżenie ekranu). */
+    button,
+    input,
+    select,
+    textarea {
+        min-height: 44px;
+        box-sizing: border-box;
+        font-size: 16px;
     }
 
     .main {
@@ -113,16 +124,55 @@
         max-height: 260px;
     }
 
+    .shop-category-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .shop-category-tabs .shop-category:last-child {
+        grid-column: 1 / -1;
+        margin-top: 0;
+        border-top: none;
+        padding-top: 8px;
+    }
+
     .battle-abilities,
     .battle-potions {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* Mniej sztywnej wysokości grafik walki, żeby zmieściły się na ekranie telefonu. */
+    .battle-model,
+    .enemy-silhouette {
+        height: 170px;
+    }
+
+    .battle-model img {
+        max-height: 170px;
+    }
+
+    #battle-player-stats,
+    .shop-items,
+    .skin-list {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-close {
+        width: 44px;
+        min-height: 44px;
+    }
+
+    .modal-content {
+        max-height: calc(100vh - 32px);
+        overflow-y: auto;
     }
 }
 
 @media (max-width: 520px) {
     body {
         align-items: flex-start;
-        padding: 8px 8px 44px;
+        padding: 8px 8px calc(44px + env(safe-area-inset-bottom, 0px));
     }
 
     .main {
@@ -173,13 +223,6 @@
         grid-template-columns: 1fr;
     }
 
-    button,
-    input {
-        min-height: 42px;
-        box-sizing: border-box;
-        font-size: 15px;
-    }
-
     input {
         padding: 8px 10px;
     }
@@ -194,11 +237,6 @@
 
     .shop-items {
         max-height: 230px;
-    }
-
-    .shop-category-tabs {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
     }
 
     .shop-layout {
@@ -219,8 +257,17 @@
         height: 130px;
     }
 
+    .battle-model,
+    .enemy-silhouette {
+        height: 150px;
+    }
+
+    .battle-model img {
+        max-height: 150px;
+    }
+
     .site-footer {
-        padding: 7px 5px;
+        padding: 7px 5px calc(7px + env(safe-area-inset-bottom, 0px));
         font-size: 10px;
         line-height: 1.35;
     }

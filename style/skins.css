@@ -73,6 +73,8 @@
     border: 1px solid black;
     background: var(--shop-card-background);
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .skin-card-equipped {
