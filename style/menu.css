@@ -65,6 +65,7 @@
     border: 1px solid black;
     background: var(--shop-card-background);
     box-sizing: border-box;
+border-radius: 5px;
 }
 
 #main-playerModel {
