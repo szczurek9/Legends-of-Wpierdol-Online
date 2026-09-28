@@ -34,7 +34,7 @@ body::before {
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background-image: url(../res/img/background.png);
+    background-image: url(../res/img/background_wide.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
