@@ -91,7 +91,7 @@
   },
   {
     "level": 6,
-    "name": "Hazardzista",
+    "name": "Shaco",
     "health": 90,
     "damage": 6,
     "attackChance": 34,
@@ -127,7 +127,7 @@
   },
   {
     "level": 8,
-    "name": "Discord Mod",
+    "name": "MrBeast",
     "health": 110,
     "damage": 10,
     "attackChance": 38,
