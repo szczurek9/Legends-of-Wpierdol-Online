@@ -451,7 +451,7 @@
   },
   {
     "level": 26,
-    "name": "Irak Bomber",
+    "name": "Kim Jong Goon",
     "health": 1700,
     "damage": 120,
     "attackChance": 66,
@@ -505,7 +505,7 @@
   },
   {
     "level": 29,
-    "name": "Chester Bennington",
+    "name": "Linux",
     "health": 2200,
     "damage": 170,
     "attackChance": 69,
@@ -577,7 +577,7 @@
   },
   {
     "level": 33,
-    "name": "Michael Jackson",
+    "name": "Eminem",
     "health": 2700,
     "damage": 300,
     "attackChance": 72,
