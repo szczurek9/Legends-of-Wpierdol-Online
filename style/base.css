@@ -34,7 +34,7 @@ body::before {
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background-image: url(../res/img/background_wide.png);
+    background-image: url(../res/img/bg_4k.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -43,7 +43,7 @@ body::before {
 /* Szerokie ekrany. Ścieżka względem tego pliku CSS (style/), dlatego ../res. */
 @media (min-width: 1921px) {
     body::before {
-        background-image: url(../res/img/background_wide.png);
+        background-image: url(../res/img/bg_4k.png);
     }
 }
 
