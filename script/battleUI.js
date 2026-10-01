@@ -50,14 +50,89 @@
   battleHeaderActions.append(refs.battleWave, refs.escapeButton);
   refs.escapeButton.classList.add("battle-escape-top");
 
+  // Historia logu walki: ostatnie komunikaty w zwijanym panelu pod głównym logiem.
+  const logHistory = document.createElement("details");
+  logHistory.className = "battle-history";
+  logHistory.innerHTML = "<summary>📜 Historia walki</summary><ol></ol>";
+  refs.battleLog.after(logHistory);
+  const logHistoryList = logHistory.querySelector("ol");
+
   function showMessage(message, type) {
     window.setStatusMessage(refs.battleLog, message, "battle-log", type);
+    const entry = document.createElement("li");
+    entry.textContent = message;
+    if (type) entry.className = type;
+    logHistoryList.prepend(entry);
+    while (logHistoryList.children.length > 30) logHistoryList.lastElementChild.remove();
+  }
+
+  // --- Spadające liczby obrażeń i leczenia ---
+  // Wartości liczone są po stronie interfejsu: różnica HP przeciwnika oraz
+  // dane o trafieniu w gracza (state.enemyHit); leczenie = zmiana HP gracza
+  // + faktycznie utracone HP (dzięki temu lifesteal, mikstury itp. łapią się same).
+  let pendingFx = null;
+  const enemyModelBox = document.querySelector(".battle-model-enemy");
+  const playerModelBox = document.querySelector(".battle-model-player");
+
+  function beginAction() {
+    pendingFx = { hp: window.player.healthPoints, enemyHp: state.enemyHealth };
+    // Flagi z poprzedniej akcji nie mogą przeciekać do nowej.
+    state = { ...state, critical: false, superCritical: false, enemyCritical: false, enemyHit: null };
+  }
+
+  function spawnFloat(box, kind, text, options = {}) {
+    if (!box) return;
+    const element = document.createElement("span");
+    element.className = `fx-float fx-${kind}${options.crit ? " fx-crit" : ""}`;
+    element.setAttribute("aria-hidden", "true");
+    // Losowe miejsce w polu modelu; strefa lewa/prawa rozdziela liczby pojawiające się razem.
+    const zones = { left: [18, 42], right: [58, 82], any: [20, 80] };
+    const [minX, maxX] = zones[options.zone] || zones.any;
+    element.style.left = `${minX + Math.random() * (maxX - minX)}%`;
+    element.style.top = `${4 + Math.random() * 36}%`;
+    element.style.animationDelay = `${options.delay || 0}ms`;
+    if (options.crit) {
+      const label = document.createElement("span");
+      label.className = "fx-label";
+      label.textContent = options.crit;
+      element.appendChild(label);
+    }
+    const number = document.createElement("span");
+    number.className = "fx-num";
+    number.textContent = text;
+    element.appendChild(number);
+    box.appendChild(element);
+    // animationend nie odpala się przy wyłączonych animacjach, stąd awaryjny timer.
+    window.setTimeout(() => element.remove(), (options.delay || 0) + 1800);
+  }
+
+  function playFloats(snapshot) {
+    const enemyDamage = snapshot.enemyHp - state.enemyHealth;
+    const hit = state.enemyHit;
+    const taken = hit ? hit.damage : 0;
+    const healed = window.player.healthPoints - snapshot.hp + (hit ? hit.applied : 0);
+    const critLabel = state.superCritical ? "SUPER CRIT!" : "CRIT!";
+
+    if (enemyDamage > 0) {
+      spawnFloat(enemyModelBox, "damage", `-${enemyDamage}`, { crit: state.critical ? critLabel : null });
+    }
+    if (healed > 0) {
+      spawnFloat(playerModelBox, "heal", `+${healed}`, { delay: 120, zone: taken > 0 ? "left" : "any" });
+    }
+    if (taken > 0) {
+      spawnFloat(playerModelBox, "damage", `-${taken}`, { crit: state.enemyCritical ? "CRIT!" : null, delay: 380, zone: healed > 0 ? "right" : "any" });
+    }
   }
 
   function renderAll() {
     UI.render(refs, state);
     UI.renderAbilities(refs, state, useAbility);
     UI.renderPotions(refs, state, usePotion);
+    if (pendingFx) {
+      const snapshot = pendingFx;
+      pendingFx = null;
+      playFloats(snapshot);
+    }
   }
 
   function finish(message, type) {
@@ -93,6 +168,8 @@
   function openBattle() {
     window.SaveSystem.captureBattleState();
     state = window.BattleSystem.start(window.player.level);
+    logHistoryList.replaceChildren();
+    pendingFx = null;
     refs.mainMenu.classList.add("hidden");
     refs.battleScreen.classList.remove("hidden");
     refs.actions.classList.remove("hidden");
@@ -150,6 +227,7 @@
 
   function attack() {
     if (!canAct()) return;
+    beginAction();
     const attackResult = window.BattleSystem.attack(state);
     state = attackResult;
 
@@ -186,12 +264,14 @@
 
   function useAbility(abilityId) {
     if (!canAct()) return;
+    beginAction();
     const result = window.BattleSystem.useAbility(state, abilityId);
     actionResult(result, result.message);
   }
 
   function usePotion(potionId) {
     if (!canAct()) return;
+    beginAction();
     const result = window.BattleSystem.usePotion(state, potionId);
     state = result;
     renderAll();
@@ -206,9 +286,10 @@
     if (event.code === "Space") {
       event.preventDefault();
       if (!canAct()) return;
+      beginAction();
       const result = window.BattleSystem.useWeaponAbility(state);
       state = result;
-      render();
+      renderAll();
       if (result.enemyDefeated) showMessage(`${result.message} Pokonano przeciwnika!`, "success");
       else showMessage(result.message);
       return;

@@ -3,7 +3,20 @@
 // call, so this file has no state of its own.
 (function () {
   function setBar(element, value, max) {
-    element.style.width = `${Math.max(0, Math.min(100, (value / max) * 100))}%`;
+    const percent = Math.max(0, Math.min(100, (value / max) * 100));
+    element.style.width = `${percent}%`;
+    // Pasek z niskim stanem (<= 25%) dostaje ostrzegawczą pulsację (patrz battle.css).
+    if (element.parentElement) element.parentElement.classList.toggle("is-low", percent <= 25 && percent > 0);
+  }
+
+  // Krótki błysk karty, gdy HP spadło od poprzedniego renderu.
+  function flashIfHit(card, hpElement, currentHp) {
+    const previous = Number(hpElement.dataset.prevHp);
+    hpElement.dataset.prevHp = currentHp;
+    if (!card || Number.isNaN(previous) || currentHp >= previous) return;
+    card.classList.remove("is-hit");
+    void card.offsetWidth; // restart animacji
+    card.classList.add("is-hit");
   }
 
   function formatPlayerAttack(result) {
@@ -83,7 +96,18 @@
         const label = name.endsWith("Turns") ? name.slice(0, -5) : name;
         return `${EFFECT_LABELS[label] || label}: ${name.endsWith("Turns") ? value : `${value} tur`}`;
       });
-    refs.effectsPanel.textContent = effectNames.length ? effectNames.join(" | ") : "Brak aktywnych efektów.";
+    // Efekty jako osobne "chipy" zamiast jednej długiej linii.
+    refs.effectsPanel.replaceChildren();
+    if (!effectNames.length) {
+      refs.effectsPanel.textContent = "Brak aktywnych efektów.";
+      return;
+    }
+    effectNames.forEach((text) => {
+      const chip = document.createElement("span");
+      chip.className = "effect-chip";
+      chip.textContent = text;
+      refs.effectsPanel.appendChild(chip);
+    });
   }
 
   function render(refs, state) {
@@ -93,6 +117,7 @@
     refs.battleTitle.textContent = enemy.name;
     refs.battleWave.textContent = `Fala ${state.currentWave} / ${state.totalWaves}`;
     refs.playerName.textContent = player.nickname || "Gracz";
+    flashIfHit(document.querySelector(".combatant-player"), refs.playerHp, player.healthPoints);
     refs.playerHp.textContent = `${player.healthPoints} / ${player.maxHealthPoints}`;
     setBar(refs.playerHealthBar, player.healthPoints, player.maxHealthPoints);
     refs.playerManaValue.textContent = `${player.manaPoints} / ${player.maxManaPoints}`;
@@ -106,6 +131,7 @@
     refs.playerMana.textContent = `⭐: ${effectiveAP} | 🔷: +${manaRegen}/turn | 🛡️: ${player.armorPoints} | MR: ${player.magicResistance}`;
 
     refs.enemyName.textContent = enemy.name;
+    flashIfHit(document.querySelector(".combatant-enemy"), refs.enemyHp, state.enemyHealth);
     refs.enemyHp.textContent = `${state.enemyHealth} / ${state.enemyMaxHealth}`;
     setBar(refs.enemyHealthBar, state.enemyHealth, state.enemyMaxHealth);
     refs.enemyStats.textContent = `⚔️: ${state.enemyDamage} DMG | 💥: ${enemy.critChance}% | 🛡️: ${state.enemyArmor} | MR️: ${state.enemyMagicResistance} | 🗡️: ${enemy.armorPenetration}`;

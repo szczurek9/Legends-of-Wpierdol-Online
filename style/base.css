@@ -138,3 +138,28 @@ button:disabled {
     background: var(--menu-control-background) !important;
 }
 
+/* Stała stopka nie zasłania już dołu zawartości na komputerze. */
+body {
+    padding-bottom: 44px;
+    box-sizing: border-box;
+}
+
+/* Wyraźny fokus przy nawigacji klawiaturą. */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+    outline: 2px solid var(--title-glow);
+    outline-offset: 2px;
+}
+
+/* Szanujemy ustawienie systemowe ograniczające animacje. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

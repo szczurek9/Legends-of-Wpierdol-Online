@@ -183,6 +183,7 @@
     const mirrorFatal = mirrorActive && unmitigatedDamage >= player.healthPoints;
     const blockedDamage = mirrorFatal ? Math.floor(unmitigatedDamage * 0.99) : mirrorActive ? Math.floor(unmitigatedDamage * 0.10) : 0;
     const finalDamage = Math.max(1, unmitigatedDamage - blockedDamage);
+    const hpBeforeHit = player.healthPoints;
     player.healthPoints = M.clamp(player.healthPoints - finalDamage, 0, player.maxHealthPoints);
 
     const rage = next.rage + finalDamage;
@@ -190,6 +191,8 @@
     let nextState = {
       ...next,
       enemyCritical: critical,
+      // Dane dla interfejsu (spadające liczby): wartość trafienia i faktycznie utracone HP.
+      enemyHit: { damage: finalDamage, applied: hpBeforeHit - player.healthPoints },
       rage,
       enemyMessage,
       message: enemyMessage,

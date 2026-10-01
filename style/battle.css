@@ -258,3 +258,137 @@
     width: 100%;
 }
 
+/* Niski stan HP/many: delikatna pulsacja paska. */
+.health-bar.is-low {
+    animation: bar-low-pulse 900ms ease-in-out infinite;
+}
+
+@keyframes bar-low-pulse {
+    50% { box-shadow: 0 0 8px 1px rgba(225, 91, 97, 0.85); }
+}
+
+/* Błysk karty walczącego po otrzymaniu obrażeń. */
+.combatant.is-hit {
+    animation: combatant-hit 320ms ease;
+}
+
+@keyframes combatant-hit {
+    25% { transform: translateX(-4px); box-shadow: inset 0 0 22px rgba(225, 91, 97, 0.6); }
+    60% { transform: translateX(3px); }
+}
+
+/* Efekty jako chipy. */
+.battle-effects {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+}
+
+.effect-chip {
+    padding: 2px 8px;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 999px;
+    background: var(--shop-card-background);
+}
+
+/* Historia walki. */
+.battle-history {
+    margin-top: 8px;
+    border: 1px solid black;
+    border-radius: 6px;
+    background: var(--shop-info-background);
+    font-size: 12px;
+}
+
+.battle-history summary {
+    padding: 6px 9px;
+    cursor: pointer;
+}
+
+.battle-history ol {
+    max-height: 150px;
+    margin: 0;
+    padding: 4px 9px 8px 26px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.battle-history li {
+    padding: 2px 0;
+    opacity: 0.8;
+}
+
+.battle-history li:first-child {
+    opacity: 1;
+    font-weight: 700;
+}
+
+.battle-history li.danger { color: #ffd0d0; }
+.battle-history li.success { color: #d6f5dd; }
+.battle-history li.warning { color: #fff0b2; }
+
+/* Spadające liczby obrażeń (-123), leczenia (+45) i napis CRIT!. */
+.battle-model {
+    position: relative;
+}
+
+.fx-float {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    white-space: nowrap;
+    font-family: "Tagesschrift", system-ui;
+    line-height: 1;
+    animation: fx-fall 1400ms cubic-bezier(0.3, 0.1, 0.6, 1) both;
+}
+
+.fx-float .fx-num {
+    font-size: 22px;
+    -webkit-text-stroke: 3px #000;
+    paint-order: stroke fill;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.fx-float .fx-label {
+    margin-bottom: 2px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #ffd84a;
+    -webkit-text-stroke: 2px #000;
+    paint-order: stroke fill;
+}
+
+.fx-damage .fx-num { color: #ff5a5f; }
+.fx-heal .fx-num { color: #4be07f; }
+.fx-crit .fx-num { color: #ff8a3d; font-size: 28px; }
+
+@keyframes fx-fall {
+    0% { opacity: 0; transform: translate(calc(-50% + var(--fx-x, 0px)), -26px) scale(0.5); }
+    14% { opacity: 1; transform: translate(calc(-50% + var(--fx-x, 0px)), -4px) scale(1.3); }
+    30% { opacity: 1; transform: translate(calc(-50% + var(--fx-x, 0px)), 0) scale(1); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--fx-x, 0px)), 60px) scale(0.95); }
+}
+
+@media (max-width: 520px) {
+    .fx-float .fx-num { font-size: 18px; }
+    .fx-crit .fx-num { font-size: 23px; }
+}
+
+/* Ograniczenie ruchu: liczby tylko się pojawiają i zanikają, bez spadania. */
+@media (prefers-reduced-motion: reduce) {
+    .fx-float {
+        animation: fx-fade 1200ms ease both !important;
+        transform: translateX(calc(-50% + var(--fx-x, 0px)));
+    }
+
+    @keyframes fx-fade {
+        0%, 70% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+}
