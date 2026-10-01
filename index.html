@@ -329,14 +329,19 @@
                 </div>
                 <label for="cloud-login-btn">Chmura (Discord)</label>
                 <p id="cloud-status" class="screen-message">Chmura: sprawdzam…</p>
-                <div class="modal-actions">
-                    <button id="cloud-login-btn" type="button">🔑 Zaloguj przez Discord</button>
-                    <button id="cloud-save-btn" type="button" disabled>☁️ Zapisz w chmurze</button>
-                    <button id="cloud-load-btn" type="button" disabled>☁️ Wczytaj z chmury</button>
-                    <button id="cloud-delete-btn" type="button" disabled>🗑️ Usuń moje dane z chmury</button>
+                <div class="modal-actions cloud-actions">
+                    <button id="cloud-login-btn" type="button">🔑 Zaloguj</button>
+                    <button id="cloud-save-btn" type="button" disabled>☁️ Zapisz</button>
+                    <button id="cloud-load-btn" type="button" disabled>☁️ Wczytaj</button>
+                    <button id="cloud-delete-btn" type="button" disabled>🗑️ Usuń dane</button>
                 </div>
                 <label for="save-code">Kod zapisu</label>
                 <textarea id="save-code" rows="5" spellcheck="false" placeholder="Tutaj pojawi się kod zapisu..."></textarea>
+                <div class="modal-actions">
+                    <button id="save-game-btn" type="button">💾 Zapisz grę</button>
+                    <button id="copy-save-btn" type="button">📋 Kopiuj zapis</button>
+                    <button id="load-save-btn" type="button">📥 Wczytaj zapis</button>
+                </div>
                 <div class="theme-picker">
                     <label for="theme-select">Motyw interfejsu</label>
                     <select id="theme-select">
@@ -345,11 +350,6 @@
                         <option value="neon">Neon</option>
                         <option value="nature">Nature</option>
                     </select>
-                </div>
-                <div class="modal-actions">
-                    <button id="save-game-btn" type="button">💾 Zapisz grę</button>
-                    <button id="copy-save-btn" type="button">📋 Kopiuj zapis</button>
-                    <button id="load-save-btn" type="button">📥 Wczytaj zapis</button>
                 </div>
                 <div class="modal-actions donate-section">
                     <button id="donate-btn" type="button"><a href="https://tipply.pl/@szczurek9" target="_blank" rel="noopener noreferrer">💸 Podoba ci się gra? Wesprzyj dalszy rozwój!</a></button>
@@ -369,6 +369,8 @@
         <a href="/privacy">Polityka prywatności</a>
         <span> | </span>
         <a href="/terms">Regulamin</a>
+        <span> | </span>
+        <span id="game-version"></span>
     </footer>
 
     <script src="script/variables.js"></script>

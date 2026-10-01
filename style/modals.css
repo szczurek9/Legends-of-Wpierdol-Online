@@ -140,3 +140,13 @@
     }
 }
 
+/* Przyciski chmury w Opcjach: dwa równe rzędy po dwa przyciski (także na telefonie). */
+.modal-actions.cloud-actions {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.cloud-actions button {
+    width: 100%;
+    margin: 0;
+}
+

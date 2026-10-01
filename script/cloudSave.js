@@ -15,6 +15,7 @@
   const loginBtn = document.getElementById("cloud-login-btn");
   const saveBtn = document.getElementById("cloud-save-btn");
   const loadBtn = document.getElementById("cloud-load-btn");
+  const deleteBtn = document.getElementById("cloud-delete-btn");
 
   let me = { loggedIn: false };
   let gameButtonsShown = false;
@@ -58,7 +59,8 @@
     openBtn.classList.toggle("hidden", !(gameButtonsShown && me.loggedIn));
     saveBtn.disabled = !me.loggedIn;
     loadBtn.disabled = !me.loggedIn || !me.hasSave;
-    loginBtn.textContent = me.loggedIn ? "🚪 Wyloguj" : "🔑 Zaloguj przez Discord";
+    deleteBtn.disabled = !me.loggedIn || !me.hasSave;
+    loginBtn.textContent = me.loggedIn ? "🚪 Wyloguj" : "🔑 Zaloguj";
 
     if (!me.loggedIn) {
       statusText.textContent = "Chmura: niezalogowany.";
@@ -166,6 +168,27 @@
       optionsModal.classList.add("hidden");
     } catch (error) {
       say("Nie udało się pobrać zapisu z chmury.", "danger");
+    }
+  });
+
+  deleteBtn.addEventListener("click", async () => {
+    if (!window.confirm("Trwale usunąć z chmury Twój zapis oraz dane konta (ID i nazwa z Discorda) i wylogować? Tej operacji nie można cofnąć. Zapis na tym urządzeniu (kod) nie zostanie zmieniony.")) return;
+
+    deleteBtn.disabled = true;
+    try {
+      const response = await fetch("/api/save", { method: "DELETE", credentials: "same-origin" });
+      if (response.status === 401) {
+        await handleExpiredSession();
+        return;
+      }
+      if (!response.ok) throw new Error(String(response.status));
+
+      await refresh();
+      say("Dane usunięte z chmury. Wylogowano.", "success");
+    } catch (error) {
+      say("Nie udało się usunąć danych z chmury.", "danger");
+    } finally {
+      render();
     }
   });
 

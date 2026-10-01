@@ -1,9 +1,10 @@
 // GET /api/save — pobiera zapis zalogowanego gracza.
 // PUT /api/save — zapisuje (nadpisuje) zapis zalogowanego gracza.
+// DELETE /api/save — trwale usuwa dane gracza z bazy (ID, nazwa, zapis) i wylogowuje.
 // Zapis to ten sam kod base64, który gracz może skopiować ręcznie.
 // Serwer tylko go przechowuje i sprawdza kształt; pełną walidację gry robi
 // klient przy wczytywaniu (SaveSystem.loadSaveCode).
-import { json, readSession } from "../_lib/session.js";
+import { SESSION_COOKIE, buildCookie, json, readSession } from "../_lib/session.js";
 
 const MAX_SAVE_LENGTH = 100 * 1024; // 100 KB na zapis
 
@@ -63,4 +64,20 @@ export async function onRequestPut({ request, env }) {
   ).bind(session.userId, session.username, code, updatedAt).run();
 
   return json({ ok: true, updatedAt });
+}
+
+export async function onRequestDelete({ request, env }) {
+  const session = await readSession(request, env.SESSION_SECRET);
+  if (!session) return json({ error: "unauthorized" }, 401);
+  if (!isSameOrigin(request)) return json({ error: "forbidden" }, 403);
+
+  await env.DB.prepare("DELETE FROM saves WHERE user_id = ?").bind(session.userId).run();
+
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+      "Set-Cookie": buildCookie(SESSION_COOKIE, "", 0),
+    },
+  });
 }
