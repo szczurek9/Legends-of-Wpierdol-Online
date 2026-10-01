@@ -25,3 +25,13 @@ Przeglądarkowa gra RPG z turowym systemem walki, napisana w całości w czystym
 * **W, E, R** — Aktywne umiejętności klasowe
 * **Spacja** — Uwolnienie specjalnej mechaniki dla unikalnych broni (dostępne tylko po wylosowaniu odpowiedniego oręża)
 * *Mikstury oraz opcja jednorazowej ucieczki z walki obsługiwane są bezpośrednio z poziomu interfejsu (UI).*
+
+## Licencja
+
+- **Kod źródłowy** (`script/`, `style/`, `functions/`, pliki HTML i `data/`) — [MIT](LICENSE)
+- **Grafiki** (`res/`, `favicon.ico`) — [CC BY-NC 4.0](LICENSE-ASSETS) (uznanie autorstwa, bez użycia komercyjnego)
+
+## Credits
+
+- Fonty: [New Rocker](https://fonts.google.com/specimen/New+Rocker) i [Tagesschrift](https://fonts.google.com/specimen/Tagesschrift) (Google Fonts, SIL Open Font License)
+- Nawiązania do postaci i marek z popkultury (np. bossowie, bronie) są hołdem fanowskim; prawa do nich należą do ich właścicieli.
