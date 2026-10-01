@@ -127,6 +127,8 @@
     justify-content: center;
     margin-top: 12px;
     width: 100%;
+    text-decoration: none;
+    color: inherit;
 }
 
 @media (max-width: 520px) {
