@@ -127,6 +127,8 @@
     justify-content: center;
     margin-top: 12px;
     width: 100%;
+}
+.donate-section a, a:visited {
     text-decoration: none;
     color: inherit;
 }
