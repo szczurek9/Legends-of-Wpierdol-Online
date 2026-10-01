@@ -122,6 +122,13 @@
     grid-template-columns: 1fr 1fr;
 }
 
+.donate-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+    width: 100%;
+}
+
 @media (max-width: 520px) {
     .modal-actions,
     .death-actions {
