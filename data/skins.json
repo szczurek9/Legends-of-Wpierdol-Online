@@ -168,5 +168,15 @@
     "modelAlive": "res/skins/sa16.png",
     "modelDead": "res/skins/sd16.png",
     "sellable": true
+  },
+  {
+    "id": "skin17",
+    "name": "Hu Tao",
+    "rarity": "ultimate",
+    "cost": 15,
+    "collection": "Genshin Impact",
+    "modelAlive": "res/skins/sa17.png",
+    "modelDead": "res/skins/sd17.png",
+    "sellable": true
   }
 ]
