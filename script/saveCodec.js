@@ -1,6 +1,6 @@
 // Encodes/decodes the plain-text save payload into the base64 "save code"
-// string that players copy/paste. Shared by saveSystem.js (in-game) and
-// saveEditor.js (standalone save-editor.html) so the logic only lives once.
+// string that players copy/paste. Used by saveSystem.js (in-game) and
+// shop.js (magicLifestealCap helper) so the logic only lives once.
 (function () {
   function encode(text) {
     const bytes = new TextEncoder().encode(text);
@@ -17,11 +17,11 @@
     return new TextDecoder().decode(bytes);
   }
 
-  // Shared by shop.js (in-game) and saveEditor.js (standalone editor): the
+  // Used by shop.js: the
   // magicLifesteal cap isn't a fixed number — it's the highest
   // maxMagicLifesteal among the currently equipped magic items that grant
   // magicLifesteal at all. Takes a plain player-shaped object (works for
-  // both window.player and the editor's form-built player).
+  // window.player or any plain copy of it).
   function magicLifestealCap(player) {
     const equippedIds = player.equippedMagicItems || [];
     const isEquipped = (item) => Boolean(item.equipped

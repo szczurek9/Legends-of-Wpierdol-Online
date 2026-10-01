@@ -205,13 +205,13 @@ footer{ text-align:center; padding:24px 16px 40px; color:var(--muted); font-size
   <a href="#efekty">Efekty</a><a href="#bronie">Bronie</a><a href="#ad">Przedmioty AD</a>
   <a href="#magiczne">Magiczne</a><a href="#mikstury">Mikstury</a><a href="#skille">Skille</a>
   <a href="#przeciwnicy">Przeciwnicy</a><a href="#fale">Fale i ucieczka</a><a href="#sklep">Sklep</a>
-  <a href="#skiny">Skiny</a><a href="#zapisy">Zapisy gry</a><a href="#sterowanie">Sterowanie</a>
+  <a href="#skiny">Skiny</a><a href="#sterowanie">Sterowanie</a>
 </nav>
 
 <div class="wrap">
 
 <section id="wstep">
-<p>Gra to turowy „idle-RPG" przeglądarkowy: gracz tworzy postać, wybiera jedną z 4 klas i wspina się przez 50 poziomów przeciwników, kupując bronie, przedmioty i ulepszenia za zdobywane pieniądze oraz odblokowując kosmetyczne skiny za Skin Pointy. Cały stan gry trzymany jest lokalnie w przeglądarce i przenoszony między sesjami przez ręcznie kopiowany „kod zapisu".</p>
+<p>Gra to turowy „idle-RPG" przeglądarkowy: gracz tworzy postać, wybiera jedną z 4 klas i wspina się przez 50 poziomów przeciwników, kupując bronie, przedmioty i ulepszenia za zdobywane pieniądze oraz odblokowując kosmetyczne skiny za Skin Pointy.</p>
 </section>
 
 <section id="klasy">
@@ -498,11 +498,6 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <span class="rarity-legendary">legendary</span>,
 <span class="rarity-ultimate">ultimate</span>.
 Kupowane za Skin Pointy, część należy do tematycznych kolekcji (np. Cyberpunk Edgerunners, Dragon Ball, Doki Doki Literature Club). Czysto kosmetyczne — bez wpływu na statystyki.</p>
-</section>
-
-<section id="zapisy">
-<h2>Zapisy gry</h2>
-<p>Gra nie ma serwera — cały stan gracza jest serializowany do JSON, kodowany do Base64 i wyświetlany jako „kod zapisu" do ręcznego skopiowania. <b>To nie jest szyfrowanie</b> — kod można łatwo zdekodować. Przy wczytywaniu starszy zapis jest automatycznie migrowany (brakujące pola uzupełniane wartościami domyślnymi) i walidowany pod kątem typów i sensownych zakresów, zanim zostanie zaakceptowany.</p>
 </section>
 
 <section id="sterowanie">

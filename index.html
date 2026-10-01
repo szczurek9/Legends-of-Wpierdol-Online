@@ -44,8 +44,11 @@
     <a id="titleedition">Web Edition</a>
 
         <div id="start-screen">
-            <button id="new-game-btn" type="button">🎮 Nowa gra</button>
-            <button id="load-game-btn" type="button">📥 Wczytaj grę</button>
+            <button id="entry-guest-btn" type="button">🎮 Zagraj jako gość</button>
+            <button id="entry-discord-btn" type="button">🔑 Logowanie przez Discord</button>
+            <button id="new-game-btn" type="button" class="hidden">🎮 Nowa gra</button>
+            <button id="load-game-btn" type="button" class="hidden">📥 Wczytaj grę</button>
+            <button id="cloud-open-btn" type="button" class="hidden">☁️ Chmura (Discord)</button>
             <p id="start-message" class="screen-message" aria-live="polite"></p>
         </div>
 
@@ -340,6 +343,13 @@
                     <button id="copy-save-btn" type="button">📋 Kopiuj zapis</button>
                     <button id="load-save-btn" type="button">📥 Wczytaj zapis</button>
                 </div>
+                <label for="cloud-login-btn">Chmura (Discord)</label>
+                <p id="cloud-status" class="screen-message">Chmura: sprawdzam…</p>
+                <div class="modal-actions">
+                    <button id="cloud-login-btn" type="button">🔑 Zaloguj przez Discord</button>
+                    <button id="cloud-save-btn" type="button" disabled>☁️ Zapisz w chmurze</button>
+                    <button id="cloud-load-btn" type="button" disabled>☁️ Wczytaj z chmury</button>
+                </div>
                 <p id="options-message" class="screen-message" aria-live="polite"></p>
             </div>
         </section>
@@ -359,6 +369,7 @@
     <script src="script/saveCodec.js"></script>
     <script src="script/saveSystem.js"></script>
     <script src="script/mainMenu.js"></script>
+    <script src="script/cloudSave.js"></script>
     <script src="script/themes.js"></script>
     <script src="script/shop.js"></script>
     <script src="script/inventory.js"></script>

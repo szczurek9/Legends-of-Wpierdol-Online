@@ -16,7 +16,7 @@ Przeglądarkowa gra RPG z turowym systemem walki, napisana w całości w czystym
 * **Zaawansowana mechanika walki:** Turowy system wykorzystujący klasyczne wzory redukcji obrażeń (znane z gier MOBA). Obejmuje przebicie pancerza i magii, odporności, wymuszone i naturalne uderzenia krytyczne, a także efekty statusowe (ogłuszenie, zatrucie, odbicie obrażeń).
 * **Ekonomia i Ekwipunek:** Rozbudowany sklep z bronią, przedmiotami pod AD/AP, jednorazowymi miksturami oraz trwałymi ulepszeniami (skille). Wybrane bronie unikalne (np. *Pistolet Jhina* czy *Yamato*) wprowadzają do walki własne, potężne mini-gry uruchamiane klawiszem Spacji.
 * **Progresja:** 50 rosnących w siłę przeciwników podzielonych na fale. Co 5 poziomów na gracza czeka potężny Boss.
-* **Architektura bez backendu (Base64 Save System):** Zapis gry działa całkowicie po stronie klienta. Postęp gracza jest serializowany do jednego ciągu znaków kodowanego w Base64. Do projektu dołączone jest osobne, wbudowane narzędzie (*Save Editor*) pozwalające na pełną modyfikację pliku zapisu.
+* **Zapisy:** Postęp gracza można zapisać i wczytać między sesjami.
 * **Kosmetyka:** Osobna waluta (Skin Points) pozwala na odblokowywanie opcjonalnych skórek dla postaci. Dostępne są również 4 motywy kolorystyczne interfejsu (prism, night, neon, nature).
 
 ## Sterowanie (w walce)
