@@ -9,4 +9,4 @@ Disallow: /data/
 Disallow: /script/
 Disallow: /style/
 
-Sitemap: https://legendsofwpierdol-online.pages.dev/sitemap.xml
+Sitemap: https://legendsofwpierdol-online.pages.dev/sitemap_idx.xml
