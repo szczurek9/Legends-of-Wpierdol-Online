@@ -178,5 +178,26 @@
     "modelAlive": "res/skins/sa17.png",
     "modelDead": "res/skins/sd17.png",
     "sellable": true
+  },
+  {
+    "id": "skin18",
+    "name": "KDA Evelynn",
+    "rarity": "ultimate",
+    "cost": 15,
+    "collection": "League of Legends",
+    "modelAlive": "res/skins/sa18.png",
+    "modelDead": "res/skins/sd18.png",
+    "sellable": true
+  },
+  {
+    "id": "skin19",
+    "name": "Farell",
+    "rarity": "epic",
+    "cost": 4,
+    "collection": "Social Media",
+    "modelAlive": "res/skins/sa19.png",
+    "modelDead": "res/skins/sd19.png",
+    "sellable": true
   }
+
 ]
