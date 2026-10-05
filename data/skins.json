@@ -198,6 +198,16 @@
     "modelAlive": "res/skins/sa19.png",
     "modelDead": "res/skins/sd19.png",
     "sellable": true
+  },
+  {
+    "id": "skin20",
+    "name": "Sayori",
+    "rarity": "legendary",
+    "cost": 10,
+    "collection": "Doki Doki Literature Club",
+    "modelAlive": "res/skins/sa20.png",
+    "modelDead": "res/skins/sd20.png",
+    "sellable": true
   }
 
 ]
