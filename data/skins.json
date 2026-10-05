@@ -31,16 +31,6 @@
   },
   {
     "id": "skin3",
-    "name": "Wujek Jerzy",
-    "rarity": "legendary",
-    "cost": 10,
-    "collection": "no",
-    "modelAlive": "res/skins/sa3.png",
-    "modelDead": "res/skins/sd3.png",
-    "sellable": true
-  },
-  {
-    "id": "skin4",
     "name": "Malarz",
     "rarity": "mythic",
     "cost": 6,
@@ -50,7 +40,7 @@
     "sellable": true
   },
   {
-    "id": "skin5",
+    "id": "skin4",
     "name": "Słodka Lisica",
     "rarity": "ultimate",
     "cost": 15,
@@ -60,7 +50,7 @@
     "sellable": true
   },
   {
-    "id": "skin6",
+    "id": "skin5",
     "name": "Dante",
     "rarity": "epic",
     "cost": 4,
@@ -70,7 +60,7 @@
     "sellable": true
   },
   {
-    "id": "skin7",
+    "id": "skin6",
     "name": "David Martinez",
     "rarity": "legendary",
     "cost": 10,
@@ -80,7 +70,7 @@
     "sellable": true
   },
   {
-    "id": "skin8",
+    "id": "skin7",
     "name": "Rebecca",
     "rarity": "ultimate",
     "cost": 15,
@@ -90,7 +80,7 @@
     "sellable": true
   },
   {
-    "id": "skin9",
+    "id": "skin8",
     "name": "Triple T",
     "rarity": "rare",
     "cost": 2,
@@ -100,7 +90,7 @@
     "sellable": true
   },
   {
-    "id": "skin10",
+    "id": "skin9",
     "name": "Big D.",
     "rarity": "epic",
     "cost": 4,
@@ -110,7 +100,7 @@
     "sellable": true
   },
   {
-    "id": "skin11",
+    "id": "skin10",
     "name": "Goku",
     "rarity": "legendary",
     "cost": 10,
@@ -120,7 +110,7 @@
     "sellable": true
   },
   {
-    "id": "skin12",
+    "id": "skin11",
     "name": "6pek",
     "rarity": "mythic",
     "cost": 6,
@@ -130,7 +120,7 @@
     "sellable": true
   },
   {
-    "id": "skin13",
+    "id": "skin12",
     "name": "KDA Akali",
     "rarity": "ultimate",
     "cost": 15,
@@ -140,7 +130,7 @@
     "sellable": true
   },
     {
-    "id": "skin14",
+    "id": "skin13",
     "name": "Natsuki",
     "rarity": "legendary",
     "cost": 10,
@@ -150,7 +140,7 @@
     "sellable": true
   },
   {
-    "id": "skin15",
+    "id": "skin14",
     "name": "Yuri",
     "rarity": "legendary",
     "cost": 10,
@@ -160,7 +150,7 @@
     "sellable": true
   },
   {
-    "id": "skin16",
+    "id": "skin15",
     "name": "Furina",
     "rarity": "ultimate",
     "cost": 15,
@@ -170,7 +160,7 @@
     "sellable": true
   },
   {
-    "id": "skin17",
+    "id": "skin16",
     "name": "Hu Tao",
     "rarity": "ultimate",
     "cost": 15,
@@ -180,7 +170,7 @@
     "sellable": true
   },
   {
-    "id": "skin18",
+    "id": "skin17",
     "name": "KDA Evelynn",
     "rarity": "ultimate",
     "cost": 15,
@@ -190,7 +180,7 @@
     "sellable": true
   },
   {
-    "id": "skin19",
+    "id": "skin18",
     "name": "Farell",
     "rarity": "epic",
     "cost": 4,
@@ -200,7 +190,7 @@
     "sellable": true
   },
   {
-    "id": "skin20",
+    "id": "skin19",
     "name": "Sayori",
     "rarity": "legendary",
     "cost": 10,
