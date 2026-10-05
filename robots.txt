@@ -1,9 +1,6 @@
 User-agent: *
 
-Allow: /$
-Allow: /index.html
-Allow: /wiki.html
-Allow: /res/
+Allow: /
 
 Disallow: /data/
 Disallow: /script/
