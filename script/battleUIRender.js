@@ -126,7 +126,7 @@
     const currentWeaponDamage = window.BattleMath.currentWeaponDamage();
     refs.playerWeapon.textContent = `⚔️: ${player.weaponName} - ${currentWeaponDamage} DMG | AD: ${player.ad} | 💥: ${player.critChance}% | 🗡️: ${player.armorPenetration}`;
 
-    const manaRegen = Math.floor(player.maxManaPoints * 0.03 * (1 + Math.max(0, player.manaRegenPercent || 0) / 100));
+    const manaRegen = window.BattleMath.manaRegenAmount(player.manaRegenPercent);
     const effectiveAP = window.BattleSystem.getEffectiveAbilityPower ? window.BattleSystem.getEffectiveAbilityPower() : player.abilityPower + player.adeptBookStacks;
     refs.playerMana.textContent = `⭐: ${effectiveAP} | 🔷: +${manaRegen}/turn | 🛡️: ${player.armorPoints} | MR: ${player.magicResistance}`;
 

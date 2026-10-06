@@ -273,6 +273,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <li>Automatyczne uwolnienie puli Jhina po 16 atakach, jeśli gracz nie zrobi tego ręcznie</li>
 <li>Lifesteal: heal = floor(obrażenia * (lifesteal(+bonus Zabójcy)) / 100)</li>
 <li>Leczenie z puli Overkill: floor(pula * (5 + floor(penPancerza/0,7) + floor(pancerz/0,8)) / 100)</li>
+<li>Regeneracja many na turę: floor(bazowa_mana_klasy * 0,03 * (1 + 3,25 * R / (R + 200))), gdzie R = suma % regeneracji many z klasy i przedmiotów, a bazowa mana klasy to 320 (Mag) lub 100 (reszta). Mana z przedmiotów powiększa tylko pulę, nie regenerację. Skuteczność maleje z każdym kolejnym punktem R, a maksymalny bonus to +325%.</li>
 </ol></div></details>
 </section>
 
@@ -376,15 +377,15 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <tr><th>Przedmiot</th><th>Cena</th><th>Efekty</th></tr>
 <tr><td>Zaklęta Księga</td><td>500 $</td><td>+60 many, +60 AP</td></tr>
 <tr><td>Różdżka Zniszczenia</td><td>900 $</td><td>+100 AP, +70 many, +15 pen. magicznej</td></tr>
-<tr><td>Naszyjnik Uzdrowicielki</td><td>350 $</td><td>+100 many, +5 AP, +125% regen. many</td></tr>
-<tr><td>Tarcza Anioła</td><td>600 $</td><td>+30 odp. magicznej, +100% regen. many</td></tr>
-<tr><td>Dłonie Wampira</td><td>800 $</td><td>lifesteal magiczny 15% (limit 30%)</td></tr>
+<tr><td>Naszyjnik Uzdrowicielki</td><td>350 $</td><td>+100 many, +5 AP, +80% regen. many</td></tr>
+<tr><td>Tarcza Anioła</td><td>600 $</td><td>+30 odp. magicznej, +50% regen. many</td></tr>
+<tr><td>Dłonie Wampira</td><td>800 $</td><td>lifesteal magiczny 15% (limit 30% dla tego przedmiotu)</td></tr>
 <tr><td>Księga Adeptów</td><td>300 $</td><td>+5 AP po rzucie czaru (+5 dla Maga te 3 dla reszty klas), limit 30 AP; unikalna</td></tr>
 <tr><td>Ulepszenie Księgi Adeptów</td><td>800 $</td><td>podnosi limit Księgi Adeptów do 150; unikalne, wymaga Księgi</td></tr>
 <tr><td>Kostur Zagłady</td><td>3500 $</td><td>+25% do całkowitej mocy umiejętności (mnożnik); brak zniżki Maga; unikalny</td></tr>
 <tr><td>Kostur Martwej Gwiazdy</td><td>4500 $</td><td>+300 AP, +100 many, +20 pen. magicznej</td></tr>
-<tr><td>Fontanna Many</td><td>3000 $</td><td>+200 many, +50 AP, +400% regen. many</td></tr>
-<tr><td>Niszczyciel Światów</td><td>5000 $</td><td>lifesteal magiczny 25% (limit 50%), +400 AP, +150 many, +30 pen. magicznej; unikalny</td></tr>
+<tr><td>Fontanna Many</td><td>3000 $</td><td>+200 many, +50 AP, +250% regen. many</td></tr>
+<tr><td>Niszczyciel Światów</td><td>5000 $</td><td>lifesteal magiczny 25% (limit 50% dla tego przedmiotu), +400 AP, +150 many, +30 pen. magicznej; max 2 sztuki</td></tr>
 </table></div>
 </section>
 
@@ -490,7 +491,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 
 <section id="skiny">
 <h2>Skiny</h2>
-<p>16 skinów (w tym domyślny „Patyczak") o rzadkościach:
+<p>19 skinów (w tym domyślny „Patyczak") o rzadkościach:
 <span class="rarity-basic">basic</span>,
 <span class="rarity-rare">rare</span>,
 <span class="rarity-epic">epic</span>,

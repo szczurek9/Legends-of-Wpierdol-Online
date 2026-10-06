@@ -79,7 +79,7 @@
     player.magicPenetration += amount(effects.magicPenetration);
     player.magicResistance += amount(effects.magicResistance);
     player.manaRegenPercent += amount(effects.manaRegenPercent);
-    player.magicLifesteal = Math.max(0, Math.min(window.SaveCodec.magicLifestealCap(player), player.magicLifesteal + amount(effects.magicLifesteal)));
+    if (effects.magicLifesteal) player.magicLifesteal = window.SaveCodec.magicLifestealWith(player, item, direction);
 
     if (effects.adeptBook && direction > 0) {
       const hasUpgrade = player.magicInventory.some((owned) => owned.id === "adeptsBookUpgrade" && isMagicEquipped(owned));
@@ -204,6 +204,9 @@
     }
     if (item.unique && player.magicInventory.some((owned) => owned.id === item.id)) {
       return showMessage("Ten przedmiot można posiadać tylko raz.", "warning");
+    }
+    if (item.maxOwned && player.magicInventory.filter((owned) => owned.id === item.id).length >= item.maxOwned) {
+      return showMessage(`Ten przedmiot można posiadać maksymalnie ${item.maxOwned} razy.`, "warning");
     }
 
     const price = magicPrice(item);

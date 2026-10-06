@@ -37,11 +37,34 @@
     return Math.max(1, Math.floor(rawDamage * (1 - reduction)));
   }
 
+  // Mana regen tuning.
+  // - Base regen is 3% of the class's *starting* mana (320 mage / 100 others),
+  //   NOT of max mana, so mana from items only grows the pool, not the regen.
+  // - manaRegenPercent (R) has diminishing returns, like armor: the effective
+  //   bonus is REGEN_MAX_BONUS * R / (R + REGEN_HALF_POINT), see manaRegenBonus().
+  const REGEN_BASE_RATE = 0.03;
+  const REGEN_MAX_BONUS = 3.25;   // asymptote: regen can never exceed base * (1 + 3.25)
+  const REGEN_HALF_POINT = 200;   // raw % at which you get half of REGEN_MAX_BONUS
+
+  function baseManaForClass() {
+    return classId() === "mage" ? 320 : 100;
+  }
+
+  // Returns the effective regen multiplier bonus (e.g. 1.25 = +125%).
+  function manaRegenBonus(rawPercent) {
+    const raw = Math.max(0, Number(rawPercent) || 0);
+    return REGEN_MAX_BONUS * raw / (raw + REGEN_HALF_POINT);
+  }
+
+  // Mana restored per turn for a given raw manaRegenPercent (defaults to the player's).
+  function manaRegenAmount(rawPercent = window.player.manaRegenPercent) {
+    return Math.floor(baseManaForClass() * REGEN_BASE_RATE * (1 + manaRegenBonus(rawPercent)));
+  }
+
   function regenMana() {
     const player = window.player;
     const maxMana = Math.max(0, Number(player.maxManaPoints) || 0);
-    const bonus = 1 + Math.max(0, Number(player.manaRegenPercent) || 0) / 100;
-    const restored = Math.floor(maxMana * 0.03 * bonus);
+    const restored = manaRegenAmount(player.manaRegenPercent);
     player.manaPoints = clamp((Number(player.manaPoints) || 0) + restored, 0, maxMana);
     return restored;
   }
@@ -120,6 +143,8 @@
     physicalDamage,
     magicDamage,
     regenMana,
+    manaRegenAmount,
+    manaRegenBonus,
     currentWeaponDamage,
     currentWeaponData,
     weaponAccuracyBonus,

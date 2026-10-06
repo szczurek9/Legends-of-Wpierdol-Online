@@ -24,21 +24,21 @@
     "id": "healerNecklace",
     "name": "Naszyjnik Uzdrowicielki",
     "price": 350,
-    "description": "+100 many, +5 mocy umiejętności, +125% bazowej regeneracji many.",
+    "description": "+100 many, +5 mocy umiejętności, +80% bazowej regeneracji many (z malejącą skutecznością).",
     "effects": {
       "mana": 100,
       "abilityPower": 5,
-      "manaRegenPercent": 125
+      "manaRegenPercent": 80
     }
   },
   {
     "id": "angelShield",
     "name": "Tarcza Anioła",
     "price": 600,
-    "description": "+30 odporności magicznej, +100% bazowej regeneracji many.",
+    "description": "+30 odporności magicznej, +50% bazowej regeneracji many (z malejącą skutecznością).",
     "effects": {
       "magicResistance": 30,
-      "manaRegenPercent": 100
+      "manaRegenPercent": 50
     }
   },
   {
@@ -97,11 +97,11 @@
     "id": "manaFountain",
     "name": "Fontanna Many",
     "price": 3000,
-    "description": "+200 many, +50 mocy umiejętności, +400% bazowej regeneracji many.",
+    "description": "+200 many, +50 mocy umiejętności, +250% bazowej regeneracji many (z malejącą skutecznością).",
     "effects": {
       "mana": 200,
       "abilityPower": 50,
-      "manaRegenPercent": 400
+      "manaRegenPercent": 250
     }
   },
   {
@@ -116,6 +116,6 @@
       "magicPenetration": 30
     },
     "maxMagicLifesteal": 50,
-    "unique": true
+    "maxOwned": 2
   }
 ]

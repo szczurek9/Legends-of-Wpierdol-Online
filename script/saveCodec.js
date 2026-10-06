@@ -1,6 +1,6 @@
 // Encodes/decodes the plain-text save payload into the base64 "save code"
 // string that players copy/paste. Used by saveSystem.js (in-game) and
-// shop.js (magicLifestealCap helper) so the logic only lives once.
+// shop.js (magic lifesteal helpers) so the logic only lives once.
 (function () {
   function encode(text) {
     const bytes = new TextEncoder().encode(text);
@@ -17,21 +17,40 @@
     return new TextDecoder().decode(bytes);
   }
 
-  // Used by shop.js: the
-  // magicLifesteal cap isn't a fixed number — it's the highest
-  // maxMagicLifesteal among the currently equipped magic items that grant
-  // magicLifesteal at all. Takes a plain player-shaped object (works for
-  // window.player or any plain copy of it).
-  function magicLifestealCap(player) {
-    const equippedIds = player.equippedMagicItems || [];
-    const isEquipped = (item) => Boolean(item.equipped
-      || equippedIds.includes(item.uid)
-      || equippedIds.includes(item.id));
-    const caps = (player.magicInventory || [])
-      .filter((item) => item && isEquipped(item) && (item.effects || {}).magicLifesteal)
-      .map((item) => Number(item.maxMagicLifesteal || 0));
-    return caps.length ? Math.max(...caps) : 0;
+  // Used by shop.js and saveEditor.js. Magic lifesteal is capped separately
+  // per item type (id): copies of the same item add up to that item's
+  // maxMagicLifesteal, and the per-type totals are then summed. Example:
+  // 2x Dlonie Wampira (30 cap) + 2x Niszczyciel Swiatow (50 cap) = 80.
+  function magicLifestealFromItems(items) {
+    const perType = {};
+    items.forEach((item) => {
+      const amount = Number(((item && item.effects) || {}).magicLifesteal || 0);
+      if (!amount) return;
+      const entry = perType[item.id] || (perType[item.id] = { sum: 0, cap: Number(item.maxMagicLifesteal || 0) });
+      entry.sum += amount;
+    });
+    return Object.values(perType).reduce((total, entry) => total + Math.min(entry.sum, entry.cap), 0);
   }
 
-  window.SaveCodec = { encode, decode, magicLifestealCap };
+  function equippedMagicItems(player) {
+    const equippedIds = player.equippedMagicItems || [];
+    return (player.magicInventory || []).filter((item) => item && Boolean(item.equipped
+      || equippedIds.includes(item.uid)
+      || equippedIds.includes(item.id)));
+  }
+
+  // Max magic lifesteal the player can have from the currently equipped items.
+  function magicLifestealCap(player) {
+    return magicLifestealFromItems(equippedMagicItems(player));
+  }
+
+  // Same, but as if `item` was (direction > 0) or was not (direction < 0)
+  // equipped. Needed because shop/inventory call adjustMagicEffects before
+  // or after the item enters/leaves magicInventory.
+  function magicLifestealWith(player, item, direction) {
+    const others = equippedMagicItems(player).filter((owned) => owned !== item && owned.uid !== item.uid);
+    return magicLifestealFromItems(direction > 0 ? others.concat(item) : others);
+  }
+
+  window.SaveCodec = { encode, decode, magicLifestealCap, magicLifestealWith };
 })();
