@@ -204,7 +204,7 @@ footer{ text-align:center; padding:24px 16px 40px; color:var(--muted); font-size
   <a href="#klasy">Klasy</a><a href="#walka">Walka</a><a href="#umiejetnosci">Umiejętności</a>
   <a href="#efekty">Efekty</a><a href="#bronie">Bronie</a><a href="#ad">Przedmioty AD</a>
   <a href="#magiczne">Magiczne</a><a href="#mikstury">Mikstury</a><a href="#skille">Skille</a>
-  <a href="#przeciwnicy">Przeciwnicy</a><a href="#fale">Fale i ucieczka</a><a href="#sklep">Sklep</a>
+  <a href="#przeciwnicy">Przeciwnicy</a><a href="#fale">Fale i ucieczka</a><a href="#arena">Arena</a><a href="#sklep">Sklep</a>
   <a href="#skiny">Skiny</a><a href="#sterowanie">Sterowanie</a>
 </nav>
 
@@ -475,6 +475,56 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <p>Poziom może mieć kilka fal tego samego przeciwnika — kolejna fala ma HP przeskalowane (×1,25 dla bossów), a obrażenia bossa rosną o +15% między falami. Po ostatniej fali gracz awansuje o poziom i dostaje +1 Skin Point.</p>
 <p><b>Ucieczka:</b> dostępna raz na poziom, przywraca 50% maks. HP i 50% maks. many, kończy walkę natychmiast.</p>
 <p><b>Śmierć</b> (HP ≤ 0): ekran śmierci oferuje „Nową grę" (reset postaci) lub „Cofnięcie do stanu sprzed walki" — przywraca migawkę gracza z początku tej konkretnej walki, cofając wszystkie zakupy/zmiany dokonane w jej trakcie.</p>
+</section>
+
+<section id="arena">
+<h2>Arena</h2>
+<p>Arena odblokowuje się na <b>30. poziomie</b>. Przycisk <b>🏟️ Arena</b> stoi obok „Graj” w menu głównym i otwiera okno wyboru trudności z orientacyjnym zarobkiem. To osobny tryb: nie daje awansu, Skin Pointów ani nie zmienia postępu kampanii — wygrana daje wyłącznie pieniądze.</p>
+
+<h3>Jak działa walka</h3>
+<ul>
+  <li><b>Osobna pula HP i many:</b> do areny wchodzisz z pełnym HP i pełną maną, niezależnie od stanu w kampanii. Po walce (wygrana, porażka lub ucieczka) wraca stan kampanii: HP, mana, lifesteal z mikstur, Drugi Oddech i stosy Księgi Adepta.</li>
+  <li><b>Mikstury</b> użyte w arenie pozostają zużyte.</li>
+  <li><b>Battle Bot jest skrojony pod Twój build.</b> Jego HP wynika z Twoich obrażeń, a jego obrażenia z Twojego maks. HP, więc arena nie staje się trywialna tylko dlatego, że masz mocniejszy sprzęt. Liczy się to, jak sprawnie walczysz.</li>
+  <li>Pancerz, odporność na magię i penetrację bot dostaje jak przeciwnik z Twojego poziomu w kampanii (maks. poziom 50).</li>
+</ul>
+
+<h3>Poziomy trudności</h3>
+<div class="tablewrap"><table>
+<tr><th>Tryb</th><th>Fale</th><th>Trafień do zabicia</th><th>Unik bota</th><th>Szansa ataku bota</th><th>Krytyk bota</th><th>Obrażenia (1. fala)</th><th>Skalowanie między falami</th><th>Mnożnik nagrody</th></tr>
+<tr><td>Łatwy</td><td>2</td><td>3</td><td>20%</td><td>×0,75</td><td>×0,50</td><td>13% maks. HP</td><td>brak</td><td>×0,10</td></tr>
+<tr><td>Średni</td><td>3</td><td>3</td><td>30%</td><td>×0,90</td><td>×0,75</td><td>10% maks. HP</td><td>HP ×1,15, obrażenia ×1,10</td><td>×0,20</td></tr>
+<tr><td>Trudny</td><td>4</td><td>4</td><td>40%</td><td>×1,00</td><td>×1,00</td><td>5,5% maks. HP</td><td>HP ×1,15, obrażenia ×1,10</td><td>×0,35</td></tr>
+</table></div>
+<p class="note">Szansa ataku i krytyk bota to wartości przeciwnika z Twojego poziomu pomnożone przez mnożnik trybu (szansa ataku maks. 75%, krytyk maks. 40%). „Trafień do zabicia” to liczba Twoich przeciętnych trafień (z uwzględnieniem pancerza bota, szansy na trafienie i krytyka), których potrzeba na pierwszą falę; HP bota nigdy nie jest niższe niż 1,5 × Twój największy pojedynczy cios.</p>
+
+<h3>Nagroda</h3>
+<p>Nagroda jest wypłacana <b>jednorazowo po wygraniu ostatniej fali</b>. Zależy od trybu i od tego, jak dobrze poszła walka w porównaniu z oczekiwaniami dla Twojego buildu:</p>
+<div class="formula">bazowa = nagrodaPrzeciwnika(poziom) × fale(poziom) × mnożnikTrybu
+ocenaObrażeń = 1 / (1 + (otrzymaneObrażenia / oczekiwane)²)
+ocenaCzasu = 1 / (1 + (tury / oczekiwaneTury)²)
+mnożnikWykonania = 0,4 + 1,2 × (0,5 × ocenaObrażeń + 0,5 × ocenaCzasu)
+nagroda = round(bazowa × mnożnikWykonania)</div>
+<ul>
+  <li>Walka dokładnie „na oczekiwanym poziomie” (tyle obrażeń i tur, ile zakłada model) daje mnożnik <b>×1,0</b>. To właśnie wartość pokazana w oknie wyboru jako „możliwy zarobek: około…”.</li>
+  <li>Mniej otrzymanych obrażeń i mniej tur podnoszą mnożnik (maks. ×1,6), a długa i bolesna walka obniża go (min. ×0,4).</li>
+  <li>Do tur liczą się ataki i umiejętności kończące turę. Mikstury i umiejętność broni (Spacja) tury nie zajmują, więc nie pogarszają wyniku czasu.</li>
+</ul>
+<div class="tablewrap"><table>
+<tr><th>Przykład: poziom 30</th><th>Łatwy</th><th>Średni</th><th>Trudny</th></tr>
+<tr><td>Nagroda bazowa (290 × 3 fale = 870 $)</td><td>87 $</td><td>174 $</td><td>305 $</td></tr>
+</table></div>
+<p class="note">Kwoty w tabeli to wynik przy mnożniku wykonania ×1,0, czyli typowa walka. Przy lepszej walce zarobisz więcej, przy gorszej mniej. Im wyższy poziom, tym wyższa nagroda bazowa (wartości w tabeli przeciwników).</p>
+
+<h3>Cooldown, ucieczka i porażka</h3>
+<div class="tablewrap"><table>
+<tr><th>Sytuacja</th><th>Nagroda</th><th>Cooldown areny</th><th>Dodatkowe skutki</th></tr>
+<tr><td>Wygrana</td><td>tak</td><td>8 minut</td><td>—</td></tr>
+<tr><td>Porażka (HP ≤ 0)</td><td>brak</td><td>8 minut</td><td>bez ekranu śmierci i bez „Nowej gry” — kampania pozostaje nietknięta</td></tr>
+<tr><td>Ucieczka</td><td>brak</td><td>nie uruchamia się</td><td>blokada ponownego wejścia na 30 sekund; bez leczenia i bez zużywania ucieczki z kampanii</td></tr>
+</table></div>
+<p>Przycisk ucieczki w arenie jest zawsze aktywny (nie obowiązuje limit „raz na poziom”), ale w przeciwieństwie do ucieczki w kampanii <b>nie przywraca HP ani many</b>. Cooldown i blokada są zapisywane w kodzie zapisu, więc odświeżenie strony ich nie kasuje. Odświeżenie strony w trakcie walki przerywa arenę bez nagrody i wraca do ostatniego zapisu.</p>
+<p class="note">W obliczeniach areny nie uwzględniono wszystkich możliwości (np. aktywnych umiejętności poza rotacją maga), więc przy niektórych buildach walka bywa szybsza, niż zakłada model, a mnożnik wykonania będzie wtedy powyżej ×1,0.</p>
 </section>
 
 <section id="sklep">
