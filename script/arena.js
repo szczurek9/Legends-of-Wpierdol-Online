@@ -147,7 +147,8 @@
     if (player.level < UNLOCK_LEVEL) return { ok: false, message: `Arena odblokowuje się na ${UNLOCK_LEVEL}. poziomie.` };
     const lock = remaining(player.arenaEscapeLockUntil, now);
     if (lock > 0) return { ok: false, message: `Po ucieczce: odczekaj jeszcze ${Math.ceil(lock / 1000)} s.` };
-    const cooldown = remaining(player.arenaCooldownUntil, now);
+    const stored = window.SaveSystem?.getStoredArenaCooldown?.() || 0;
+    const cooldown = remaining(Math.max(Number(player.arenaCooldownUntil) || 0, stored), now);
     if (cooldown > 0) {
       const sec = Math.ceil(cooldown / 1000);
       return { ok: false, message: `Cooldown areny: ${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}.` };

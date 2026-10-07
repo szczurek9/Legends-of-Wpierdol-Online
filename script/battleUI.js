@@ -234,7 +234,7 @@
   function openArenaBattle(difficultyId) {
     if (!window.Arena.canEnter(window.player).ok) { refreshArenaPanel(); return; }
     closeArenaPanel();
-    window.SaveSystem.beginArena();                              // pełne HP/mana areny, kampania zapamiętana
+    window.SaveSystem.beginArena({ cooldownMs: window.Arena.COOLDOWN_MS });   // pełne HP/mana areny, kampania zapamiętana, cooldown od razu
     const bot = window.Arena.buildBot(difficultyId);             // po beginArena, liczy z maks. HP gracza
     state = window.BattleSystem.startArena(bot);
     showBattleScreen();

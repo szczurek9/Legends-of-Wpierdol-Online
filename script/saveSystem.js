@@ -2,6 +2,17 @@
   const SAVE_VERSION = 1;
   let battleSnapshot = null;
   let arenaSnapshot = null;
+  let arenaPrevCooldown = 0;   // cooldown sprzed wejścia do areny (przywracany po ucieczce)
+
+  // Kopia cooldownu areny poza kodem zapisu: bez niej odświeżenie strony w trakcie walki
+  // i wczytanie starszego kodu pozwalałoby ominąć cooldown.
+  const ARENA_COOLDOWN_KEY = "arenaCooldownUntil";
+  function storeArenaCooldown(timestamp) {
+    try { window.localStorage.setItem(ARENA_COOLDOWN_KEY, String(Number(timestamp) || 0)); } catch (error) { /* brak dostępu do storage */ }
+  }
+  function readStoredArenaCooldown() {
+    try { return Number(window.localStorage.getItem(ARENA_COOLDOWN_KEY)) || 0; } catch (error) { return 0; }
+  }
 
   function isValidPlayer(player) {
     if (!player || typeof player !== "object") return false;
@@ -158,8 +169,15 @@
       battleSnapshot = null;
     },
     // Arena: osobna pula HP/many. Zapamiętuje cały stan i daje pełne HP/manę areny.
-    beginArena() {
+    // cooldownMs: cooldown naliczany od razu przy wejściu (trafia do migawki, więc zapis zrobiony
+    // w trakcie areny, oraz kopia w przeglądarce, już go zawierają). Ucieczka go cofa.
+    beginArena({ cooldownMs = 0 } = {}) {
       arenaSnapshot = copyPlayer(window.player);
+      arenaPrevCooldown = arenaSnapshot.arenaCooldownUntil || 0;
+      if (cooldownMs) {
+        arenaSnapshot.arenaCooldownUntil = Date.now() + cooldownMs;
+        storeArenaCooldown(arenaSnapshot.arenaCooldownUntil);
+      }
       window.player.healthPoints = window.player.maxHealthPoints;
       window.player.manaPoints = window.player.maxManaPoints;
     },
@@ -173,10 +191,16 @@
       if (!applyPlayer(snapshot)) return false;
       window.player.potionInventory = potionsLeft;
       window.player.money += reward;
-      if (cooldownMs) window.player.arenaCooldownUntil = Date.now() + cooldownMs;
+      if (cooldownMs) {
+        window.player.arenaCooldownUntil = Date.now() + cooldownMs;   // licząc od końca walki
+      } else {
+        window.player.arenaCooldownUntil = arenaPrevCooldown;         // ucieczka: bez cooldownu z wejścia
+      }
+      storeArenaCooldown(window.player.arenaCooldownUntil);
       if (lockMs) window.player.arenaEscapeLockUntil = Date.now() + lockMs;
       return true;
     },
+    getStoredArenaCooldown: readStoredArenaCooldown,
     isArenaActive() {
       return arenaSnapshot !== null;
     },
