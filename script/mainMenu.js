@@ -30,6 +30,9 @@ function refreshMainMenu() {
     mainPlayerModelImage.src = currentSkin.modelAlive;
     mainPlayerModelImage.alt = currentSkin.name;
   }
+
+  const arenaBtn = document.getElementById("arena-btn");
+  if (arenaBtn) arenaBtn.classList.toggle("hidden", window.player.level < (window.Arena?.UNLOCK_LEVEL ?? 30));
 }
 
 function showMainMenu() {
@@ -90,6 +93,10 @@ function loadFromPrompt() {
     startMessage.textContent = "Nieprawidłowy lub uszkodzony zapis gry.";
   }
 }
+
+document.querySelectorAll("[data-open-wiki]").forEach((button) => {
+  button.addEventListener("click", () => window.open("wiki.html", "_blank", "noopener"));
+});
 
 window.refreshMainMenu = refreshMainMenu;
 window.showMainMenu = showMainMenu;

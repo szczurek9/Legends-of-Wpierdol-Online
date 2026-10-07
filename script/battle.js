@@ -17,10 +17,15 @@
       return state;
     },
 
+    // Arena: bot z Arena.buildBot(), enemyIndex = -1.
+    startArena(bot) {
+      return { ...S.startState(bot, -1), arena: true, arenaTurns: 0, arenaDamageTaken: 0 };
+    },
+
     attack(state) {
       const next = A.playerAttack(state, { forceCritical: Boolean(state.guaranteedCrit) });
       next.guaranteedCrit = false;
-      return next.enemyDefeated ? next : A.finishPlayerAction(next, next.message);
+      return next.enemyDefeated ? { ...next, arenaTurns: (next.arenaTurns || 0) + 1 } : A.finishPlayerAction(next, next.message);
     },
 
     useAbility: A.useAbility,
@@ -29,10 +34,13 @@
     enemyTurn: A.enemyTurn,
 
     nextWave(state) {
-      const enemy = window.enemies[state.enemyIndex];
+      const enemy = S.enemyOf(state);
       const nextWave = state.currentWave + 1;
 
       if (nextWave > state.totalWaves) {
+        if (state.arena) {
+          return { ...state, finished: true, arenaWon: true, reward: 0, message: "Arena ukończona!" };
+        }
         window.player.level += 1;
         window.player.skinPoints += 1;
         window.player.usedEscape = false;
@@ -46,13 +54,14 @@
         };
       }
 
-      const scale = enemy.isBoss ? 1.25 : 1;
+      const hpScale = enemy.isBoss ? (enemy.hpScale ?? 1.25) : 1;
+      const dmgScale = enemy.isBoss ? (enemy.dmgScale ?? 1.15) : 1;
       const next = {
         ...state,
         currentWave: nextWave,
-        enemyHealth: Math.floor(state.enemyMaxHealth * scale),
-        enemyMaxHealth: Math.floor(state.enemyMaxHealth * scale),
-        enemyDamage: enemy.isBoss ? Math.floor(state.enemyDamage * 1.15) : state.enemyDamage,
+        enemyHealth: Math.floor(state.enemyMaxHealth * hpScale),
+        enemyMaxHealth: Math.floor(state.enemyMaxHealth * hpScale),
+        enemyDamage: enemy.isBoss ? Math.floor(state.enemyDamage * dmgScale) : state.enemyDamage,
         weaponAttackCount: 0,
         yamatoJudgementStacks: 0,
         jhinPool: 0,

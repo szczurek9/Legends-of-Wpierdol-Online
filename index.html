@@ -50,6 +50,7 @@
             <button id="new-game-btn" type="button" class="hidden">🎮 Nowa gra</button>
             <button id="load-game-btn" type="button" class="hidden">📥 Wczytaj grę</button>
             <button id="cloud-open-btn" type="button" class="hidden">☁️ Chmura (Discord)</button>
+            <button id="wiki-start-btn" type="button" data-open-wiki>📖 Wiki</button>
             <p id="start-message" class="screen-message" aria-live="polite"></p>
         </div>
 
@@ -82,9 +83,11 @@
 
                 <div id="main-buttons">
                     <button id="play-btn" type="button">⚔️ Graj</button>
+                    <button id="arena-btn" type="button" class="hidden">🏟️ Arena</button>
                     <button id="shop-btn" type="button">🪙 Sklep</button>
                     <button id="inventory-btn" type="button">🎒 Ekwipunek</button>
                     <button id="options-btn" type="button">⚙️ Opcje</button>
+                    <button id="wiki-btn" type="button" data-open-wiki>📖 Wiki</button>
                 </div>
 
             </div> 
@@ -322,6 +325,30 @@
             </div>
         </section>
 
+        <section id="arena-panel" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="arena-title">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="arena-title">🏟️ Arena: Battle Bot</h2>
+                    <button id="arena-close-btn" class="modal-close" type="button" aria-label="Zamknij">✕</button>
+                </div>
+                <p id="arena-status" class="screen-message"></p>
+                <div id="arena-difficulties">
+                    <button type="button" data-arena-difficulty="easy">
+                        <span class="arena-diff-name">Łatwy (2 fale)</span>
+                        <span class="arena-diff-reward">Możliwy zarobek: około <b data-arena-reward="easy">…</b> $</span>
+                    </button>
+                    <button type="button" data-arena-difficulty="medium">
+                        <span class="arena-diff-name">Średni (3 fale)</span>
+                        <span class="arena-diff-reward">Możliwy zarobek: około <b data-arena-reward="medium">…</b> $</span>
+                    </button>
+                    <button type="button" data-arena-difficulty="hard">
+                        <span class="arena-diff-name">Trudny (4 fale)</span>
+                        <span class="arena-diff-reward">Możliwy zarobek: około <b data-arena-reward="hard">…</b> $</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <section id="options-modal" class="modal hidden" aria-modal="true" role="dialog" aria-labelledby="options-title">
             <div class="modal-content">
                 <div class="modal-header">
@@ -388,6 +415,7 @@
     <script src="script/battleMath.js"></script>
     <script src="script/battleState.js"></script>
     <script src="script/battleActions.js"></script>
+    <script src="script/arena.js"></script>
     <script src="script/battle.js"></script>
     <script src="script/battleUIRender.js"></script>
     <script src="script/battleUI.js"></script>

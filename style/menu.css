@@ -84,8 +84,16 @@ border-radius: 5px;
     gap: 5px;
 }
 
-#main-buttons #play-btn,
-#main-buttons #options-btn {
+/* Graj zajmuje cały rząd, chyba że widoczna jest Arena (wtedy stoją obok siebie). */
+#main-buttons #play-btn {
     grid-column: 1 / -1;
 }
+#main-buttons:has(#arena-btn:not(.hidden)) #play-btn {
+    grid-column: auto;
+}
 
+
+#arena-difficulties { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+#arena-difficulties button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px; }
+.arena-diff-name { font-weight: 600; }
+.arena-diff-reward { font-size: 0.85em; }

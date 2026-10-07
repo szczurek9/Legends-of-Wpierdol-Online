@@ -5,6 +5,7 @@
     return {
       finished: false,
       enemyIndex,
+      arenaEnemy: enemyIndex < 0 ? enemy : null,   // arena: bot trzymany w stanie
       currentWave: 1,
       totalWaves: enemy.waves,
       enemyHealth: enemy.health,
@@ -71,7 +72,13 @@
     return { ...state, cooldowns, effects };
   }
 
+  // Przeciwnik walki: bot areny albo wiersz z enemies.json.
+  function enemyOf(state) {
+    return state.arenaEnemy || window.enemies[state.enemyIndex];
+  }
+
   window.BattleState = {
+    enemyOf,
     startState,
     setCooldown,
     tickCooldowns,

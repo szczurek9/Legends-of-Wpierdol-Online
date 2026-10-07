@@ -34,6 +34,10 @@
     enemyHp: document.getElementById("battle-enemy-hp"),
     enemyHealthBar: document.getElementById("battle-enemy-health-bar"),
     enemyStats: document.getElementById("battle-enemy-stats"),
+    arenaButton: document.getElementById("arena-btn"),
+    arenaPanel: document.getElementById("arena-panel"),
+    arenaStatus: document.getElementById("arena-status"),
+    arenaCloseButton: document.getElementById("arena-close-btn"),
   };
 
   const UI = window.BattleUIRender;
@@ -146,6 +150,12 @@
   }
 
   function showDeathPanel() {
+    if (state.arena) {
+      window.SaveSystem.endArena({ cooldownMs: window.Arena.COOLDOWN_MS });
+      state = { ...state, finished: true };
+      finish("Przegrywasz w arenie. Brak nagrody, cooldown areny uruchomiony.", "danger");
+      return;
+    }
     refs.actions.classList.add("hidden");
     refs.escapeButton.classList.add("hidden");
     refs.abilitiesPanel.classList.add("hidden");
@@ -165,9 +175,8 @@
       && refs.deathPanel.classList.contains("hidden"));
   }
 
-  function openBattle() {
-    window.SaveSystem.captureBattleState();
-    state = window.BattleSystem.start(window.player.level);
+  // Wspólne przygotowanie ekranu walki (kampania i arena).
+  function showBattleScreen() {
     logHistoryList.replaceChildren();
     pendingFx = null;
     refs.mainMenu.classList.add("hidden");
@@ -179,6 +188,13 @@
     refs.effectsPanel.classList.remove("hidden");
     refs.backButton.classList.add("hidden");
     refs.deathPanel.classList.add("hidden");
+    isTransitioning = false;
+  }
+
+  function openBattle() {
+    window.SaveSystem.captureBattleState();
+    state = window.BattleSystem.start(window.player.level);
+    showBattleScreen();
 
     if (state.finished) {
       refs.battleTitle.textContent = "Koniec gry";
@@ -191,13 +207,54 @@
     showMessage("Wybierz akcje.");
   }
 
+  // --- Arena ---
+  let arenaTimer = null;
+
+  function refreshArenaPanel() {
+    const check = window.Arena.canEnter(window.player);
+    refs.arenaStatus.textContent = check.ok ? "Wybierz poziom trudności." : check.message;
+    refs.arenaPanel.querySelectorAll("[data-arena-difficulty]").forEach((button) => { button.disabled = !check.ok; });
+    refs.arenaPanel.querySelectorAll("[data-arena-reward]").forEach((el) => {
+      el.textContent = window.Arena.estimateReward(el.dataset.arenaReward);
+    });
+  }
+
+  function openArenaPanel() {
+    refs.arenaPanel.classList.remove("hidden");
+    refreshArenaPanel();
+    window.clearInterval(arenaTimer);
+    arenaTimer = window.setInterval(refreshArenaPanel, 1000);
+  }
+
+  function closeArenaPanel() {
+    window.clearInterval(arenaTimer);
+    refs.arenaPanel.classList.add("hidden");
+  }
+
+  function openArenaBattle(difficultyId) {
+    if (!window.Arena.canEnter(window.player).ok) { refreshArenaPanel(); return; }
+    closeArenaPanel();
+    window.SaveSystem.beginArena();                              // pełne HP/mana areny, kampania zapamiętana
+    const bot = window.Arena.buildBot(difficultyId);             // po beginArena, liczy z maks. HP gracza
+    state = window.BattleSystem.startArena(bot);
+    showBattleScreen();
+    renderAll();
+    showMessage(`Arena (${window.Arena.DIFFICULTIES[difficultyId].label}): wybierz akcję.`);
+  }
+
+  function finishArena() {
+    const result = window.Arena.settle(state);
+    window.SaveSystem.endArena({ reward: result.reward, cooldownMs: window.Arena.COOLDOWN_MS });
+    finish(`Arena ukończona! Obrażenia: ${result.taken} (oczekiwane ${Math.round(result.expectedLoss)}), tury: ${result.turns} (par ${result.parTurns.toFixed(1)}). Mnożnik wykonania ×${result.performance.toFixed(2)}. Nagroda: ${result.reward} $.`, "success");
+  }
+
   // Shared by attack() and actionResult(): awards the kill reward, plays the
   // ~700ms "defeated" pause, then either ends the battle (level up) or opens
   // the next wave. `hideAbilitiesAndPotions` preserves the one real
   // difference between the two call sites: ability/potion kills also hide
   // those panels during the pause, while a plain attack kill does not.
   function resolveEnemyDefeated(message, hideAbilitiesAndPotions) {
-    window.player.money += window.enemies[state.enemyIndex].reward;
+    window.player.money += window.BattleState.enemyOf(state).reward;
     isTransitioning = true;
     refs.actions.classList.add("hidden");
     if (hideAbilitiesAndPotions) {
@@ -212,7 +269,9 @@
       renderAll();
       isTransitioning = false;
 
-      if (state.levelUp) {
+      if (state.arenaWon) {
+        finishArena();
+      } else if (state.levelUp) {
         finish(`${message} ${state.message} Otrzymujesz nagrodę: ${state.reward} $.`, "success");
       } else {
         refs.actions.classList.remove("hidden");
@@ -220,7 +279,7 @@
           refs.abilitiesPanel.classList.remove("hidden");
           refs.potionsPanel.classList.remove("hidden");
         }
-        showMessage(`${message} ${state.message} Otrzymujesz ${state.reward} $.`, "success");
+        showMessage(`${message} ${state.message}${state.arena ? "" : ` Otrzymujesz ${state.reward} $.`}`, "success");
       }
     }, 700);
   }
@@ -317,6 +376,14 @@
   }
 
   function escape() {
+    if (state.arena) {
+      if (!canAct()) return;
+      window.SaveSystem.endArena({ lockMs: window.Arena.ESCAPE_LOCK_MS });
+      isTransitioning = true;
+      state = { ...state, escaped: true, finished: true };
+      finish("Uciekasz z areny. Postęp zresetowany, ponowne wejście za 30 s.", "warning");
+      return;
+    }
     const result = window.BattleSystem.escape();
     if (!result.allowed) {
       showMessage(result.message, "danger");
@@ -330,6 +397,7 @@
   }
 
   function closeBattle() {
+    if (window.SaveSystem.isArenaActive()) window.SaveSystem.endArena({ cooldownMs: window.Arena.COOLDOWN_MS });
     isTransitioning = false;
     refs.battleScreen.classList.add("hidden");
     refs.mainMenu.classList.remove("hidden");
@@ -344,6 +412,11 @@
   }
 
   refs.playButton.addEventListener("click", openBattle);
+  refs.arenaButton.addEventListener("click", openArenaPanel);
+  refs.arenaCloseButton.addEventListener("click", closeArenaPanel);
+  refs.arenaPanel.querySelectorAll("[data-arena-difficulty]").forEach((button) => {
+    button.addEventListener("click", () => openArenaBattle(button.dataset.arenaDifficulty));
+  });
   document.addEventListener("keydown", handleBattleShortcut);
   refs.attackButton.addEventListener("click", attack);
   refs.escapeButton.addEventListener("click", escape);

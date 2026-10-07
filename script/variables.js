@@ -56,6 +56,8 @@ window.createDefaultPlayer = function () {
     adeptBookStackLimit: 30,
     secondWind: false,
     usedEscape: false,
+    arenaCooldownUntil: 0,     // ms (Date.now()) do kiedy trwa cooldown areny
+    arenaEscapeLockUntil: 0,   // ms do kiedy trwa blokada po ucieczce
   };
 };
 

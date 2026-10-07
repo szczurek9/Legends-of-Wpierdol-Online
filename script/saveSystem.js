@@ -1,6 +1,7 @@
 (function () {
   const SAVE_VERSION = 1;
   let battleSnapshot = null;
+  let arenaSnapshot = null;
 
   function isValidPlayer(player) {
     if (!player || typeof player !== "object") return false;
@@ -53,7 +54,7 @@
     return window.SaveCodec.encode(JSON.stringify({
       version: SAVE_VERSION,
       savedAt: new Date().toISOString(),
-      player: copyPlayer(window.player),
+      player: copyPlayer(arenaSnapshot || window.player),
     }));
   }
 
@@ -115,6 +116,9 @@
     if (!Array.isArray(player.skinInventory)) player.skinInventory = ["default"];
     if (!player.skinInventory.includes("default")) player.skinInventory.push("default");
 
+    if (typeof player.arenaCooldownUntil !== "number") player.arenaCooldownUntil = 0;
+    if (typeof player.arenaEscapeLockUntil !== "number") player.arenaEscapeLockUntil = 0;
+
     return player;
   }
 
@@ -134,6 +138,7 @@
   function resetPlayer() {
     Object.assign(window.player, window.createDefaultPlayer());
     battleSnapshot = null;
+    arenaSnapshot = null;
   }
 
   window.SaveSystem = {
@@ -151,6 +156,29 @@
     },
     clearBattleState() {
       battleSnapshot = null;
+    },
+    // Arena: osobna pula HP/many. Zapamiętuje cały stan i daje pełne HP/manę areny.
+    beginArena() {
+      arenaSnapshot = copyPlayer(window.player);
+      window.player.healthPoints = window.player.maxHealthPoints;
+      window.player.manaPoints = window.player.maxManaPoints;
+    },
+    // Koniec areny (wygrana, zgon, ucieczka): wraca stan kampanii (HP, mana, lifesteal z mikstur,
+    // Drugi Oddech itd.). Zużyte mikstury zostają zużyte. Dodaje nagrodę i ustawia znaczniki czasu.
+    endArena({ reward = 0, cooldownMs = 0, lockMs = 0 } = {}) {
+      if (!arenaSnapshot) return false;
+      const potionsLeft = window.player.potionInventory.slice();
+      const snapshot = arenaSnapshot;
+      arenaSnapshot = null;
+      if (!applyPlayer(snapshot)) return false;
+      window.player.potionInventory = potionsLeft;
+      window.player.money += reward;
+      if (cooldownMs) window.player.arenaCooldownUntil = Date.now() + cooldownMs;
+      if (lockMs) window.player.arenaEscapeLockUntil = Date.now() + lockMs;
+      return true;
+    },
+    isArenaActive() {
+      return arenaSnapshot !== null;
     },
   };
 })();

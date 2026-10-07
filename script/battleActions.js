@@ -5,7 +5,7 @@
 
   function playerAttack(state, options = {}) {
     const player = window.player;
-    const enemy = window.enemies[state.enemyIndex];
+    const enemy = S.enemyOf(state);
     // Kieł Węża's poison reduces the enemy's dodge chance by 10% (min. 0%),
     // not less likely to attack — that reduction lives in enemyTurn's own
     // attack-chance calc, not here.
@@ -135,7 +135,7 @@
 
   function enemyTurn(state) {
     const player = window.player;
-    const enemy = window.enemies[state.enemyIndex];
+    const enemy = S.enemyOf(state);
     if (state.enemyDefeated) return state;
 
     let next = state;
@@ -194,6 +194,7 @@
       // Dane dla interfejsu (spadające liczby): wartość trafienia i faktycznie utracone HP.
       enemyHit: { damage: finalDamage, applied: hpBeforeHit - player.healthPoints },
       rage,
+      arenaDamageTaken: (next.arenaDamageTaken || 0) + finalDamage,
       enemyMessage,
       message: enemyMessage,
     };
@@ -230,7 +231,7 @@
   // its own key, that overwrite would silently erase it whenever the enemy
   // survives — exactly what was happening to every damage-dealing ability.
   function finishPlayerAction(state, message, cooldownAbility, isSpell = false) {
-    let next = { ...state, message, actionMessage: message };
+    let next = { ...state, arenaTurns: (state.arenaTurns || 0) + 1, message, actionMessage: message };
     if (isSpell) M.recordSpellCast();
     M.regenMana();
     next = enemyTurn(next);

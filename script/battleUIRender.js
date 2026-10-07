@@ -112,7 +112,7 @@
 
   function render(refs, state) {
     const player = window.player;
-    const enemy = window.enemies[state.enemyIndex];
+    const enemy = window.BattleState.enemyOf(state);
 
     refs.battleTitle.textContent = enemy.name;
     refs.battleWave.textContent = `Fala ${state.currentWave} / ${state.totalWaves}`;
@@ -137,7 +137,7 @@
     refs.enemyStats.textContent = `⚔️: ${state.enemyDamage} DMG | 💥: ${enemy.critChance}% | 🛡️: ${state.enemyArmor} | MR️: ${state.enemyMagicResistance} | 🗡️: ${enemy.armorPenetration}`;
     renderEnemyModel(refs, enemy, state.enemyDefeated === true);
 
-    refs.escapeButton.disabled = player.usedEscape;
+    refs.escapeButton.disabled = player.usedEscape && !state.arena;
     refs.attackButton.classList.toggle("hidden", player.classId === "mage");
     renderEffects(refs, state);
   }
