@@ -167,13 +167,33 @@
     refresh();
   }
 
+  function adSalePrice(item) {
+    return Math.round((item.paidPrice || item.price) * 0.4);
+  }
+
+  function sellAdItem(index) {
+    const item = window.player.adItemInventory[index];
+    if (!item) return;
+
+    if (item.equipped) window.adjustAdEffects(item, -1);
+    window.player.equippedAdItems = window.player.equippedAdItems.filter((uid) => uid !== item.uid);
+    window.player.adItemInventory.splice(index, 1);
+
+    const salePrice = adSalePrice(item);
+    window.player.money += salePrice;
+    refresh();
+    showMessage(`Sprzedano ${item.name} za ${salePrice} $.`, "success");
+  }
+
   function createAdCard(item, index) {
     const card = document.createElement("article"); card.className = "shop-item inventory-item";
     if (item.equipped) card.classList.add("inventory-item-equipped");
     const title = document.createElement("h4"); title.textContent = item.name; card.appendChild(title);
-    const details = document.createElement("p"); details.textContent = `${item.equipped ? "Wyposażony" : "W torbie"}${item.unique ? " | Unique" : ""}`; card.appendChild(details);
+    const details = document.createElement("p"); details.textContent = `${item.equipped ? "Wyposażony" : "W torbie"}${item.unique ? " | Unique" : ""} | Sprzedaż: ${adSalePrice(item)} $`; card.appendChild(details);
     const description = document.createElement("p"); description.className = "shop-description"; description.textContent = item.description; card.appendChild(description);
     const button = document.createElement("button"); button.type = "button"; button.textContent = item.equipped ? "Zdejmij" : "Wyposaż"; button.addEventListener("click", () => toggleAdItem(index)); card.appendChild(button);
+    const sell = document.createElement("button"); sell.type = "button"; sell.textContent = `Sprzedaj (${adSalePrice(item)} $)`;
+    sell.addEventListener("click", (event) => { event.stopPropagation(); sellAdItem(index); }); card.appendChild(sell);
     return card;
   }
 
@@ -235,6 +255,11 @@
     const classData = window.classAbilities?.[player.classId] || {};
     const passiveCard = classData.passive ? createPassiveCard(classData.passive) : null;
     abilities.replaceChildren(...(passiveCard ? [passiveCard] : []), ...(classData.active || []).map(createAbilityCard));
+    const equippedMagic = window.player.equippedMagicItems;
+    const magicUsed = (player.magicInventory || []).filter((item) => item.equipped || equippedMagic.includes(item.uid) || equippedMagic.includes(item.id)).length;
+    document.getElementById("inventory-magic-slots").textContent = `Sloty: ${magicUsed}/${player.magicItemSlots}`;
+    document.getElementById("inventory-ad-slots").textContent = `Sloty: ${player.equippedAdItems.length}/${player.adItemSlots}`;
+    document.getElementById("inventory-ad-section").classList.toggle("hidden", player.classId === "mage");   // mag nie używa przedmiotów AD
     sellButton.disabled = selectedIndex === null;
     window.refreshMainMenu();
   }

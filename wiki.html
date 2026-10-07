@@ -523,7 +523,7 @@ nagroda = round(bazowa × mnożnikWykonania)</div>
 <tr><td>Porażka (HP ≤ 0)</td><td>brak</td><td>8 minut</td><td>bez ekranu śmierci i bez „Nowej gry” — kampania pozostaje nietknięta</td></tr>
 <tr><td>Ucieczka</td><td>brak</td><td>nie uruchamia się</td><td>blokada ponownego wejścia na 30 sekund; bez leczenia i bez zużywania ucieczki z kampanii</td></tr>
 </table></div>
-<p>Przycisk ucieczki w arenie jest zawsze aktywny (nie obowiązuje limit „raz na poziom”), ale w przeciwieństwie do ucieczki w kampanii <b>nie przywraca HP ani many</b>. Cooldown i blokada są zapisywane w kodzie zapisu, więc odświeżenie strony ich nie kasuje. Odświeżenie strony w trakcie walki przerywa arenę bez nagrody i wraca do ostatniego zapisu.</p>
+<p>Przycisk ucieczki w arenie jest zawsze aktywny (nie obowiązuje limit „raz na poziom”), ale w przeciwieństwie do ucieczki w kampanii <b>nie przywraca HP ani many</b>. Cooldown jest naliczany <b>już w momencie wejścia do areny</b> (po zakończeniu walki liczy się od nowa od jej końca). Trafia do kodu zapisu, a jego kopia jest też pamiętana w przeglądarce, więc odświeżenie strony w trakcie walki i wczytanie starszego zapisu go nie omija. Taka przerwana walka kończy się bez nagrody. Jedyny wyjątek to ucieczka, która cooldownu nie wlicza.</p>
 <p class="note">W obliczeniach areny nie uwzględniono wszystkich możliwości (np. aktywnych umiejętności poza rotacją maga), więc przy niektórych buildach walka bywa szybsza, niż zakłada model, a mnożnik wykonania będzie wtedy powyżej ×1,0.</p>
 </section>
 
@@ -534,7 +534,8 @@ nagroda = round(bazowa × mnożnikWykonania)</div>
 <li>Zmiana broni automatycznie chowa poprzednio wyposażoną (o ile nie jest to „Pięści") z powrotem do ekwipunku.</li>
 <li>Mag nie widzi zakładek Bronie/AD w sklepie.</li>
 <li>Zakup przedmiotu AD/magicznego wyposaża go automatycznie, jeśli jest wolny slot — inaczej trafia do ekwipunku nieaktywny.</li>
-<li>Sprzedaż: bronie 40% ceny, przedmioty magiczne 40% zapłaconej ceny, skiny 50% kosztu w SP.</li>
+<li>Sprzedaż: bronie 40% ceny, przedmioty AD 40% ceny, przedmioty magiczne 40% zapłaconej ceny, skiny 50% kosztu w SP. Sprzedaż w Ekwipunku, a sprzedany wyposażony przedmiot traci efekt od razu.</li>
+<li>Przy nagłówkach przedmiotów AD i magicznych (sklep i ekwipunek) widać licznik zajętych slotów, np. „Sloty: 3/6”.</li>
 <li>Pięści i bronie unikalne nie mogą być sprzedane.</li>
 </ul>
 </section>

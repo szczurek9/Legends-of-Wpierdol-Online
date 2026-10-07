@@ -324,6 +324,9 @@
       tab.classList.toggle("hidden", player.classId === "mage" && ["weapons", "ad"].includes(tab.dataset.category));
     });
 
+    document.getElementById("shop-ad-slots").textContent = `Sloty: ${player.equippedAdItems.length}/${player.adItemSlots}`;
+    document.getElementById("shop-magic-slots").textContent = `Sloty: ${magicSlotsUsed()}/${player.magicItemSlots}`;
+
     weapons.replaceChildren(...(player.classId === "mage" ? [] : visible(window.shopWeapons).map((item) => createItem(item, window.shopWeapons.indexOf(item), "weapon"))));
     adItems.replaceChildren(...(player.classId === "mage" ? [] : visible(window.adItems || []).map((item) => createItem(item, window.adItems.indexOf(item), "ad"))));
     skills.replaceChildren(...visible(window.shopSkills).map((item) => createItem(item, window.shopSkills.indexOf(item), "skill")));
@@ -347,8 +350,13 @@
     window.refreshMainMenu();
   }
 
+  // Mag nie ma zakładek Bronie/AD, więc nie może zostać na żadnej z nich (inaczej pusta sekcja).
+  function availableCategory(requested) {
+    return currentClass() === "mage" && ["weapons", "ad"].includes(requested) ? "magic" : requested;
+  }
+
   function selectCategory(nextCategory) {
-    category = nextCategory;
+    category = availableCategory(nextCategory);
     tabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.category === category));
     Object.entries(sections).forEach(([key, section]) => {
       section.classList.toggle("hidden", key !== category);

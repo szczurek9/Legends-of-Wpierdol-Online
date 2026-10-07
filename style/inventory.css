@@ -25,6 +25,7 @@
 }
 
 .inventory-magic h3,
+.inventory-ad h3,
 .inventory-abilities h3 {
     margin: 2px 0 8px;
     font-family: "New Rocker", system-ui;
@@ -92,4 +93,13 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+}
+
+/* Licznik zajętych slotów przy nagłówkach (sklep i ekwipunek). */
+.slot-counter {
+    margin-left: 6px;
+    font-family: system-ui, sans-serif;
+    font-size: 0.7em;
+    opacity: 0.85;
+    white-space: nowrap;
 }
