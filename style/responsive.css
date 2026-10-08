@@ -34,14 +34,6 @@
         font-size: 1.5rem;
     }
 
-    .shop-sections {
-        grid-template-columns: 1fr;
-    }
-
-    .shop-layout {
-        grid-template-columns: 1fr;
-    }
-
     .inventory-layout {
         grid-template-columns: 1fr;
     }
@@ -124,17 +116,69 @@
         max-height: 18rem;
     }
 
-    .shop-category-tabs {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.4rem;
+    .shop-store-layout {
+        grid-template-columns: 1fr;
     }
 
-    .shop-category-tabs .shop-category:last-child {
-        grid-column: 1 / -1;
-        margin-top: 0;
-        border-top: none;
-        padding-top: 0.5rem;
+    /* Filtry jako poziomy pasek chipów nad listą. */
+    .shop-filters {
+        flex-direction: row;
+        gap: 0.4rem;
+        padding: 0.4rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .shop-filters h3 {
+        display: none;
+    }
+
+    .shop-filter {
+        flex: 0 0 auto;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    /* Podgląd przedmiotu jako okno po kliknięciu karty. */
+    .shop-details {
+        position: fixed;
+        z-index: 20;
+        top: 50%;
+        right: 0.75rem;
+        left: 0.75rem;
+        display: none;
+        box-sizing: border-box;
+        max-width: 26rem;
+        max-height: calc(100dvh - 1.5rem);
+        margin: 0 auto;
+        overflow-y: auto;
+        transform: translateY(-50%);
+    }
+
+    .shop-store-layout.shop-modal-open .shop-details {
+        display: block;
+    }
+
+    .shop-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 19;
+        background: rgba(0, 0, 0, 0.65);
+    }
+
+    .shop-store-layout.shop-modal-open .shop-backdrop {
+        display: block;
+    }
+
+    .shop-details-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        display: block;
+    }
+
+    .shop-list {
+        max-height: 24rem;
     }
 
     /* Mniej sztywnej wysokości grafik walki, żeby zmieściły się na ekranie telefonu. */
@@ -149,6 +193,7 @@
 
     #battle-player-stats,
     .shop-items,
+    .shop-list,
     .skin-list {
         -webkit-overflow-scrolling: touch;
     }
@@ -187,6 +232,18 @@
 
     .skin-list {
         max-height: 24rem;
+    }
+
+    .shop-list {
+        max-height: 24rem;
+    }
+
+    .shop-list-filtered .shop-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .shop-list:not(.shop-list-filtered) .shop-card {
+        flex-basis: 9rem;
     }
 
     .skin-list-filtered .skin-grid {

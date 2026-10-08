@@ -129,7 +129,7 @@
         </div>
 
         <section id="shop-screen" class="hidden" aria-live="polite">
-                <div class="shop-header">
+            <div class="shop-header">
                 <div>
                     <span class="eyebrow">EKWIPUNEK</span>
                     <h2>Sklep</h2>
@@ -137,72 +137,47 @@
                 <div id="shop-money">💸 Hajs: 0 $</div>
             </div>
 
-            <div class="shop-search-row">
-                <div class="shop-search-field">
-                    <label for="shop-search">Szukaj w sklepie</label>
-                    <input id="shop-search" type="search" placeholder="Wpisz nazwę przedmiotu..." autocomplete="off">
-                </div>
-                <div class="shop-sort-field">
-                    <label for="shop-sort">Sortuj</label>
-                    <select id="shop-sort">
-                        <option value="default">Domyślnie</option>
-                        <option value="price-asc">Cena: rosnąco</option>
-                        <option value="price-desc">Cena: malejąco</option>
-                        <option value="name">Nazwa A–Z</option>
-                    </select>
-                </div>
-            </div>
-
             <div class="shop-current-weapon">
                 Aktualna broń: <strong id="shop-current-weapon-value">Pięści</strong>
             </div>
 
-            <div class="shop-layout">
-            <div class="shop-category-tabs" role="tablist" aria-label="Kategorie sklepu">
-                <button class="shop-category active" data-category="weapons" type="button">⚔️ Bronie</button>
-                <button class="shop-category" data-category="ad" type="button" title="AD - przedmioty zwiększające obrażenia fizyczne">🟥 Przedmioty AD</button>
-                <button class="shop-category" data-category="magic" type="button" title="AP - przedmioty zwiększające moc umiejętności (magię)">🔮 Przedmioty AP</button>
-                <button class="shop-category" data-category="skills" type="button">✨ Wzmocnienia</button>
-                <button class="shop-category" data-category="abilities" type="button">📜 Umiejętności</button>
-                <button class="shop-category" data-category="potions" type="button">🧪 Mikstury</button>
-                <button class="shop-category" data-category="all" type="button">📦 Wszystkie</button>
+            <div class="shop-store-layout">
+                <aside class="shop-filters" aria-label="Kategorie sklepu">
+                    <h3>Filtry</h3>
+                    <button class="shop-filter active" data-category="all" type="button" aria-pressed="true"><span>Wszystkie</span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="weapons" type="button" aria-pressed="false"><span>Bronie</span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="ad" type="button" aria-pressed="false" title="AD - przedmioty zwiększające obrażenia fizyczne"><span>Przedmioty AD</span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="magic" type="button" aria-pressed="false" title="AP - przedmioty zwiększające moc umiejętności (magię)"><span>Przedmioty AP</span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="skills" type="button" aria-pressed="false"><span>Wzmocnienia</span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="potions" type="button" aria-pressed="false"><span>Mikstury</span> <span class="shop-filter-count"></span></button>
+                    <button class="shop-filter" data-category="abilities" type="button" aria-pressed="false"><span>Umiejętności</span> <span class="shop-filter-count"></span></button>
+                </aside>
+
+                <div class="shop-main">
+                    <div class="shop-search-row">
+                        <input id="shop-search" type="search" placeholder="Szukaj w sklepie..." aria-label="Szukaj w sklepie" autocomplete="off">
+                        <select id="shop-sort" aria-label="Sortuj">
+                            <option value="default">Domyślnie</option>
+                            <option value="price-asc">Cena: rosnąco</option>
+                            <option value="price-desc">Cena: malejąco</option>
+                            <option value="name">Nazwa A–Z</option>
+                        </select>
+                    </div>
+                    <div id="shop-list" class="shop-list"></div>
+                </div>
+
+                <div id="shop-backdrop" class="shop-backdrop"></div>
+
+                <aside id="shop-details" class="shop-details" aria-live="polite">
+                    <button id="shop-details-close" class="modal-close shop-details-close" type="button" aria-label="Zamknij podgląd">✕</button>
+                    <h3 id="shop-details-name">Kliknij przedmiot, aby zobaczyć podgląd.</h3>
+                    <p id="shop-details-kind"></p>
+                    <div id="shop-details-body" class="shop-details-body"></div>
+                    <div id="shop-actions" class="shop-details-actions"></div>
+                </aside>
             </div>
 
-            <div id="shop-all-section" class="shop-section hidden">
-                <h3>📦 Wszystkie przedmioty</h3>
-                <div id="shop-all-items" class="shop-items"></div>
-            </div>
-
-            <div class="shop-sections">
-                <div id="shop-weapons-section" class="shop-section">
-                    <h3>⚔️ Broń</h3>
-                    <div id="shop-weapons" class="shop-items"></div>
-                </div>
-
-                <div id="shop-ad-section" class="shop-section hidden">
-                    <h3>🟥 Przedmioty AD <span id="shop-ad-slots" class="slot-counter"></span></h3>
-                    <div id="shop-ad-items" class="shop-items"></div>
-                </div>
-
-                <div id="shop-skills-section" class="shop-section hidden">
-                    <h3>✨ Wzmocnienia i umiejętności</h3>
-                    <div id="shop-skills" class="shop-items"></div>
-                </div>
-                <div id="shop-magic-section" class="shop-section hidden">
-                    <h3>🔮 Przedmioty AP <span id="shop-magic-slots" class="slot-counter"></span></h3>
-                    <div id="shop-magic-items" class="shop-items"></div>
-                </div>
-                <div id="shop-abilities-section" class="shop-section hidden">
-                    <h3>📜 Umiejętności klasowe</h3>
-                    <div id="shop-abilities" class="shop-items"></div>
-                </div>
-                <div id="shop-potions-section" class="shop-section hidden">
-                    <h3>🧪 Mikstury</h3>
-                    <div id="shop-potions" class="shop-items"></div>
-                </div>
-            </div>
-            </div>
-
+            <div id="shop-message" class="shop-message" aria-live="polite">Wybierz przedmiot.</div>
             <button id="shop-back-btn" class="secondary-button" type="button">Wróć do menu</button>
         </section>
 
