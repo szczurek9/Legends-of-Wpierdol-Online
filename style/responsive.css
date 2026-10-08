@@ -59,21 +59,65 @@
         grid-template-columns: 1fr;
     }
 
-    .skin-details {
-        position: static;
-    }
-
+    /* Filtry jako poziomy pasek chipów nad siatką. */
     .skin-filters {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        flex-direction: row;
+        gap: 0.4rem;
+        padding: 0.4rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .skin-filters h3 {
-        grid-column: 1 / -1;
+        display: none;
     }
 
     .skin-filter {
-        text-align: center;
+        flex: 0 0 auto;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    /* Podgląd skina jako okno po kliknięciu karty. */
+    .skin-details {
+        position: fixed;
+        z-index: 20;
+        top: 50%;
+        right: 0.75rem;
+        left: 0.75rem;
+        display: none;
+        box-sizing: border-box;
+        max-width: 26rem;
+        max-height: calc(100dvh - 1.5rem);
+        margin: 0 auto;
+        overflow-y: auto;
+        transform: translateY(-50%);
+    }
+
+    .skin-layout.skin-modal-open .skin-details {
+        display: block;
+    }
+
+    .skin-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 19;
+        background: rgba(0, 0, 0, 0.65);
+    }
+
+    .skin-layout.skin-modal-open .skin-backdrop {
+        display: block;
+    }
+
+    .skin-details-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        display: block;
+    }
+
+    .skin-variants img {
+        height: 11rem;
     }
 
     .shop-items {
@@ -142,8 +186,15 @@
     }
 
     .skin-list {
-        grid-template-columns: 1fr 1fr;
         max-height: 24rem;
+    }
+
+    .skin-list-filtered .skin-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .skin-list:not(.skin-list-filtered) .skin-card {
+        flex-basis: 8.5rem;
     }
 
     .skin-preview {

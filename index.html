@@ -210,31 +210,33 @@
             <div class="shop-header">
                 <div>
                     <span class="eyebrow">KOSMETYKA</span>
-                    <h2>Skiny gracza</h2>
+                    <h2>Skiny</h2>
                 </div>
                 <div id="skin-points">🎨 SP: 0</div>
             </div>
 
-            <div class="skin-search-row">
-                <label for="skin-search">Szukaj skina</label>
-                <input id="skin-search" type="search" placeholder="Wpisz nazwę..." autocomplete="off">
-            </div>
-
             <div class="skin-layout">
                 <aside class="skin-filters">
-                    <h3>Rzadkość</h3>
-                    <button class="skin-filter active" data-rarity="all" type="button">Wszystkie</button>
-                    <button class="skin-filter" data-rarity="basic" type="button">Basic</button>
-                    <button class="skin-filter" data-rarity="rare" type="button">Rare</button>
-                    <button class="skin-filter" data-rarity="epic" type="button">Epic</button>
-                    <button class="skin-filter" data-rarity="mythic" type="button">Mythic</button>
-                    <button class="skin-filter" data-rarity="legendary" type="button">Legendary</button>
-                    <button class="skin-filter" data-rarity="ultimate" type="button">Ultimate</button>
+                    <h3>Filtry</h3>
+                    <button class="skin-filter" data-rarity="ultimate" type="button" aria-pressed="false"><span>Ultimate</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="legendary" type="button" aria-pressed="false"><span>Legendary</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="mythic" type="button" aria-pressed="false"><span>Mythic</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="epic" type="button" aria-pressed="false"><span>Epic</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="rare" type="button" aria-pressed="false"><span>Rare</span> <span class="skin-filter-count"></span></button>
+                    <button class="skin-filter" data-rarity="basic" type="button" aria-pressed="false"><span>Basic</span> <span class="skin-filter-count"></span></button>
                 </aside>
 
-                <div id="skin-list" class="skin-list"></div>
+                <div class="skin-main">
+                    <div class="skin-search-row">
+                        <input id="skin-search" type="search" placeholder="Szukaj skina..." aria-label="Szukaj skina" autocomplete="off">
+                    </div>
+                    <div id="skin-list" class="skin-list"></div>
+                </div>
+
+                <div id="skin-backdrop" class="skin-backdrop"></div>
 
                 <aside id="skin-details" class="skin-details" aria-live="polite">
+                    <button id="skin-details-close" class="modal-close skin-details-close" type="button" aria-label="Zamknij podgląd">✕</button>
                     <h3 id="skin-details-name">Kliknij skina, aby zobaczyć podgląd.</h3>
                     <p id="skin-details-rarity"></p>
                     <div id="skin-variants" class="skin-variants hidden">
@@ -247,6 +249,7 @@
                             <figcaption>Wygląd - martwy</figcaption>
                         </figure>
                     </div>
+                    <div id="skin-actions" class="skin-details-actions"></div>
                 </aside>
             </div>
 

@@ -7,18 +7,38 @@
   const search = document.getElementById("skin-search");
   const list = document.getElementById("skin-list");
   const message = document.getElementById("skin-message");
+  const layout = document.querySelector(".skin-layout");
+  const backdrop = document.getElementById("skin-backdrop");
   const details = document.getElementById("skin-details");
+  const detailsClose = document.getElementById("skin-details-close");
   const detailsName = document.getElementById("skin-details-name");
   const detailsRarity = document.getElementById("skin-details-rarity");
   const variants = document.getElementById("skin-variants");
   const alivePreview = document.getElementById("skin-alive-preview");
   const deadPreview = document.getElementById("skin-dead-preview");
+  const actions = document.getElementById("skin-actions");
   const filters = [...document.querySelectorAll(".skin-filter")];
-  let selectedRarity = "all";
+  const rarityOrder = ["ultimate", "legendary", "mythic", "epic", "rare", "basic"];
+  let selectedRarity = null;
   let selectedSkinId = null;
+
+  // Na telefonie podgląd jest oknem nad siatką; na desktopie ta klasa nic nie zmienia.
+  function isModalOpen() {
+    return layout.classList.contains("skin-modal-open");
+  }
+
+  function openModal() {
+    layout.classList.add("skin-modal-open");
+  }
+
+  function closeModal() {
+    layout.classList.remove("skin-modal-open");
+  }
 
   function showMessage(text, type) {
     window.setStatusMessage(message, text, "shop-message", type);
+    // Komunikat pod siatką jest zasłonięty przez okno podglądu, więc dodatkowo toast.
+    if (isModalOpen() && window.showToast) window.showToast(text, type);
   }
 
   function getSkin(id) {
@@ -27,6 +47,12 @@
 
   function isOwned(id) {
     return window.player.skinInventory.includes(id);
+  }
+
+  function rarityCount(rarity) {
+    const skins = window.skinCatalog.filter((skin) => skin.rarity === rarity);
+    const owned = skins.filter((skin) => isOwned(skin.id)).length;
+    return `${owned}/${skins.length}`;
   }
 
   function setModelPreview(image, skin) {
@@ -56,27 +82,10 @@
       : attributes;
   }
 
-  function selectSkin(skin) {
-    selectedSkinId = skin.id;
-    details.classList.remove("hidden");
-    variants.classList.remove("hidden");
-    detailsName.textContent = skin.name;
-    detailsRarity.textContent = skinBadgeText(skin);
-    detailsRarity.className = `skin-rarity skin-rarity-${skin.rarity}`;
-    setVariantPreview(alivePreview, skin.modelAlive, "res/skins/player_model.png", `${skin.name} — żywy`);
-    setVariantPreview(deadPreview, skin.modelDead, "res/skins/player_model.png", `${skin.name} — martwy`);
-    document.querySelectorAll(".skin-card").forEach((card) => {
-      card.classList.toggle("skin-card-selected", card.dataset.skinId === skin.id);
-    });
-  }
-
-  function clearSelectedSkin() {
-    selectedSkinId = null;
-    details.classList.remove("hidden");
-    detailsName.textContent = "Kliknij skina, aby zobaczyć podgląd.";
-    detailsRarity.textContent = "";
-    detailsRarity.className = "";
-    variants.classList.add("hidden");
+  function skinStatusText(skin) {
+    if (skin.id === window.player.skinName) return "Wyposażony";
+    if (isOwned(skin.id)) return "Posiadany";
+    return `${skin.cost} SP`;
   }
 
   function equipSkin(skin) {
@@ -117,6 +126,67 @@
     showMessage(`Sprzedano skina ${skin.name} za ${salePrice} SP.`, "success");
   }
 
+  function createActionButton(text, disabled, onClick) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = text;
+    button.disabled = disabled;
+    button.addEventListener("click", onClick);
+    return button;
+  }
+
+  // Przyciski kup / wyposaż / sprzedaj są tylko w podglądzie wybranego skina.
+  function renderActions(skin) {
+    const equipped = skin.id === window.player.skinName;
+    const buttons = [];
+
+    if (isOwned(skin.id)) {
+      buttons.push(createActionButton(equipped ? "Wyposażony" : "Wyposaż", equipped, () => equipSkin(skin)));
+      if (skin.sellable && skin.id !== "default") {
+        buttons.push(createActionButton(
+          `Sprzedaj (${Math.round(skin.cost * 0.5)} SP)`,
+          equipped,
+          () => sellSkin(skin)
+        ));
+      }
+    } else {
+      buttons.push(createActionButton(`Kup za ${skin.cost} SP`, false, () => buySkin(skin)));
+    }
+
+    actions.replaceChildren(...buttons);
+  }
+
+  function renderDetails(skin) {
+    details.classList.remove("hidden");
+    variants.classList.remove("hidden");
+    detailsName.textContent = skin.name;
+    detailsRarity.textContent = skinBadgeText(skin);
+    detailsRarity.className = `skin-rarity skin-rarity-${skin.rarity}`;
+    setVariantPreview(alivePreview, skin.modelAlive, "res/skins/player_model.png", `${skin.name} — żywy`);
+    setVariantPreview(deadPreview, skin.modelDead, "res/skins/player_model.png", `${skin.name} — martwy`);
+    renderActions(skin);
+    document.querySelectorAll(".skin-card").forEach((card) => {
+      card.classList.toggle("skin-card-selected", card.dataset.skinId === skin.id);
+    });
+  }
+
+  function selectSkin(skin) {
+    selectedSkinId = skin.id;
+    renderDetails(skin);
+    openModal();
+  }
+
+  function clearSelectedSkin() {
+    selectedSkinId = null;
+    details.classList.remove("hidden");
+    detailsName.textContent = "Kliknij skina, aby zobaczyć podgląd.";
+    detailsRarity.textContent = "";
+    detailsRarity.className = "";
+    variants.classList.add("hidden");
+    actions.replaceChildren();
+    closeModal();
+  }
+
   function createSkinCard(skin) {
     const card = document.createElement("article");
     card.className = "skin-card";
@@ -131,6 +201,7 @@
     });
     if (skin.id === window.player.skinName) card.classList.add("skin-card-equipped");
     if (skin.id === selectedSkinId) card.classList.add("skin-card-selected");
+    if (!isOwned(skin.id)) card.classList.add("skin-card-locked");
 
     const preview = document.createElement("img");
     preview.className = "skin-preview";
@@ -141,64 +212,82 @@
     title.textContent = skin.name;
     card.appendChild(title);
 
-    const rarity = document.createElement("p");
-    rarity.textContent = skinBadgeText(skin);
-    rarity.className = `skin-rarity skin-rarity-${skin.rarity}`;
-    card.appendChild(rarity);
+    const status = document.createElement("p");
+    status.className = "skin-card-status";
+    status.textContent = skinStatusText(skin);
+    card.appendChild(status);
 
-    const actions = document.createElement("div");
-    actions.className = "skin-card-actions";
-
-    if (isOwned(skin.id)) {
-      const equipButton = document.createElement("button");
-      equipButton.type = "button";
-      equipButton.textContent = skin.id === window.player.skinName ? "Wyposażony" : "Wyposaż";
-      equipButton.disabled = skin.id === window.player.skinName;
-      equipButton.addEventListener("click", () => equipSkin(skin));
-      actions.appendChild(equipButton);
-
-      if (skin.sellable && skin.id !== "default") {
-        const sellButton = document.createElement("button");
-        sellButton.type = "button";
-        sellButton.textContent = `Sprzedaj (${Math.round(skin.cost * 0.5)} SP)`;
-        sellButton.disabled = skin.id === window.player.skinName;
-        sellButton.addEventListener("click", () => sellSkin(skin));
-        actions.appendChild(sellButton);
-      }
-    } else {
-      const buyButton = document.createElement("button");
-      buyButton.type = "button";
-      buyButton.textContent = `Kup za ${skin.cost} SP`;
-      buyButton.addEventListener("click", () => buySkin(skin));
-      actions.appendChild(buyButton);
-    }
-
-    card.appendChild(actions);
     return card;
+  }
+
+  function createSkinGrid(skins) {
+    const grid = document.createElement("div");
+    grid.className = "skin-grid";
+    grid.append(...skins.map(createSkinCard));
+    return grid;
+  }
+
+  function createRaritySection(rarity, skins) {
+    const section = document.createElement("section");
+    section.className = "skin-group";
+
+    const title = document.createElement("h3");
+    title.className = `skin-group-title skin-rarity-${rarity}`;
+    const name = document.createElement("span");
+    name.textContent = rarity;
+    const count = document.createElement("span");
+    count.className = "skin-group-count";
+    count.textContent = rarityCount(rarity);
+    title.append(name, count);
+    section.appendChild(title);
+
+    section.appendChild(createSkinGrid(skins));
+    return section;
   }
 
   function refresh() {
     const searchTerm = search.value.trim().toLowerCase();
     points.textContent = `🎨 SP: ${window.player.skinPoints}`;
+    filters.forEach((filter) => {
+      filter.querySelector(".skin-filter-count").textContent = rarityCount(filter.dataset.rarity);
+    });
+
     const visibleSkins = window.skinCatalog.filter((skin) => {
-      const matchesRarity = selectedRarity === "all" || skin.rarity === selectedRarity;
+      const matchesRarity = !selectedRarity || skin.rarity === selectedRarity;
       const matchesSearch = skin.name.toLowerCase().includes(searchTerm);
       return matchesRarity && matchesSearch;
     });
-    list.replaceChildren(...visibleSkins.map(createSkinCard));
-    if (selectedSkinId) {
-      const selectedSkin = getSkin(selectedSkinId);
-      if (selectedSkin && visibleSkins.some((skin) => skin.id === selectedSkinId)) {
-        selectSkin(selectedSkin);
-      } else {
-        clearSelectedSkin();
-      }
+
+    list.classList.toggle("skin-list-filtered", Boolean(selectedRarity));
+    if (visibleSkins.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "skin-empty";
+      empty.textContent = "Brak skinów pasujących do wyszukiwania.";
+      list.replaceChildren(empty);
+    } else if (selectedRarity) {
+      // Po wciśnięciu filtra: tylko wybrana rzadkość, w jednej siatce bez nagłówków.
+      list.replaceChildren(createSkinGrid(visibleSkins));
+    } else {
+      // Widok ogólny: po jednym przewijanym rzędzie na rzadkość; puste sekcje się chowają.
+      const known = new Set(rarityOrder);
+      const order = [...rarityOrder, ...new Set(visibleSkins.map((skin) => skin.rarity).filter((r) => !known.has(r)))];
+      const sections = order
+        .map((rarity) => [rarity, visibleSkins.filter((skin) => skin.rarity === rarity)])
+        .filter(([, skins]) => skins.length > 0)
+        .map(([rarity, skins]) => createRaritySection(rarity, skins));
+      list.replaceChildren(...sections);
+    }
+
+    const selectedSkin = selectedSkinId ? getSkin(selectedSkinId) : null;
+    if (selectedSkin && visibleSkins.some((skin) => skin.id === selectedSkinId)) {
+      renderDetails(selectedSkin);
     } else {
       clearSelectedSkin();
     }
   }
 
   function openSkins() {
+    closeModal();
     refresh();
     mainMenu.classList.add("hidden");
     skinScreen.classList.remove("hidden");
@@ -206,6 +295,7 @@
   }
 
   function closeSkins() {
+    closeModal();
     skinScreen.classList.add("hidden");
     mainMenu.classList.remove("hidden");
     window.refreshMainMenu();
@@ -213,13 +303,24 @@
 
   filters.forEach((filter) => {
     filter.addEventListener("click", () => {
-      selectedRarity = filter.dataset.rarity;
-      filters.forEach((item) => item.classList.toggle("active", item === filter));
+      // Ponowne kliknięcie aktywnego filtra wraca do widoku ogólnego.
+      selectedRarity = selectedRarity === filter.dataset.rarity ? null : filter.dataset.rarity;
+      filters.forEach((item) => {
+        const active = item.dataset.rarity === selectedRarity;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
       refresh();
+      list.scrollTop = 0;
     });
   });
 
   search.addEventListener("input", refresh);
+  detailsClose.addEventListener("click", closeModal);
+  backdrop.addEventListener("click", closeModal);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isModalOpen()) closeModal();
+  });
   openButton.addEventListener("click", openSkins);
   backButton.addEventListener("click", closeSkins);
   window.refreshSkins = refresh;
