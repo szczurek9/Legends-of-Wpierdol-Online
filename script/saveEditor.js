@@ -42,7 +42,7 @@
 
   function validatePlayer(player) {
     if (!player.skinInventory.includes("default")) player.skinInventory.unshift("default");
-    if (!["assassin", "mage", "tank", "samurai"].includes(player.classId)) {
+    if (!["assassin", "mage", "tank", "samurai", "archer"].includes(player.classId)) {
       throw new Error("Nieprawidłowa klasa.");
     }
     if (!["prism", "night", "neon", "nature"].includes(player.theme)) {
@@ -128,7 +128,7 @@
       bonusAccuracy: number("bonusAccuracy"),
       bonusDodge: number("bonusDodge"),
       armorCap: number("armorCap"),
-      magicItemSlots: field("classId").value === "mage" ? 8 : 2,
+      magicItemSlots: ["mage", "archer"].includes(field("classId").value) ? 8 : 2,
       overkillPool: 0,
       adeptBookStacks: 0,
       adeptBookStackLimit: 30,

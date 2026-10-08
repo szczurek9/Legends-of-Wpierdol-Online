@@ -22,5 +22,11 @@
     "name": "Samurai",
     "armorCap": 50,
     "description": "+15% obrażeń, +15% celności, +10% uniku, pancerz maks. 50."
+  },
+  {
+    "id": "archer",
+    "name": "Łucznik",
+    "armorCap": 60,
+    "description": "+30% celności, 200 many, 8 dynamicznych slotów (AD lub AP), pancerz maks. 60."
   }
 ]

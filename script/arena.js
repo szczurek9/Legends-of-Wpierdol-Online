@@ -37,8 +37,11 @@
     const hasAdItem = (id) => equippedAd.some((item) => item.id === id);
     const wolfCount = equippedAd.filter((item) => item.id === "wolfGrip").length;
 
-    const weaponDamage = Math.max(1, Math.floor((player.weaponBaseDamage || player.weaponDmg) + player.ad * (player.weaponAdScaling || 0)));
+    const weaponDamage = M.classId() === "archer"
+      ? M.archerBasicWeaponDamage()
+      : Math.max(1, Math.floor((player.weaponBaseDamage || player.weaponDmg) + player.ad * (player.weaponAdScaling || 0)));
     let classMult = 1;
+    if (M.classId() === "archer" && player.weaponType === "R") classMult = 1.10;
     if (M.classId() === "assassin") classMult = 1.10;
     if (M.classId() === "samurai") classMult = 1.15;
     if (M.classId() === "tank" && weaponDamage > 500) classMult = 0.75;

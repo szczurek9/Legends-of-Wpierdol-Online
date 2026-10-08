@@ -31,5 +31,13 @@
       {"id":"senNoKata","name":"Sen no Kata","type":"toggle","cost":0,"description":"Przełącza styl walki, nie zużywa tury ani many. Bōei (domyślny): co 3. zwykły atak jest osłabiony do 10% obrażeń, ale ogłusza wroga na 1 turę. Chikara: +7,5% Twoich obrażeń, ale wróg zadaje Ci o 4,5% więcej obrażeń.","icon":"ability2.png"},
       {"id":"kōgeki","name":"Kōgeki","type":"hybrid","cost":30,"cooldown":2,"description":"Zawsze trafia krytycznie (x1,5, pełna wartość mimo pasywki). Dodatkowo zadaje 50% (+1% za 5 pkt penetracji pancerza) obrażeń broni jako obrażenia magiczne.","icon":"ability3.png"}
     ]
+  },
+  "archer": {
+    "passive": {"name":"Eagle Sight","description":"Zwykły atak (Q) bronią dystansową zadaje o 10% więcej obrażeń. Masz 8 dynamicznych slotów na przedmioty — każdy może być AD albo AP. Atak Q zadaje obrażenia fizyczne i skaluje się z AP (72% skalowania AD broni) oraz 50% AD; bez przedmiotów AP skaluje się z AD na 116% (bez dodatku 50% AD). Bez przedmiotów AD leczysz się z magicznego lifestealu (50% skuteczności) zamiast fizycznego."},
+    "active": [
+      {"id":"absoluteFocus","name":"Nieokiełznane Skupienie","type":"utility","cost":55,"cooldown":3,"description":"Nie zużywa tury. Oznacza przeciwnika: następny atak podstawowy (Q) to gwarantowany krytyk za x2 obrażeń.","icon":"ability1.png"},
+      {"id":"rhythmOfWar","name":"Rytm Wojny","type":"magic","cost":70,"cooldown":3,"description":"Zwykły atak bronią (bez zmian z Q) z bonusem +145% AD jako obrażenia magiczne (bez przedmiotów AD: 50 + 40% AP). Może krytować, leczy tylko magiczny lifesteal. Gwarantuje unik następnego ataku wroga.","icon":"ability2.png"},
+      {"id":"frostArrow","name":"Strzała Mrozu","type":"magic","cost":170,"cooldown":6,"description":"Zadaje 100 (+85% AP, +107% AD) obrażeń magicznych i ogłusza przeciwnika na 3 tury.","icon":"ability3.png"}
+    ]
   }
 }

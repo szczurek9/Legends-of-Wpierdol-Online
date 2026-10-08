@@ -63,6 +63,55 @@ window.createDefaultPlayer = function () {
 
 window.player = window.createDefaultPlayer();
 
+// Sloty przedmiotów zależne od klasy. Łucznik ma 8 dynamicznych slotów wspólnych
+// dla przedmiotów AD i magicznych (każdy slot to albo AD, albo AP) — limity ad/magic
+// są u niego tylko górnymi granicami, a łączny limit pilnuje hasFreeItemSlot().
+window.ARCHER_ITEM_SLOTS = 8;
+window.itemSlotsForClass = function (classId) {
+  if (classId === "mage") return { ad: 0, magic: 8 };
+  if (classId === "archer") return { ad: window.ARCHER_ITEM_SLOTS, magic: window.ARCHER_ITEM_SLOTS };
+  return { ad: 6, magic: 2 };
+};
+
+window.countEquippedItems = function () {
+  const p = window.player;
+  const equippedIds = p.equippedMagicItems || [];
+  const magic = (p.magicInventory || []).filter((item) => item.equipped
+    || equippedIds.includes(item.uid)
+    || equippedIds.includes(item.id)).length;
+  return { ad: (p.equippedAdItems || []).length, magic };
+};
+
+// kind: "ad" albo "magic".
+window.hasFreeItemSlot = function (kind) {
+  const p = window.player;
+  const used = window.countEquippedItems();
+  if (p.classId === "archer") return used.ad + used.magic < window.ARCHER_ITEM_SLOTS;
+  return kind === "ad" ? used.ad < p.adItemSlots : used.magic < p.magicItemSlots;
+};
+
+// Ekwipunek: jedna lista przedmiotów, a nad nią ile slotów AD i AP zostało wolnych.
+// Łucznik ma sloty wspólne, więc wolne AD i wolne AP to ta sama pula.
+window.freeSlotsLabel = function () {
+  const p = window.player;
+  const used = window.countEquippedItems();
+  if (p.classId === "archer") {
+    const free = window.ARCHER_ITEM_SLOTS - used.ad - used.magic;
+    return `Wolne sloty — AD: ${free} | AP: ${free}`;
+  }
+  const magicFree = p.magicItemSlots - used.magic;
+  return p.adItemSlots > 0
+    ? `Wolne sloty — AD: ${p.adItemSlots - used.ad} | AP: ${magicFree}`
+    : `Wolne sloty — AP: ${magicFree}`;
+};
+
+window.itemSlotLabel = function (kind) {
+  const p = window.player;
+  const used = window.countEquippedItems();
+  if (p.classId === "archer") return `Sloty: ${used.ad + used.magic}/${window.ARCHER_ITEM_SLOTS} (AD: ${used.ad}, AP: ${used.magic})`;
+  return kind === "ad" ? `Sloty: ${used.ad}/${p.adItemSlots}` : `Sloty: ${used.magic}/${p.magicItemSlots}`;
+};
+
 // Shared by every screen's status/message line: sets the text and applies
 // the status class (success/warning/danger/etc.) alongside the element's
 // base class. Used by shop.js, inventory.js, skins.js, mainMenu.js and

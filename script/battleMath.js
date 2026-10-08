@@ -47,6 +47,7 @@
   const REGEN_HALF_POINT = 200;   // raw % at which you get half of REGEN_MAX_BONUS
 
   function baseManaForClass() {
+    if (classId() === "archer") return 200;
     return classId() === "mage" ? 320 : 100;
   }
 
@@ -74,6 +75,30 @@
     return Math.max(1, Math.floor((p.weaponBaseDamage || p.weaponDmg || 0) + (p.ad || 0) * (p.weaponAdScaling || 0)));
   }
 
+  // --- Łucznik ---
+  // Stałe tuningu ataku Q Łucznika (skalowanie broni).
+  const ARCHER_AP_CONVERSION = 0.72;   // ScalingAD x 0,72 = ScalingAP broni
+  const ARCHER_NO_AP_AD_BONUS = 1.16;  // brak przedmiotów AP: ScalingAD x 1,16
+  const ARCHER_AD_SHARE = 0.5;         // + 50% AD do obrażeń (tylko gdy masz przedmioty AP)
+
+  const equippedAdItemList = () => (window.player.adItemInventory || []).filter((item) => item.equipped);
+  const hasEquippedAdItems = () => equippedAdItemList().length > 0;
+  const hasEquippedApItems = () => (window.player.magicInventory || []).some(isMagicEquipped);
+
+  // Obrażenia broni dla ataku Q Łucznika: skalowanie z AD zamieniane na AP
+  // (z dodatkiem 50% AD), a przy braku przedmiotów AP skalowanie z AD rośnie
+  // x1,16 i nie ma dodatku 50% AD.
+  function archerBasicWeaponDamage() {
+    const p = window.player;
+    const base = p.weaponBaseDamage || p.weaponDmg || 0;
+    const scaling = p.weaponAdScaling || 0;
+    const ad = p.ad || 0;
+    const scalingDamage = hasEquippedApItems()
+      ? effectiveAbilityPower() * scaling * ARCHER_AP_CONVERSION + ad * ARCHER_AD_SHARE
+      : ad * scaling * ARCHER_NO_AP_AD_BONUS;
+    return Math.max(1, Math.floor(base + scalingDamage));
+  }
+
   // Looks up the equipped weapon's own data-file entry (for flat bonuses
   // like Yamato's accuracy, rather than duplicating them onto the player
   // object where they'd need manual equip/unequip bookkeeping).
@@ -97,10 +122,12 @@
     if (hasBook) player.adeptBookStacks = Math.min(player.adeptBookStackLimit, player.adeptBookStacks + (classId() === "mage" ? 5 : 3));
   }
 
-  function damageHeal(amount, magic) {
+  // efficiency: mnożnik skuteczności leczenia (Łucznik bez przedmiotów AD leczy
+  // się z magicznego lifestealu z 50% skutecznością).
+  function damageHeal(amount, magic, efficiency = 1) {
     const player = window.player;
     const percentage = magic ? player.magicLifesteal : player.lifesteal + (classId() === "assassin" ? player.bonusLifesteal : 0);
-    const restored = Math.floor(amount * percentage / 100);
+    const restored = Math.floor(amount * percentage * efficiency / 100);
     player.healthPoints = clamp(player.healthPoints + restored, 0, player.maxHealthPoints);
     return restored;
   }
@@ -146,6 +173,9 @@
     manaRegenAmount,
     manaRegenBonus,
     currentWeaponDamage,
+    archerBasicWeaponDamage,
+    hasEquippedAdItems,
+    hasEquippedApItems,
     currentWeaponData,
     weaponAccuracyBonus,
     payMana,

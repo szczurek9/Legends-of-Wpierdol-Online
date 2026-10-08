@@ -117,8 +117,9 @@ startButton.addEventListener("click", () => {
   window.player.classId = classSelect.value;
   const selectedClass = window.gameClasses?.find((item) => item.id === window.player.classId);
   window.player.armorCap = selectedClass?.armorCap || 90;
-  window.player.magicItemSlots = window.player.classId === "mage" ? 8 : 2;
-  window.player.adItemSlots = window.player.classId === "mage" ? 0 : 6;
+  const classSlots = window.itemSlotsForClass(window.player.classId);
+  window.player.magicItemSlots = classSlots.magic;
+  window.player.adItemSlots = classSlots.ad;
   if (window.player.classId === "mage") {
     window.player.maxManaPoints = 320;
     window.player.manaPoints = 320;
@@ -136,6 +137,10 @@ startButton.addEventListener("click", () => {
     window.player.bonusAccuracy = 15;
     window.player.bonusDodge = 10;
     window.player.armorPoints = 5;
+  } else if (window.player.classId === "archer") {
+    window.player.bonusAccuracy = 30;
+    window.player.maxManaPoints = 200;
+    window.player.manaPoints = 200;
   }
   showMainMenu();
 });

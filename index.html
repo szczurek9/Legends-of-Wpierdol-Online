@@ -9,12 +9,12 @@
     <!-- Podstawowe Meta Tagi dla Google -->
     <title>Legends of Wpierdol Online</title>
     <meta name="google-site-verification" content="5f0gE9YWILI4lI1lq_wBUszcqaEipr71EH8FI_bcwrs" />
-    <meta name="description" content="Przeglądarkowe idle-RPG. 4 unikalne klasy postaci, 50 wymagających poziomów i rozbudowany system rozwoju postaci. Zrób wpierdol swoim przeciwnikom!">
+    <meta name="description" content="Przeglądarkowe idle-RPG. 5 unikalnych klas postaci, 50 wymagających poziomów i rozbudowany system rozwoju postaci. Zrób wpierdol swoim przeciwnikom!">
 
     <!-- Tagi Open Graph (Discord, Facebook) -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Legends of Wpierdol Online">
-    <meta property="og:description" content="Przeglądarkowe idle-RPG. 4 unikalne klasy postaci, 50 wymagających poziomów i rozbudowany system rozwoju postaci. Zrób wpierdol swoim przeciwnikom!">
+    <meta property="og:description" content="Przeglądarkowe idle-RPG. 5 unikalnych klas postaci, 50 wymagających poziomów i rozbudowany system rozwoju postaci. Zrób wpierdol swoim przeciwnikom!">
     <meta property="og:url" content="https://legendsofwpierdol-online.pages.dev/">
     <meta property="og:image" content="https://legendsofwpierdol-online.pages.dev/res/img/background.png">
     <meta property="og:site_name" content="Legends of Wpierdol">
@@ -22,7 +22,7 @@
     <!-- Tagi dla X / Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Legends of Wpierdol Online">
-    <meta name="twitter:description" content="Przeglądarkowe idle-RPG. 4 unikalne klasy postaci, 50 wymagających poziomów i rozbudowany system rozwoju postaci. Zrób wpierdol swoim przeciwnikom!">
+    <meta name="twitter:description" content="Przeglądarkowe idle-RPG. 5 unikalnych klas postaci, 50 wymagających poziomów i rozbudowany system rozwoju postaci. Zrób wpierdol swoim przeciwnikom!">
     <meta name="twitter:image" content="https://legendsofwpierdol-online.pages.dev/res/img/background.png">
 
     <link rel="stylesheet" href="style/themes.css">
@@ -63,6 +63,7 @@
                 <option value="mage">Mag</option>
                 <option value="tank">Tank</option>
                 <option value="samurai">Samurai</option>
+                <option value="archer">Łucznik</option>
             </select>
             <p id="class-description" class="screen-message"></p>
             <button id="start-game">Graj</button>
@@ -119,7 +120,7 @@
             <div class="shop-category-tabs" role="tablist" aria-label="Kategorie sklepu">
                 <button class="shop-category active" data-category="weapons" type="button">⚔️ Bronie</button>
                 <button class="shop-category" data-category="ad" type="button">🟥 Przedmioty AD</button>
-                <button class="shop-category" data-category="magic" type="button">🔮 Magiczne</button>
+                <button class="shop-category" data-category="magic" type="button">🔮 Przedmioty AP</button>
                 <button class="shop-category" data-category="skills" type="button">✨ Wzmocnienia</button>
                 <button class="shop-category" data-category="abilities" type="button">📜 Umiejętności</button>
                 <button class="shop-category" data-category="potions" type="button">🧪 Mikstury</button>
@@ -147,7 +148,7 @@
                     <div id="shop-skills" class="shop-items"></div>
                 </div>
                 <div id="shop-magic-section" class="shop-section hidden">
-                    <h3>🔮 Przedmioty magiczne <span id="shop-magic-slots" class="slot-counter"></span></h3>
+                    <h3>🔮 Przedmioty AP <span id="shop-magic-slots" class="slot-counter"></span></h3>
                     <div id="shop-magic-items" class="shop-items"></div>
                 </div>
                 <div id="shop-abilities-section" class="shop-section hidden">
@@ -237,12 +238,8 @@
                     <div id="inventory-weapons" class="shop-items"></div>
                 </article>
                 <article class="inventory-magic">
-                    <h3>Magiczne przedmioty <span id="inventory-magic-slots" class="slot-counter"></span></h3>
+                    <h3>Przedmioty <span id="inventory-magic-slots" class="slot-counter"></span></h3>
                     <div id="inventory-magic-items" class="shop-items"></div>
-                </article>
-                <article id="inventory-ad-section" class="inventory-ad">
-                    <h3>Przedmioty AD <span id="inventory-ad-slots" class="slot-counter"></span></h3>
-                    <div id="inventory-ad-items" class="shop-items"></div>
                 </article>
                 <article class="inventory-abilities">
                     <h3>Umiejętności klasowe</h3>

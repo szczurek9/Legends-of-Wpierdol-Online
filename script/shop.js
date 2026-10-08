@@ -36,7 +36,7 @@
 
   function skillMaxValue(skill) {
     if (skill.effect === "accuracy") {
-      const classAccuracy = currentClass() === "samurai" ? 15 : currentClass() === "assassin" ? 10 : 0;
+      const classAccuracy = currentClass() === "samurai" ? 15 : currentClass() === "archer" ? 30 : currentClass() === "assassin" ? 10 : 0;
       return skill.maxValue + classAccuracy;
     }
     return skill.maxValue;
@@ -135,7 +135,7 @@
     if (p.money < item.price) return showMessage("Za mało hajsu!", "danger");
     p.money -= item.price;
     const instance = { ...item, uid: `${item.id}-${Date.now()}-${Math.random()}`, equipped: false };
-    if (p.equippedAdItems.length < p.adItemSlots) { instance.equipped = true; p.equippedAdItems.push(instance.uid); adjustAdEffects(instance, 1); }
+    if (window.hasFreeItemSlot("ad")) { instance.equipped = true; p.equippedAdItems.push(instance.uid); adjustAdEffects(instance, 1); }
     p.adItemInventory.push(instance); refresh(); if (window.refreshInventory) window.refreshInventory();
     showMessage(instance.equipped ? `Kupiono i wyposażono: ${item.name}.` : `Kupiono: ${item.name}. Brak wolnego slotu.`, "success");
   }
@@ -214,7 +214,7 @@
 
     player.money -= price;
     const instance = { ...item, uid: `${item.id}-${Date.now()}-${Math.random()}`, equipped: false, paidPrice: price };
-    if (magicSlotsUsed() < player.magicItemSlots) {
+    if (window.hasFreeItemSlot("magic")) {
       instance.equipped = true;
       player.equippedMagicItems.push(instance.uid);
       adjustMagicEffects(instance, 1);
@@ -318,14 +318,15 @@
     const player = window.player;
     money.textContent = `💸 Hajs: ${player.money} $`;
     currentWeapon.textContent = `${player.weaponName} | ${weaponDamage({ baseDamage: player.weaponBaseDamage || player.weaponDmg, adScaling: player.weaponAdScaling || 0 })} DMG | ${player.weaponType || "M"}`;
-    player.magicItemSlots = player.classId === "mage" ? 8 : 2;
-    player.adItemSlots = player.classId === "mage" ? 0 : 6;
+    const slots = window.itemSlotsForClass(player.classId);
+    player.magicItemSlots = slots.magic;
+    player.adItemSlots = slots.ad;
     tabs.forEach((tab) => {
       tab.classList.toggle("hidden", player.classId === "mage" && ["weapons", "ad"].includes(tab.dataset.category));
     });
 
-    document.getElementById("shop-ad-slots").textContent = `Sloty: ${player.equippedAdItems.length}/${player.adItemSlots}`;
-    document.getElementById("shop-magic-slots").textContent = `Sloty: ${magicSlotsUsed()}/${player.magicItemSlots}`;
+    document.getElementById("shop-ad-slots").textContent = window.itemSlotLabel("ad");
+    document.getElementById("shop-magic-slots").textContent = window.itemSlotLabel("magic");
 
     weapons.replaceChildren(...(player.classId === "mage" ? [] : visible(window.shopWeapons).map((item) => createItem(item, window.shopWeapons.indexOf(item), "weapon"))));
     adItems.replaceChildren(...(player.classId === "mage" ? [] : visible(window.adItems || []).map((item) => createItem(item, window.adItems.indexOf(item), "ad"))));

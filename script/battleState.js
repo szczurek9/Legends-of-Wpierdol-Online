@@ -24,6 +24,7 @@
       jhinAttackCount: 0,
       rage: 0,
       guaranteedCrit: false,
+      focusMark: false,   // Łucznik: Nieokiełznane Skupienie — znacznik na następny atak Q
       enemyDefeated: false,
     };
   }
@@ -42,7 +43,7 @@
     const effects = { ...state.effects };
 
     Object.keys(effects).forEach((key) => {
-      if (["bastionArmor", "bastionTurns", "accuracy", "enemyAccuracy", "accuracyTurns", "enemyAccuracyTurns"].includes(key)) return;
+      if (["bastionArmor", "bastionTurns", "accuracy", "enemyAccuracy", "accuracyTurns", "enemyAccuracyTurns", "evadeNext"].includes(key)) return;
       effects[key] -= 1;
       if (effects[key] <= 0) {
         if (key === "potionLifesteal") window.player.lifesteal = Math.max(0, window.player.lifesteal - 10);

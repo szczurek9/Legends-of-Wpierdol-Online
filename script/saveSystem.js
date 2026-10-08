@@ -74,7 +74,7 @@
   // working, in the same order the checks always ran in.
   function migrateLoadedPlayer(player) {
     if (!Array.isArray(player.inventory)) player.inventory = [];
-    if (!["assassin", "mage", "tank", "samurai"].includes(player.classId)) player.classId = "assassin";
+    if (!["assassin", "mage", "tank", "samurai", "archer"].includes(player.classId)) player.classId = "assassin";
     if (!Array.isArray(player.magicInventory)) player.magicInventory = [];
     if (!Array.isArray(player.equippedMagicItems)) player.equippedMagicItems = [];
 
@@ -85,8 +85,9 @@
     });
 
     if (!Array.isArray(player.potionInventory)) player.potionInventory = [];
-    player.magicItemSlots = player.classId === "mage" ? 8 : 2;
-    player.adItemSlots = player.classId === "mage" ? 0 : 6;
+    const classSlots = window.itemSlotsForClass(player.classId);
+    player.magicItemSlots = classSlots.magic;
+    player.adItemSlots = classSlots.ad;
     if (!Array.isArray(player.adItemInventory)) player.adItemInventory = [];
     if (!Array.isArray(player.equippedAdItems)) player.equippedAdItems = [];
     if (typeof player.ad !== "number") player.ad = 0;

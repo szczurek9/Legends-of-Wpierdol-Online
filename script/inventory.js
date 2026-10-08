@@ -11,7 +11,6 @@
   const weapons = document.getElementById("inventory-weapons");
   const message = document.getElementById("inventory-message");
   const magicItems = document.getElementById("inventory-magic-items");
-  const adItems = document.getElementById("inventory-ad-items");
   const abilities = document.getElementById("inventory-abilities");
   let selectedIndex = null;
 
@@ -86,8 +85,8 @@
       window.player.equippedMagicItems = window.player.equippedMagicItems.filter((uid) => uid !== item.uid);
       window.adjustMagicEffects(item, -1);
       showMessage(`Zdjęto: ${item.name}.`, "success");
-    } else if (window.player.equippedMagicItems.length >= window.player.magicItemSlots) {
-      showMessage("Brak wolnego slotu magicznego.", "warning");
+    } else if (!window.hasFreeItemSlot("magic")) {
+      showMessage("Brak wolnego slotu AP.", "warning");
       return;
     } else {
       item.equipped = true;
@@ -123,7 +122,7 @@
 
     const details = document.createElement("p");
     const salePrice = Math.round((item.paidPrice || item.price) * 0.4);
-    details.textContent = `${item.equipped ? "Wyposażony" : "W torbie"} | Sprzedaż: ${salePrice} $`;
+    details.textContent = `AP | ${item.equipped ? "Wyposażony" : "W torbie"} | Sprzedaż: ${salePrice} $`;
     card.appendChild(details);
 
     const description = document.createElement("p");
@@ -159,7 +158,7 @@
       item.equipped = false;
       window.player.equippedAdItems = window.player.equippedAdItems.filter((uid) => uid !== item.uid);
       window.adjustAdEffects(item, -1);
-    } else if (window.player.equippedAdItems.length >= window.player.adItemSlots) {
+    } else if (!window.hasFreeItemSlot("ad")) {
       showMessage("Brak wolnego slotu AD.", "warning"); return;
     } else {
       item.equipped = true; window.player.equippedAdItems.push(item.uid); window.adjustAdEffects(item, 1);
@@ -189,7 +188,7 @@
     const card = document.createElement("article"); card.className = "shop-item inventory-item";
     if (item.equipped) card.classList.add("inventory-item-equipped");
     const title = document.createElement("h4"); title.textContent = item.name; card.appendChild(title);
-    const details = document.createElement("p"); details.textContent = `${item.equipped ? "Wyposażony" : "W torbie"}${item.unique ? " | Unique" : ""} | Sprzedaż: ${adSalePrice(item)} $`; card.appendChild(details);
+    const details = document.createElement("p"); details.textContent = `AD | ${item.equipped ? "Wyposażony" : "W torbie"}${item.unique ? " | Unique" : ""} | Sprzedaż: ${adSalePrice(item)} $`; card.appendChild(details);
     const description = document.createElement("p"); description.className = "shop-description"; description.textContent = item.description; card.appendChild(description);
     const button = document.createElement("button"); button.type = "button"; button.textContent = item.equipped ? "Zdejmij" : "Wyposaż"; button.addEventListener("click", () => toggleAdItem(index)); card.appendChild(button);
     const sell = document.createElement("button"); sell.type = "button"; sell.textContent = `Sprzedaj (${adSalePrice(item)} $)`;
@@ -250,16 +249,12 @@
 
     if (selectedIndex !== null && !player.inventory[selectedIndex]) selectedIndex = null;
     weapons.replaceChildren(...player.inventory.map(createWeaponCard));
-    magicItems.replaceChildren(...(player.magicInventory || []).map(createMagicCard));
-    adItems.replaceChildren(...(player.adItemInventory || []).map(createAdCard));
+    // Jedna lista: najpierw przedmioty AD, potem AP.
+    magicItems.replaceChildren(...(player.adItemInventory || []).map(createAdCard), ...(player.magicInventory || []).map(createMagicCard));
     const classData = window.classAbilities?.[player.classId] || {};
     const passiveCard = classData.passive ? createPassiveCard(classData.passive) : null;
     abilities.replaceChildren(...(passiveCard ? [passiveCard] : []), ...(classData.active || []).map(createAbilityCard));
-    const equippedMagic = window.player.equippedMagicItems;
-    const magicUsed = (player.magicInventory || []).filter((item) => item.equipped || equippedMagic.includes(item.uid) || equippedMagic.includes(item.id)).length;
-    document.getElementById("inventory-magic-slots").textContent = `Sloty: ${magicUsed}/${player.magicItemSlots}`;
-    document.getElementById("inventory-ad-slots").textContent = `Sloty: ${player.equippedAdItems.length}/${player.adItemSlots}`;
-    document.getElementById("inventory-ad-section").classList.toggle("hidden", player.classId === "mage");   // mag nie używa przedmiotów AD
+    document.getElementById("inventory-magic-slots").textContent = window.freeSlotsLabel();
     sellButton.disabled = selectedIndex === null;
     window.refreshMainMenu();
   }

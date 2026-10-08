@@ -23,8 +23,10 @@
     },
 
     attack(state) {
-      const next = A.playerAttack(state, { forceCritical: Boolean(state.guaranteedCrit) });
+      const focused = Boolean(state.focusMark);
+      const next = A.playerAttack(state, { forceCritical: Boolean(state.guaranteedCrit), focusStrike: focused });
       next.guaranteedCrit = false;
+      next.focusMark = false;
       return next.enemyDefeated ? { ...next, arenaTurns: (next.arenaTurns || 0) + 1 } : A.finishPlayerAction(next, next.message);
     },
 
@@ -66,6 +68,7 @@
         yamatoJudgementStacks: 0,
         jhinPool: 0,
         jhinAttackCount: 0,
+        focusMark: false,
         enemyDefeated: false,
         reward: enemy.reward,
         message: "Przeciwnik pokonany! Nadchodzi następna fala.",

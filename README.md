@@ -6,11 +6,12 @@ Przeglądarkowa gra RPG z turowym systemem walki, napisana w całości w czystym
 
 ## Główne cechy
 
-* **4 unikalne klasy postaci:**
+* **5 unikalnych klas postaci:**
 * **Zabójca:** Skupiony na obrażeniach fizycznych; ładuje pulę *Overkill* z nadwyżki obrażeń, by ostatecznie ignorować pancerz wroga.
 * **Mag:** Całkowicie rezygnuje z tradycyjnej broni i ataków fizycznych na rzecz potężnych czarów, zniżek na przedmioty magiczne i ogromnej regeneracji many (aż 8 slotów na przedmioty magiczne).
 * **Tank:** Posiada ogromną pulę zdrowia oraz pancerza; otrzymywane ciosy kumuluje jako "Gniew", który może zdetonować w twarz przeciwnika.
 * **Samurai:** Skupiony na celności i unikach, potrafi płynnie przełączać postawy bojowe (*Sen no Kata*), modyfikując styl walki w locie.
+* **Łucznik:** Hybryda AD/AP z 8 dynamicznymi slotami na przedmioty (każdy slot to AD albo AP); jego atak Q skaluje się z AP, a umiejętności dają znacznik krytyka, unik i ogłuszenie.
 
 
 * **Zaawansowana mechanika walki:** Turowy system wykorzystujący klasyczne wzory redukcji obrażeń (znane z gier MOBA). Obejmuje przebicie pancerza i magii, odporności, wymuszone i naturalne uderzenia krytyczne, a także efekty statusowe (ogłuszenie, zatrucie, odbicie obrażeń).

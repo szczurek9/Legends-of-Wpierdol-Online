@@ -91,11 +91,14 @@
 
   function renderEffects(refs, state) {
     const effectNames = Object.entries(state.effects || {})
-      .filter(([name]) => !["accuracy", "enemyAccuracy", "bastionArmor"].includes(name))
+      .filter(([name]) => !["accuracy", "enemyAccuracy", "bastionArmor", "evadeNext"].includes(name))
       .map(([name, value]) => {
         const label = name.endsWith("Turns") ? name.slice(0, -5) : name;
         return `${EFFECT_LABELS[label] || label}: ${name.endsWith("Turns") ? value : `${value} tur`}`;
       });
+    // Łucznik: znacznik Skupienia i unik z Rytmu Wojny nie mają licznika tur.
+    if (state.focusMark) effectNames.push("Znacznik Skupienia: następny atak (Q)");
+    if ((state.effects || {}).evadeNext) effectNames.push("Unik następnego ataku wroga");
     // Efekty jako osobne "chipy" zamiast jednej długiej linii.
     refs.effectsPanel.replaceChildren();
     if (!effectNames.length) {

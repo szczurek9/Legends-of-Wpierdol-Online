@@ -30,8 +30,13 @@
     const equippedAd = (player.adItemInventory || []).filter((item) => item.equipped);
     const hasAdItem = (id) => equippedAd.some((item) => item.id === id);
     const snakePoisonAttack = hasAdItem("snakeFang") && nextWeaponAttackCount % 5 === 0;
+    // Łucznik: "rhythm" = atak z Rytmu Wojny (magiczny, bonus z AD/AP),
+    // "focus" = atak Q wzmocniony Nieokiełznanym Skupieniem (nie może chybić).
+    const archer = M.classId() === "archer";
+    const rhythm = archer && Boolean(options.rhythm);
+    const focus = archer && Boolean(options.focusStrike);
 
-    if (!fourthJhinAttack && M.roll() >= accuracy) {
+    if (!fourthJhinAttack && !focus && M.roll() >= accuracy) {
       const missMessage = "Przeciwnik uniknął twojego ataku!";
       return { ...state, enemyDefeated: false, heal: 0, missed: true, playerMessage: missMessage, message: missMessage };
     }
@@ -39,7 +44,13 @@
     let multiplier = 1;
     if (M.classId() === "assassin") multiplier += 0.10;
     if (M.classId() === "samurai") multiplier += 0.15;
-    const weaponDamage = Math.max(1, Math.floor((player.weaponBaseDamage || player.weaponDmg) + player.ad * (player.weaponAdScaling || 0)));
+    // Pasywka Łucznika: +10% obrażeń zwykłego ataku z broni dystansowej (Ranged).
+    if (archer && player.weaponType === "R") multiplier += 0.10;
+    let weaponDamage = Math.max(1, Math.floor((player.weaponBaseDamage || player.weaponDmg) + player.ad * (player.weaponAdScaling || 0)));
+    // Q Łucznika: skalowanie z AP zamiast AD (patrz M.archerBasicWeaponDamage).
+    if (archer && !rhythm) weaponDamage = M.archerBasicWeaponDamage();
+    // E Łucznika: zwykły atak + bonus 145% AD (bez przedmiotów AD: 50 + 40% AP), całość magiczna.
+    if (rhythm) weaponDamage += M.hasEquippedAdItems() ? Math.floor(player.ad * 1.45) : Math.floor(50 + M.effectiveAbilityPower() * 0.40);
     if (M.classId() === "tank" && weaponDamage > 500) multiplier -= state.effects.ironTaunt ? 0.20 : 0.25;
     if (state.senMode === "chikara") multiplier += 0.075;
 
@@ -57,11 +68,11 @@
 
     const naturalCritical = M.roll() < player.critChance;
     const jhinFourCrit = player.weaponId === "jhinPistol" && M.roll() < 4;
-    const critical = Boolean(options.forceCritical) || naturalCritical || jhinFourCrit;
-    const superCritical = Boolean(options.forceCritical && naturalCritical);
+    const critical = Boolean(options.forceCritical) || focus || naturalCritical || jhinFourCrit;
+    const superCritical = Boolean(options.forceCritical && naturalCritical && !focus);
     if (critical) {
       const baseCritMultiplier = M.classId() === "samurai" ? 1.2 : 1.5;
-      multiplier *= jhinFourCrit ? 4 : (options.critMultiplierOverride ?? (superCritical ? 2.25 : baseCritMultiplier));
+      multiplier *= jhinFourCrit ? 4 : (options.critMultiplierOverride ?? (focus ? 2 : (superCritical ? 2.25 : baseCritMultiplier)));
     }
     if (hasAdItem("shadowArrows") && M.classId() !== "samurai" && critical && nextWeaponAttackCount % 2 === 0) multiplier *= 1.8;
     if (hasAdItem("assassinCloakAd") && state.enemyHealth <= state.enemyMaxHealth * 0.30) multiplier *= 1.2;
@@ -76,7 +87,9 @@
     if (player.weaponId === "yamato") extraMagicDamage = Math.floor(150 + player.abilityPower * 0.60);
     const primalReady = M.classId() === "assassin" && player.overkillPool >= state.enemyMaxHealth * 0.5;
     const armorPen = player.armorPenetration;
-    const damage = M.physicalDamage(rawDamage, state.enemyArmor * (primalReady ? 0.2 : 1), armorPen, player.armorPenetrationPercent || 0);
+    const damage = rhythm
+      ? M.magicDamage(rawDamage, state.enemyMagicResistance, player.magicPenetration)
+      : M.physicalDamage(rawDamage, state.enemyArmor * (primalReady ? 0.2 : 1), armorPen, player.armorPenetrationPercent || 0);
     let result = M.applyDamageToEnemy(state, damage);
     if (hasAdItem("nightPower") && nextWeaponAttackCount % 5 === 0 && !result.state.enemyDefeated) {
       const trueDamage = Math.floor(10 + player.ad * 0.10);
@@ -104,7 +117,12 @@
       }
       finalJhinPool = 0;
     }
-    const heal = M.damageHeal(result.dealt, false);
+    // Łucznik: E leczy tylko z magicznego lifestealu; Q bez przedmiotów AD
+    // leczy z magicznego lifestealu z 50% skutecznością zamiast fizycznego.
+    let heal;
+    if (rhythm) heal = M.damageHeal(result.dealt, true);
+    else if (archer && !M.hasEquippedAdItems()) heal = M.damageHeal(result.dealt, true, 0.5);
+    else heal = M.damageHeal(result.dealt, false);
 
     const overkillHeal = M.classId() === "assassin" && player.overkillPool > 0
       ? Math.floor(player.overkillPool * (5 + Math.floor(player.armorPenetration / 0.7) + Math.floor(player.armorPoints / 0.8)) / 100)
@@ -112,7 +130,7 @@
     if (overkillHeal > 0) player.healthPoints = M.clamp(player.healthPoints + overkillHeal, 0, player.maxHealthPoints);
     if (primalReady) player.overkillPool = 0;
 
-    const playerMessage = `Zadałeś ${result.dealt} obrażeń!`;
+    const playerMessage = `Zadałeś ${result.dealt} ${rhythm ? "obrażeń magicznych" : "obrażeń"}!${focus ? " Nieokiełznane Skupienie!" : ""}`;
     const nextState = {
       ...result.state,
       weaponAttackCount: nextWeaponAttackCount,
@@ -159,6 +177,15 @@
     if (next.effects.stun > 0) {
       const stunMessage = `Przeciwnik jest ogłuszony!${effectMessage}`;
       return { ...next, enemyMessage: stunMessage, message: stunMessage };
+    }
+
+    // Łucznik: Rytm Wojny daje gwarantowany unik następnego ataku przeciwnika
+    // (ogłuszony wróg nie atakuje, więc unik czeka do jego pierwszego ataku).
+    if (next.effects.evadeNext) {
+      const effectsAfterEvade = { ...next.effects };
+      delete effectsAfterEvade.evadeNext;
+      const evadeMessage = `Uniknąłeś ataku przeciwnika dzięki Rytmowi Wojny!${effectMessage}`;
+      return { ...next, effects: effectsAfterEvade, enemyMessage: evadeMessage, message: evadeMessage };
     }
 
     const chance = M.clamp((next.enemyAttackChance || enemy.attackChance) + (next.effects.enemyAccuracy || 0) - player.bonusDodge, 0, 100);
@@ -253,6 +280,15 @@
       return { ...state, senMode: mode, message: `Sen no Kata: ${mode === "boei" ? "Bōei" : "Chikara"}.` };
     }
 
+    // Łucznik: Nieokiełznane Skupienie nie zużywa tury — płaci manę i startuje
+    // cooldown od razu, a znacznik czeka na następny atak podstawowy (Q).
+    if (ability.id === "absoluteFocus") {
+      if (state.focusMark) return { ...state, message: "Przeciwnik jest już oznaczony." };
+      if (!M.payMana(window.player, ability.cost)) return { ...state, message: "Za mało many." };
+      const marked = S.setCooldown({ ...state, focusMark: true }, ability, ability.cooldown || 0);
+      return { ...marked, message: "Nieokiełznane Skupienie: następny atak (Q) będzie gwarantowanym krytykiem x2." };
+    }
+
     if (!M.payMana(window.player, ability.cost)) return { ...state, message: "Za mało many." };
 
     let next = state;
@@ -300,6 +336,20 @@
       window.player.healthPoints = M.clamp(window.player.healthPoints + heal, 0, window.player.maxHealthPoints);
       next = { ...state, effects: { ...state.effects, mushin: 3 } };
       message = `Mushin przywraca ${heal} HP.`;
+    } else if (ability.id === "rhythmOfWar") {
+      next = playerAttack(state, { rhythm: true });
+      // Unik następnego ataku wroga przysługuje także wtedy, gdy sam atak chybił.
+      next = { ...next, effects: { ...next.effects, evadeNext: 1 } };
+      message = next.missed
+        ? "Rytm Wojny nie trafił, ale unikniesz następnego ataku przeciwnika."
+        : `Rytm Wojny! ${next.playerMessage}${next.critical ? " KRYTYK!" : ""} Unikniesz następnego ataku przeciwnika.`;
+    } else if (ability.id === "frostArrow") {
+      const raw = 100 + ap * 0.85 + window.player.ad * 1.07;
+      const result = M.applyDamageToEnemy(state, M.magicDamage(raw, state.enemyMagicResistance, window.player.magicPenetration));
+      next = result.state;
+      if (!next.enemyDefeated) next = { ...next, effects: { ...next.effects, stun: 3 } };
+      M.damageHeal(result.dealt, true);
+      message = `Strzała Mrozu zadaje ${result.dealt} magicznych obrażeń${next.enemyDefeated ? "." : " i ogłusza przeciwnika na 3 tury."}`;
     } else if (ability.id === "kōgeki") {
       next = playerAttack(state, { forceCritical: true, critMultiplierOverride: 1.5 });
       const physicalMessage = next.playerMessage;

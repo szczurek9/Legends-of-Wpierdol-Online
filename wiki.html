@@ -238,6 +238,11 @@ footer{ text-align:center; padding:24px 16px 40px; color:var(--muted); font-size
     <li>Pasywka <b>Opanowanie</b> — krytyki x1,2 zamiast x1,5 (poza Kōgeki)</li>
     <li>Przełącznik stylu walki <b>Sen no Kata</b> (Bōei / Chikara)</li>
   </ul></div>
+  <div class="card"><span class="tag">Limit pancerza: 60</span><h3>Łucznik</h3><ul>
+    <li>+30% celności, start: 200 many</li>
+    <li>8 dynamicznych slotów — każdy slot to przedmiot AD albo AP, w dowolnych proporcjach</li>
+    <li>Pasywka <b>Eagle Sight</b> — +10% obrażeń zwykłego ataku z broni dystansowej (Ranged)</li>
+  </ul></div>
 </div>
 </section>
 
@@ -264,7 +269,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <details><summary>Pełny łańcuch obliczeń ataku bronią gracza</summary><div class="inner">
 <ol style="font-size:13px; line-height:1.6;">
 <li>weaponDamage = max(1, floor(baseDamage + AD*adScaling))</li>
-<li>Mnożnik klasy: Zabójca +10%, Samurai +15%, Tank -25%/-20% (broń &gt;500 dmg), Chikara +7,5%</li>
+<li>Mnożnik klasy: Zabójca +10%, Samurai +15%, Łucznik +10% (broń Ranged), Tank -25%/-20% (broń &gt;500 dmg), Chikara +7,5%</li>
 <li>Sen no Kata / Bōei: co 3. atak = 10% obrażeń, ale ogłusza wroga na 1 turę</li>
 <li>Krytyk: naturalny / wymuszony (Primal Strike) / 4% Pistolet Jhina. Mnożnik: Samurai x1,2, inni x1,5, super-krytyk Zabójcy x2,25, Jhin x4</li>
 <li>Bonusy przedmiotów AD (Strzały Cieni, Płaszcz Zabójcy, Uchwyt Wilka — stackowalny)</li>
@@ -273,7 +278,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <li>Automatyczne uwolnienie puli Jhina po 16 atakach, jeśli gracz nie zrobi tego ręcznie</li>
 <li>Lifesteal: heal = floor(obrażenia * (lifesteal(+bonus Zabójcy)) / 100)</li>
 <li>Leczenie z puli Overkill: floor(pula * (5 + floor(penPancerza/0,7) + floor(pancerz/0,8)) / 100)</li>
-<li>Regeneracja many na turę: floor(bazowa_mana_klasy * 0,03 * (1 + 3,25 * R / (R + 200))), gdzie R = suma % regeneracji many z klasy i przedmiotów, a bazowa mana klasy to 320 (Mag) lub 100 (reszta). Mana z przedmiotów powiększa tylko pulę, nie regenerację. Skuteczność maleje z każdym kolejnym punktem R, a maksymalny bonus to +325%.</li>
+<li>Regeneracja many na turę: floor(bazowa_mana_klasy * 0,03 * (1 + 3,25 * R / (R + 200))), gdzie R = suma % regeneracji many z klasy i przedmiotów, a bazowa mana klasy to 320 (Mag), 200 (Łucznik) lub 100 (reszta). Mana z przedmiotów powiększa tylko pulę, nie regenerację. Skuteczność maleje z każdym kolejnym punktem R, a maksymalny bonus to +325%.</li>
 </ol></div></details>
 </section>
 
@@ -306,6 +311,13 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <tr><td>Sen no Kata</td><td>0</td><td>—</td><td>Przełącznik (nie zużywa tury): Bōei — co 3. atak 10% dmg + ogłuszenie; Chikara — +7,5% dmg gracza, +4,5% dmg wroga</td></tr>
 <tr><td>Kōgeki</td><td>30</td><td>2</td><td>Zawsze pełny krytyk x1,5 + 50% obrażeń broni jako magiczne (skaluje z pen. pancerza)</td></tr>
 </table></div></details>
+<details><summary>Łucznik — pasywka: Eagle Sight</summary><div class="inner">
+<p>+10% obrażeń zwykłego ataku z broni Ranged. 8 wspólnych slotów na przedmioty AD i magiczne (AP). Atak Q zadaje obrażenia fizyczne: obrażenia = obrażenia bazowe broni + AP × (skalowanie AD broni × 0,72) + 50% AD. Bez przedmiotów AP: obrażenia bazowe broni + AD × (skalowanie AD broni × 1,16), bez dodatku 50% AD. Bez przedmiotów AD atak Q leczy z magicznego lifestealu (50% skuteczności) zamiast fizycznego.</p>
+<table><tr><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td>Nieokiełznane Skupienie (W)</td><td>55</td><td>3</td><td>Nie zużywa tury. Następny atak Q to gwarantowany krytyk x2 (nie może chybić)</td></tr>
+<tr><td>Rytm Wojny (E)</td><td>70</td><td>3</td><td>Zwykły atak + 145% AD jako obrażenia magiczne (bez przedmiotów AD: 50 + 40% AP); może krytować, leczy tylko magiczny lifesteal; gwarantowany unik następnego ataku wroga</td></tr>
+<tr><td>Strzała Mrozu (R)</td><td>170</td><td>6</td><td>100 + 85% AP + 107% AD obrażeń magicznych, ogłuszenie na 3 tury</td></tr>
+</table></div></details>
 </section>
 
 <section id="efekty">
@@ -317,6 +329,8 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <tr><td>Pnącza</td><td>Zabójcze Pnącza</td><td>10+10%AP obrażeń magicznych/turę</td></tr>
 <tr><td>Śmiertelne Lustro</td><td>umiejętność Maga</td><td>blok + odbicie następnego ciosu, zużywa się po trafieniu</td></tr>
 <tr><td>Mushin</td><td>umiejętność Samuraja</td><td>-30% obrażeń wroga na 3 tury</td></tr>
+<tr><td>Znacznik Skupienia</td><td>Nieokiełznane Skupienie (Łucznik)</td><td>następny atak Q: gwarantowany krytyk x2, nie chybia</td></tr>
+<tr><td>Unik z Rytmu Wojny</td><td>Rytm Wojny (Łucznik)</td><td>następny atak wroga zostaje uniknięty; czeka, jeśli wróg jest ogłuszony</td></tr>
 <tr><td>Żelazna Prowokacja</td><td>umiejętność Tanka</td><td>mniejsza kara ciężkiej broni, +25% celności</td></tr>
 <tr><td>Bastion</td><td>Kamienny Bastion</td><td>+2% pancerza/turę, maks. 5 tur</td></tr>
 <tr><td>Eliksir Precyzji</td><td>mikstura</td><td>+50% celności na 7 tur</td></tr>
@@ -535,7 +549,7 @@ nagroda = round(bazowa × mnożnikWykonania)</div>
 <li>Mag nie widzi zakładek Bronie/AD w sklepie.</li>
 <li>Zakup przedmiotu AD/magicznego wyposaża go automatycznie, jeśli jest wolny slot — inaczej trafia do ekwipunku nieaktywny.</li>
 <li>Sprzedaż: bronie 40% ceny, przedmioty AD 40% ceny, przedmioty magiczne 40% zapłaconej ceny, skiny 50% kosztu w SP. Sprzedaż w Ekwipunku, a sprzedany wyposażony przedmiot traci efekt od razu.</li>
-<li>Przy nagłówkach przedmiotów AD i magicznych (sklep i ekwipunek) widać licznik zajętych slotów, np. „Sloty: 3/6”.</li>
+<li>W sklepie przy nagłówkach przedmiotów AD i AP widać licznik zajętych slotów, np. „Sloty: 3/6”. W Ekwipunku wszystkie przedmioty (AD i AP) są na jednej liście, a nad nią widać liczbę wolnych slotów, np. „Wolne sloty — AD: 3 | AP: 1”.</li>
 <li>Pięści i bronie unikalne nie mogą być sprzedane.</li>
 </ul>
 </section>
