@@ -28,14 +28,4 @@
     while (container.children.length > 3) container.firstElementChild.remove();
     window.setTimeout(dismiss, duration);
   };
-
-  // --- Wysokość stałej stopki jako zmienna CSS (dock walki i toasty siedzą nad nią) ---
-  const footer = document.querySelector(".site-footer");
-  function syncFooterHeight() {
-    if (!footer) return;
-    document.documentElement.style.setProperty("--footer-h", `${footer.offsetHeight}px`);
-  }
-  syncFooterHeight();
-  if (footer && "ResizeObserver" in window) new ResizeObserver(syncFooterHeight).observe(footer);
-  window.addEventListener("resize", syncFooterHeight);
 })();

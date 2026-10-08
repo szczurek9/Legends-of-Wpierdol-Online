@@ -28,7 +28,7 @@
     return typeof player.nickname === "string"
       && typeof player.weaponName === "string"
       && typeof player.classId === "string"
-      && ["prism", "night", "neon", "nature"].includes(player.theme)
+      && window.isKnownTheme(player.theme)
       && typeof player.skinName === "string"
       && Array.isArray(player.skinInventory)
       && player.skinInventory.every((skinId) => typeof skinId === "string")
@@ -123,7 +123,7 @@
 
     if (typeof player.secondWind !== "boolean") player.secondWind = false;
     if (typeof player.skinPoints !== "number") player.skinPoints = 1;
-    if (!["prism", "night", "neon", "nature"].includes(player.theme)) player.theme = "prism";
+    player.theme = window.normalizeTheme(player.theme);
     if (typeof player.skinName !== "string") player.skinName = "default";
     if (!Array.isArray(player.skinInventory)) player.skinInventory = ["default"];
     if (!player.skinInventory.includes("default")) player.skinInventory.push("default");

@@ -3,12 +3,13 @@
 #shop-screen,
 #inventory-screen,
 #skin-screen {
-    width: 92%;
+    width: 100%;
     box-sizing: border-box;
-    padding: 14px;
-    border: 1px solid black;
+    padding: 1rem;
+    border: 1px solid var(--shop-border-color);
     background: var(--shop-page-background);
-    box-shadow: inset 0 0 30px rgba(5, 23, 57, 0.35);
+    border-radius: 0.75rem;
+    box-shadow: inset 0 0 0 1px var(--border-soft);
 }
 
 .battle-header,
@@ -19,9 +20,9 @@
 }
 
 .battle-header {
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-soft);
 }
 
 .battle-header h2,
@@ -29,33 +30,33 @@
 .shop-header h2,
 .shop-section h3,
 .shop-item h4 {
-    margin: 2px 0;
-    font-family: "New Rocker", system-ui;
+    margin: 0.125rem 0;
+    font-family: var(--font-title);
     font-weight: 400;
 }
 
 .battle-header h2,
 .shop-header h2 {
-    font-size: 24px;
+    font-size: 1.5rem;
 }
 
 .eyebrow,
 .combatant-label {
-    font-size: 11px;
+    font-size: 0.875rem;
     letter-spacing: 2px;
     opacity: 0.8;
 }
 
 #battle-wave {
-    padding: 5px 8px;
-    border: 1px solid black;
+    padding: 0.3125rem 0.5rem;
+    border: 1px solid var(--shop-border-color);
     background: var(--shop-info-background);
 }
 
 .battle-header-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
 }
 
 .battle-escape-top {
@@ -66,49 +67,49 @@
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: stretch;
-    gap: 10px;
+    gap: 0.625rem;
 }
 
 .combatant {
     min-width: 0;
-    padding: 10px;
-    border: 1px solid black;
+    padding: 0.625rem;
+    border: 1px solid var(--shop-border-color);
     background: var(--shop-card-background);
 }
 
 .combatant h3 {
-    min-height: 42px;
-    font-size: 18px;
+    min-height: 2.625rem;
+    font-size: 1.125rem;
 }
 
 .battle-model,
 .enemy-silhouette {
     display: flex;
-    height: 220px;
+    height: 13.75rem;
     align-items: center;
     justify-content: center;
-    margin: 6px 0 10px;
-    border: 1px solid rgba(0, 0, 0, 0.6);
-    background: var(--shop-info-background);
+    margin: 0.375rem 0 0.625rem;
+    border: 1px solid var(--border-soft);
+    background: var(--sprite-bg);
 }
 
 .battle-model img {
     max-width: 100%;
-    max-height: 220px;
+    max-height: 13.75rem;
     object-fit: contain;
 }
 
 .enemy-silhouette {
-    color: #142e55;
-    font-size: 68px;
+    color: #2a3550;
+    font-size: 4.25rem;
     text-shadow: 0 0 12px rgba(47, 172, 255, 0.8);
 }
 
 .health-bar {
-    height: 12px;
-    margin: 5px 0 8px;
+    height: 0.75rem;
+    margin: 0.3125rem 0 0.5rem;
     overflow: hidden;
-    border: 1px solid black;
+    border: 1px solid var(--shop-border-color);
     background: rgba(0, 0, 0, 0.4);
 }
 
@@ -123,13 +124,13 @@
 .battle-resource-bars {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 0.5rem;
 }
 
 .resource-label {
     display: block;
-    margin-bottom: 3px;
-    font-size: 11px;
+    margin-bottom: 0.1875rem;
+    font-size: 0.875rem;
     opacity: 0.85;
 }
 
@@ -142,38 +143,38 @@
 }
 
 .combatant p {
-    min-height: 18px;
-    margin: 7px 0 0;
-    font-size: 12px;
+    min-height: 1.125rem;
+    margin: 0.4375rem 0 0;
+    font-size: 0.875rem;
 }
 
 #battle-player-stats {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 0.25rem;
 }
 
 .battle-versus {
     display: flex;
     align-items: center;
     color: var(--text-color);
-    font-family: "New Rocker", system-ui;
-    font-size: 20px;
+    font-family: var(--font-title);
+    font-size: 1.25rem;
 }
 
 .battle-log,
 .shop-message {
-    min-height: 18px;
+    min-height: 1.125rem;
     box-sizing: border-box;
-    padding: 9px;
-    border: 1px solid black;
+    padding: 0.5625rem;
+    border: 1px solid var(--shop-border-color);
     background: var(--shop-info-background);
     text-align: center;
 }
 
 .battle-log {
-    min-height: 38px;
-    margin: 12px 0 8px;
+    min-height: 2.375rem;
+    margin: 0.75rem 0 0.5rem;
 }
 
 .battle-log.success,
@@ -194,41 +195,41 @@
 .battle-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 0.5rem;
 }
 
 .battle-abilities,
 .battle-potions {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 8px;
-    margin-top: 8px;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .ability-button,
 .potion-button {
     display: flex;
     min-width: 0;
-    min-height: 70px;
+    min-height: 4.375rem;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 0.375rem;
     flex-direction: column;
     text-align: center;
 }
 
 .ability-icon {
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     object-fit: contain;
     border: 1px solid var(--shop-border-color);
     background: var(--shop-info-background);
 }
 
 .shop-ability-icon {
-    width: 72px;
-    height: 72px;
-    margin: 0 auto 6px;
+    width: 4.5rem;
+    height: 4.5rem;
+    margin: 0 auto 0.375rem;
 }
 
 .ability-mode-boei {
@@ -240,12 +241,12 @@
 }
 
 .battle-effects {
-    margin-top: 8px;
-    padding: 7px;
-    border: 1px solid black;
+    margin-top: 0.5rem;
+    padding: 0.4375rem;
+    border: 1px solid var(--shop-border-color);
     background: var(--shop-info-background);
     text-align: center;
-    font-size: 12px;
+    font-size: 0.875rem;
 }
 
 .secondary-button {
@@ -276,11 +277,11 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 6px;
+    gap: 0.375rem;
 }
 
 .effect-chip {
-    padding: 2px 8px;
+    padding: 0.125rem 0.5rem;
     border: 1px solid var(--shop-border-color);
     border-radius: 999px;
     background: var(--shop-card-background);
@@ -288,28 +289,28 @@
 
 /* Historia walki. */
 .battle-history {
-    margin-top: 8px;
-    border: 1px solid black;
+    margin-top: 0.5rem;
+    border: 1px solid var(--shop-border-color);
     border-radius: 6px;
     background: var(--shop-info-background);
-    font-size: 12px;
+    font-size: 0.875rem;
 }
 
 .battle-history summary {
-    padding: 6px 9px;
+    padding: 0.375rem 0.5625rem;
     cursor: pointer;
 }
 
 .battle-history ol {
-    max-height: 150px;
+    max-height: 9.375rem;
     margin: 0;
-    padding: 4px 9px 8px 26px;
+    padding: 0.25rem 0.5625rem 0.5rem 1.625rem;
     overflow-y: auto;
     overscroll-behavior: contain;
 }
 
 .battle-history li {
-    padding: 2px 0;
+    padding: 0.125rem 0;
     opacity: 0.8;
 }
 
@@ -318,9 +319,9 @@
     font-weight: 700;
 }
 
-.battle-history li.danger { color: #ffd0d0; }
-.battle-history li.success { color: #d6f5dd; }
-.battle-history li.warning { color: #fff0b2; }
+.battle-history li.danger { color: var(--bad); }
+.battle-history li.success { color: var(--good); }
+.battle-history li.warning { color: var(--warn); }
 
 /* Spadające liczby obrażeń (-123), leczenia (+45) i napis CRIT!. */
 .battle-model {
@@ -329,7 +330,7 @@
 
 .fx-float {
     position: absolute;
-    top: 6px;
+    top: 0.375rem;
     left: 50%;
     z-index: 5;
     display: flex;
@@ -337,21 +338,21 @@
     align-items: center;
     pointer-events: none;
     white-space: nowrap;
-    font-family: "Tagesschrift", system-ui;
+    font-family: var(--font-body);
     line-height: 1;
     animation: fx-fall 1400ms cubic-bezier(0.3, 0.1, 0.6, 1) both;
 }
 
 .fx-float .fx-num {
-    font-size: 22px;
+    font-size: 1.375rem;
     -webkit-text-stroke: 3px #000;
     paint-order: stroke fill;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 .fx-float .fx-label {
-    margin-bottom: 2px;
-    font-size: 11px;
+    margin-bottom: 0.125rem;
+    font-size: 0.875rem;
     letter-spacing: 1px;
     color: #ffd84a;
     -webkit-text-stroke: 2px #000;
@@ -360,7 +361,7 @@
 
 .fx-damage .fx-num { color: #ff5a5f; }
 .fx-heal .fx-num { color: #4be07f; }
-.fx-crit .fx-num { color: #ff8a3d; font-size: 28px; }
+.fx-crit .fx-num { color: #ff8a3d; font-size: 1.75rem; }
 
 @keyframes fx-fall {
     0% { opacity: 0; transform: translate(calc(-50% + var(--fx-x, 0px)), -26px) scale(0.5); }
@@ -370,8 +371,8 @@
 }
 
 @media (max-width: 520px) {
-    .fx-float .fx-num { font-size: 18px; }
-    .fx-crit .fx-num { font-size: 23px; }
+    .fx-float .fx-num { font-size: 1.125rem; }
+    .fx-crit .fx-num { font-size: 1.4375rem; }
 }
 
 /* Ograniczenie ruchu: liczby tylko się pojawiają i zanikają, bez spadania. */

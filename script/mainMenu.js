@@ -13,14 +13,24 @@ const saveCode = document.getElementById("save-code");
 const optionsMessage = document.getElementById("options-message");
 
 function refreshMainMenu() {
-  mainNickname.textContent = `💭 Nick: ${window.player.nickname}`;
-  mainMoney.textContent = `💸 Hajs: ${window.player.money} $`;
-  mainLevelSP.textContent = `⚡ LVL: ${window.player.level} | 🎨 SP: ${window.player.skinPoints}`;
+  const formatNumber = (value) => {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toLocaleString("pl-PL") : String(value ?? 0);
+  };
+  mainNickname.textContent = window.player.nickname || "Gracz";
+  mainLevel.textContent = formatNumber(window.player.level);
+  mainMoney.textContent = `${formatNumber(window.player.money)} $`;
+  mainSP.textContent = formatNumber(window.player.skinPoints);
   const currentWeaponDamage = Math.floor((window.player.weaponBaseDamage || window.player.weaponDmg) + (window.player.ad || 0) * (window.player.weaponAdScaling || 0));
-  mainWeapon.textContent = `🔫 Broń: ${window.player.weaponName} | ${currentWeaponDamage} DMG | AD: ${window.player.ad || 0}`;
-  mainDefenseStats.textContent = `❤️ HP: ${window.player.healthPoints} | 🛡️ Pancerz: ${window.player.armorPoints}`;
-  mainOffenseStats.textContent = `💥 Crit: ${window.player.critChance}% | 🗡️ Armor Pen: ${window.player.armorPenetration}`;
-  mainMagicStats.textContent = `🔷 Mana: ${window.player.manaPoints} | ⭐ AP: ${window.player.abilityPower}`;
+  mainWeaponName.textContent = window.player.weaponName;
+  mainWeaponDmg.textContent = formatNumber(currentWeaponDamage);
+  mainWeaponAd.textContent = formatNumber(window.player.ad || 0);
+  mainHp.textContent = formatNumber(window.player.healthPoints);
+  mainArmor.textContent = formatNumber(window.player.armorPoints);
+  mainCrit.textContent = `${formatNumber(window.player.critChance)}%`;
+  mainArmorPen.textContent = formatNumber(window.player.armorPenetration);
+  mainMana.textContent = formatNumber(window.player.manaPoints);
+  mainAp.textContent = formatNumber(window.player.abilityPower);
 
   const currentSkin = window.skinCatalog?.find((skin) => skin.id === window.player.skinName);
   if (currentSkin) {

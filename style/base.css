@@ -3,9 +3,45 @@
     display: none !important;
 }
 
-/* Kolor zastępczy, widoczny gdy obrazek tła jeszcze się ładuje lub nie zadziała. */
+/* --------------------------------------------------------------------------
+   Skala interfejsu: WSZYSTKIE rozmiary w CSS są w rem, więc wystarczy zmienić
+   --ui-font-size (domyślnie 18 px; gracz może to zmienić w Opcjach).
+   -------------------------------------------------------------------------- */
+:root {
+    --ui-font-size: 18px;
+    --footer-h: 0px;
+    --radius: 0.5rem;
+    --font-body: "Tagesschrift", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-title: "New Rocker", Georgia, "Times New Roman", serif;
+    /* Tło: właściwy obrazek dla rozmiaru ekranu (ścieżki względem tego pliku: style/). */
+    --bg-image: url(../res/img/bg_4k.png);
+}
+
+@media (max-width: 1080px) and (orientation: portrait) {
+    :root { --bg-image: url(../res/img/bg_mobile.png); }
+}
+
+@media (max-width: 760px) and (orientation: portrait) {
+    :root { --bg-image: url(../res/img/bg_mobile_720p.png); }
+}
+
+@media (max-width: 520px) {
+    :root { --ui-font-size: 16.5px; }
+}
+
+@media (max-width: 520px) and (orientation: portrait) {
+    :root { --bg-image: url(../res/img/bg_mobile_560p.png); }
+}
+
+@media (max-width: 380px) {
+    :root { --ui-font-size: 16px; }
+}
+
 html {
-    background-color: rgb(42, 20, 63);
+    font-size: var(--ui-font-size);
+    background-color: #12151d;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 /* Zabezpieczenie przed przypadkowym przewijaniem w poziomie na telefonach. */
@@ -20,134 +56,152 @@ body {
     overflow-x: clip;
 }
 
-/* Podstawowy układ strony. */
+/* Podstawowy układ strony: kolumna (zawartość + stopka). */
 body {
-    min-height: 100vh;
+    min-height: 90vh;
+    min-height: 90dvh;
     margin: 0;
+    padding: 1rem;
+    box-sizing: border-box;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    font-family: "Tagesschrift", system-ui;
+    font-family: var(--font-body);
+    font-size: 1rem;
     font-weight: 400;
-    font-style: normal;
+    line-height: 1.45;
+    color: var(--text-color);
 }
 
-/* Tło jest osobną, stałą warstwą pod całą stroną: zawsze pokrywa cały ekran
-   (niezależnie od wysokości zawartości) i nie znika przy przewijaniu. */
+/* Tło jest osobną, stałą warstwą pod całą stroną; przyciemnienie (--scrim) dba o czytelność. */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background-image: url(../res/img/bg_4k.png);
+    background-image: linear-gradient(var(--scrim), var(--scrim)), var(--bg-image);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
 }
 
-/* Szerokie ekrany. Ścieżka względem tego pliku CSS (style/), dlatego ../res. */
-@media (min-width: 1921px) {
-    body::before {
-        background-image: url(../res/img/bg_4k.png);
-    }
+a {
+    color: var(--accent);
 }
 
-.site-footer {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 5;
-    padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px));
-    color: var(--control-text-color);
-    background: var(--main-background);
-    border-top: 1px solid rgb(11, 37, 75);
-    box-shadow: 0 -4px 10px rgba(5, 23, 57, 0.3);
-    text-align: center;
-    font-size: 12px;
-}
-
-.site-footer a {
-    color: var(--control-text-color);
-    text-decoration: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.site-footer a:hover {
-    text-decoration: underline;
-}
-
-/* Kolor tego kontenera pozostaje bez zmian. */
+/* Główny panel gry. */
 .main {
-    width: 50%;
-    height: max-content;
+    width: min(100%, 72rem);
+    margin: auto 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 1.25rem;
+    box-sizing: border-box;
     background-color: var(--main-background);
-    box-shadow: 10px 10px var(--main-shadow);
     border: 1px solid var(--shop-border-color);
+    border-radius: 1rem;
+    box-shadow: 0.5rem 0.5rem 0 var(--main-shadow);
 }
 
 #titleheader {
-    margin-top: 0.67em;
-    font-family: "New Rocker", system-ui;
+    margin: 0 0 0.25rem;
+    font-family: var(--font-title);
     font-weight: 400;
-    font-style: normal;
-    font-size: 30px;
-    text-shadow: 0 2px 5px var(--title-glow);
+    font-size: 2.5rem;
+    line-height: 1.1;
+    text-align: center;
+    color: var(--accent);
+    text-shadow: var(--title-shadow);
 }
 
 #titleedition {
-    margin-bottom: 20px;
-    font-size: 18px;
-    text-shadow: 0 2px 5px var(--title-glow);
+    margin: 0 0 1.25rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
 }
 
+/* --- Przyciski i pola ------------------------------------------------------ */
 button,
 input,
-select {
-    font-family: "Tagesschrift", system-ui;
+select,
+textarea {
+    font-family: inherit;
+    font-size: 1rem;
     font-weight: 400;
-    font-style: normal;
 }
 
 button {
+    min-height: 2.75rem;
+    padding: 0.6rem 0.95rem;
+    box-sizing: border-box;
     border: 1px solid var(--shop-border-color);
-    color: var(--text-color);
-    cursor: pointer;
-    padding: 7px 10px;
+    border-radius: var(--radius);
+    color: var(--control-text-color);
     background: var(--shop-control-background);
+    box-shadow: 0 0.125rem 0 rgba(0, 0, 0, 0.35);
+    line-height: 1.2;
+    cursor: pointer;
     transition: transform 120ms ease, filter 120ms ease, background-color 120ms ease;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
 }
 
-button:hover:not(:disabled) {
-    filter: brightness(1.2);
-    transform: translateY(-1px);
+/* Efekt najechania tylko tam, gdzie jest prawdziwy kursor (na dotyku "przyklejał się"). */
+@media (hover: hover) {
+    button:hover:not(:disabled) {
+        filter: brightness(1.12);
+        transform: translateY(-1px);
+    }
+}
+
+button:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: none;
 }
 
 button:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.55;
 }
 
-#main-buttons button,
-#main-playerModel button,
-#login-screen button,
-#login-screen input,
-#login-screen select {
-    background: var(--menu-control-background) !important;
+/* Przycisk główny (Graj, Zagraj jako gość...). */
+button.btn-primary {
+    border-color: var(--accent);
+    color: var(--accent-text);
+    background: var(--accent);
+    font-weight: 700;
 }
 
-/* Stała stopka nie zasłania już dołu zawartości na komputerze. */
-body {
-    padding-bottom: 44px;
+input,
+select,
+textarea {
+    min-height: 2.75rem;
+    padding: 0.55rem 0.75rem;
     box-sizing: border-box;
+    border: 1px solid var(--shop-border-color);
+    border-radius: var(--radius);
+    color: var(--field-text);
+    background: var(--field-bg);
+}
+
+textarea {
+    min-height: 0;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 0.85;
+}
+
+label,
+.field-label {
+    font-weight: 700;
 }
 
 /* Wyraźny fokus przy nawigacji klawiaturą. */
@@ -155,9 +209,35 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
-summary:focus-visible {
-    outline: 2px solid var(--title-glow);
+summary:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--focus);
     outline-offset: 2px;
+}
+
+/* --- Stopka: zwykły element na końcu strony (nic nie zasłania) --------------- */
+.site-footer {
+    width: min(100%, 72rem);
+    margin-top: 1rem;
+    padding: 0.6rem 0.9rem;
+    box-sizing: border-box;
+    color: var(--text-color);
+    background: var(--main-background);
+    border: 1px solid var(--shop-border-color);
+    border-radius: 0.75rem;
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.site-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.site-footer a:hover {
+    text-decoration: underline;
 }
 
 /* Szanujemy ustawienie systemowe ograniczające animacje. */

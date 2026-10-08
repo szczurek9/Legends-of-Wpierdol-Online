@@ -1,77 +1,165 @@
-:root {
-    --shop-page-background: rgba(189, 86, 63, 0.21);
-    --shop-card-background: rgba(19, 94, 49, 0.38);
-    --shop-control-background: rgba(58, 156, 160, 0.65);
-    --shop-info-background: rgba(95, 58, 160, 0.38);
-    --shop-border-color: rgb(11, 37, 75);
-    --menu-control-background: rgba(90, 130, 121, 0.65);
-    --control-text-color: #e2f2ef;
-    --text-color: #071d3b;
-    --main-background: rgb(27, 103, 126);
-    --main-shadow: rgb(19, 67, 79);
-    --title-glow: rgb(47, 172, 255);
+/* ==========================================================================
+   Motywy interfejsu.
+   Każdy motyw to jeden blok zmiennych. Wszystkie pary tło/tekst mają kontrast
+   co najmniej 4,5:1 (zwykły tekst), a w motywie "kontrast" - powyżej 12:1.
+
+   Powierzchnie (od najgłębszej):
+     --main-background        główny panel
+     --shop-page-background   ekran (sklep, walka, menu...)
+     --shop-card-background   karty wewnątrz ekranu
+     --shop-info-background   wgłębienia: chipy, ramki ikon, log walki
+   Przyciski:  --shop-control-background + --control-text-color
+   Pola:       --field-background + --field-text
+   Akcent:     --accent + --accent-text (przycisk główny, aktywna zakładka)
+   Postacie:   --sprite-bg (jasne tło pod sprite'y z czarnym obrysem)
+   Statusy:    --good / --warn / --bad (kolory tekstu na powierzchniach)
+   ========================================================================== */
+
+/* Noc (ciemny, chłodny). */
+body[data-theme="noc"] {
+    --sprite-bg: #3f5275;
+    --sprite-bg: #4e638b;
+    --sprite-bg: #425780;
+    --sprite-bg: #495e86;
+    color-scheme: dark;
+    --main-background: #1b2232;
+    --main-shadow: #0a0d15;
+    --shop-page-background: #232b3d;
+    --shop-card-background: #2c3650;
+    --shop-info-background: #19202f;
+    --shop-border-color: #6a7ba3;
+    --border-soft: rgba(255, 255, 255, 0.16);
+    --text-color: #f1f4fa;
+    --text-muted: #bcc6da;
+    --shop-control-background: #3a62a8;
+    --menu-control-background: #3a62a8;
+    --control-text-color: #ffffff;
+    --field-background: #131927;
+    --field-bg: #131927;
+    --field-text: #f1f4fa;
+    --accent: #ffcc4d;
+    --accent-text: #1a1300;
+    --title-glow: #ffcc4d;
+    --title-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    --focus: #ffcc4d;
+    --good: #6fe39a;
+    --warn: #f6cf5a;
+    --bad: #ff8a92;
+    --star: #ffd04d;
+    --scrim: rgba(10, 13, 22, 0.62);
+    --rar-basic: #cfd8e6;
+    --rar-rare: #7bbcff;
+    --rar-epic: #d3a4ff;
+    --rar-mythic: #ff94dc;
+    --rar-legendary: #ffd45c;
+    --rar-ultimate: #ff9a6b;
 }
 
-body[data-theme="night"] {
-    --shop-page-background: rgba(48, 52, 58, 0.96);
-    --shop-card-background: rgba(70, 75, 82, 0.96);
-    --shop-control-background: rgba(112, 120, 130, 0.98);
-    --shop-info-background: rgba(30, 34, 39, 0.96);
-    --shop-border-color: #aab4c0;
-    --menu-control-background: rgba(112, 120, 130, 0.98);
-    --control-text-color: #f0f2f4;
-    --text-color: #f0f2f4;
-    --main-background: #343940;
-    --main-shadow: #1d2025;
-    --title-glow: #aab4c0;
+/* Dzień: jasny, papierowy, ciemny tekst. */
+body[data-theme="dzien"] {
+    color-scheme: light;
+    --main-background: #f4efe3;
+    --main-shadow: #b3a88c;
+    --shop-page-background: #fbf8f0;
+    --shop-card-background: #ffffff;
+    --shop-info-background: #ebe4d2;
+    --shop-border-color: #5e5539;
+    --border-soft: rgba(60, 50, 30, 0.28);
+    --text-color: #1e1b14;
+    --text-muted: #4d4735;
+    --shop-control-background: #2b5d8f;
+    --menu-control-background: #2b5d8f;
+    --control-text-color: #ffffff;
+    --field-background: #ffffff;
+    --field-bg: #ffffff;
+    --field-text: #1e1b14;
+    --accent: #b34700;
+    --accent-text: #ffffff;
+    --title-glow: #b34700;
+    --title-shadow: none;
+    --focus: #0b4fa8;
+    --good: #14672f;
+    --warn: #7d5200;
+    --bad: #b01e2a;
+    --star: #8f5d00;
+    --scrim: rgba(236, 229, 210, 0.58);
+    --rar-basic: #4a5560;
+    --rar-rare: #1b5fb5;
+    --rar-epic: #6f2fbf;
+    --rar-mythic: #a3237f;
+    --rar-legendary: #7d5700;
+    --rar-ultimate: #b03a08;
 }
 
-body[data-theme="neon"] {
-    --shop-page-background: rgba(21, 15, 36, 0.97);
-    --shop-card-background: rgba(39, 20, 59, 0.97);
-    --shop-control-background: rgba(18, 51, 64, 0.98);
-    --shop-info-background: rgba(55, 15, 76, 0.97);
-    --shop-border-color: #00e5ff;
-    --menu-control-background: rgba(18, 51, 64, 0.98);
-    --control-text-color: #eaffff;
-    --text-color: #eaffff;
-    --main-background: #171126;
-    --main-shadow: #090611;
-    --title-glow: #00e5ff;
+/* Wysoki kontrast: czerń, biel i żółć. */
+body[data-theme="kontrast"] {
+    color-scheme: dark;
+    --main-background: #000000;
+    --main-shadow: #3a3a3a;
+    --shop-page-background: #0a0a0a;
+    --shop-card-background: #151515;
+    --shop-info-background: #212121;
+    --shop-border-color: #ffffff;
+    --border-soft: rgba(255, 255, 255, 0.55);
+    --text-color: #ffffff;
+    --text-muted: #e8e8e8;
+    --shop-control-background: #ffd400;
+    --menu-control-background: #ffd400;
+    --control-text-color: #000000;
+    --field-background: #000000;
+    --field-bg: #000000;
+    --field-text: #ffffff;
+    --accent: #00e5ff;
+    --accent-text: #000000;
+    --title-glow: #ffd400;
+    --title-shadow: none;
+    --focus: #00e5ff;
+    --good: #5dff95;
+    --warn: #ffe14d;
+    --bad: #ff7d85;
+    --star: #ffd400;
+    --scrim: rgba(0, 0, 0, 0.84);
+    --rar-basic: #ffffff;
+    --rar-rare: #70bbff;
+    --rar-epic: #d9a8ff;
+    --rar-mythic: #ff90e2;
+    --rar-legendary: #ffe14d;
+    --rar-ultimate: #ff9d60;
 }
 
-body[data-theme="neon"] {
-    color: #eaffff;
+/* Las (motyw domyślny): ciemna zieleń, ciepły akcent. */
+:root,
+body[data-theme="las"] {
+    color-scheme: dark;
+    --main-background: #15241b;
+    --main-shadow: #070f0a;
+    --shop-page-background: #1d3125;
+    --shop-card-background: #27422f;
+    --shop-info-background: #121f17;
+    --shop-border-color: #78a886;
+    --border-soft: rgba(220, 255, 230, 0.18);
+    --text-color: #eef7f0;
+    --text-muted: #b9d0bf;
+    --shop-control-background: #3c7a50;
+    --menu-control-background: #3c7a50;
+    --control-text-color: #ffffff;
+    --field-background: #0f1a13;
+    --field-bg: #0f1a13;
+    --field-text: #eef7f0;
+    --accent: #e8c65c;
+    --accent-text: #1c1500;
+    --title-glow: #e8c65c;
+    --title-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    --focus: #e8c65c;
+    --good: #78e8a3;
+    --warn: #f2cb55;
+    --bad: #ff8d84;
+    --star: #f2cb55;
+    --scrim: rgba(8, 18, 12, 0.66);
+    --rar-basic: #d4e2d8;
+    --rar-rare: #7fc2ff;
+    --rar-epic: #d6a9ff;
+    --rar-mythic: #ff98df;
+    --rar-legendary: #ffd75e;
+    --rar-ultimate: #ff9f70;
 }
-
-body[data-theme="neon"] a,
-body[data-theme="neon"] label,
-body[data-theme="neon"] h1,
-body[data-theme="neon"] h2,
-body[data-theme="neon"] h3,
-body[data-theme="neon"] h4,
-body[data-theme="neon"] p,
-body[data-theme="neon"] span {
-    color: #eaffff;
-}
-
-body[data-theme="night"] button,
-body[data-theme="night"] input,
-body[data-theme="night"] select {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
-}
-
-body[data-theme="nature"] {
-    --shop-page-background: rgba(214, 226, 197, 0.97);
-    --shop-card-background: rgba(139, 166, 124, 0.92);
-    --shop-control-background: rgba(111, 154, 114, 0.98);
-    --shop-info-background: rgba(166, 184, 162, 0.98);
-    --shop-border-color: #405c43;
-    --menu-control-background: rgba(111, 154, 114, 0.98);
-    --control-text-color: #f4faed;
-    --text-color: #203222;
-    --main-background: #8aa47c;
-    --main-shadow: #536b4d;
-    --title-glow: #dff2b8;
-}
-

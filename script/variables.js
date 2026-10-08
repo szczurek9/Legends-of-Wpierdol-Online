@@ -5,11 +5,24 @@ window.GAME_VERSION = "1.0.0";
   if (element) element.textContent = `v${window.GAME_VERSION}`;
 })();
 
+// Motywy interfejsu. Stare identyfikatory (z zapisów sprzed zmiany motywów) mapujemy na nowe,
+// dzięki czemu wcześniejsze zapisy nadal się wczytują.
+window.THEME_IDS = ["noc", "dzien", "kontrast", "las"];
+window.DEFAULT_THEME = "noc";
+window.LEGACY_THEMES = { prism: "noc", night: "noc", neon: "kontrast", nature: "las" };
+window.isKnownTheme = function (theme) {
+  return window.THEME_IDS.includes(theme) || Object.prototype.hasOwnProperty.call(window.LEGACY_THEMES, theme);
+};
+window.normalizeTheme = function (theme) {
+  if (window.THEME_IDS.includes(theme)) return theme;
+  return window.LEGACY_THEMES[theme] || window.DEFAULT_THEME;
+};
+
 window.createDefaultPlayer = function () {
   return {
     nickname: "",
     money: 5,
-    theme: "prism",
+    theme: window.DEFAULT_THEME,
     skinPoints: 1,
     level: 1,
     skinName: "default",

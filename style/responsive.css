@@ -1,72 +1,26 @@
-/* Responsywność. */
-@media (min-width: 761px) and (max-width: 1599px) {
-    .main {
-        width: min(82%, 1180px);
-    }
-}
+/* Responsywność (ładowany po base/menu/battle/shop..., przed modals/hud). */
 
-@media (max-width: 1080px) {
-    body {
-        background-image: url(../res/img/bg_mobile.png);
-    }
-}
-
+/* Węższe okna: mniej zbędnych odstępów. */
 @media (max-width: 760px) {
     body {
-        background-image: url(../res/img/bg_mobile_560p.png);
-        justify-content: center;
-        box-sizing: border-box;
-        padding: 12px 12px calc(44px + env(safe-area-inset-bottom, 0px));
-    }
-
-    /* Wygodniejsze cele dotykowe i brak automatycznego zoomu w Safari na iOS
-       (pola tekstowe poniżej 16px potrafią wywoływać przybliżenie ekranu). */
-    button,
-    input,
-    select,
-    textarea {
-        min-height: 44px;
-        box-sizing: border-box;
-        font-size: 16px;
+        padding: 0.6rem;
     }
 
     .main {
-        width: min(100%, 620px);
-        margin: 0;
-        box-sizing: border-box;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        box-shadow: 0.3rem 0.3rem 0 var(--main-shadow);
     }
 
-    #main-menu,
+    #titleheader {
+        font-size: 2rem;
+    }
+
     #battle-screen,
     #shop-screen,
     #inventory-screen,
     #skin-screen {
-        width: 100%;
-    }
-
-    #start-screen,
-    #login-screen {
-        width: 100%;
-    }
-
-    #main-menu {
-        flex-direction: column;
-    }
-
-    #main-playerSummary,
-    #main-playerModel {
-        width: 100%;
-    }
-
-    #main-playerModel img {
-        max-width: 100%;
-        max-height: 220px;
-        object-fit: contain;
-    }
-
-    #battle-screen,
-    #shop-screen {
-        padding: 10px;
+        padding: 0.65rem;
     }
 
     .battle-header,
@@ -77,10 +31,14 @@
 
     .battle-header h2,
     .shop-header h2 {
-        font-size: 22px;
+        font-size: 1.5rem;
     }
 
     .shop-sections {
+        grid-template-columns: 1fr;
+    }
+
+    .shop-layout {
         grid-template-columns: 1fr;
     }
 
@@ -119,30 +77,30 @@
     }
 
     .shop-items {
-        max-height: 260px;
+        max-height: 18rem;
     }
 
     .shop-category-tabs {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
+        gap: 0.4rem;
     }
 
     .shop-category-tabs .shop-category:last-child {
         grid-column: 1 / -1;
         margin-top: 0;
         border-top: none;
-        padding-top: 8px;
+        padding-top: 0.5rem;
     }
 
     /* Mniej sztywnej wysokości grafik walki, żeby zmieściły się na ekranie telefonu. */
     .battle-model,
     .enemy-silhouette {
-        height: 170px;
+        height: 11rem;
     }
 
     .battle-model img {
-        max-height: 170px;
+        max-height: 11rem;
     }
 
     #battle-player-stats,
@@ -150,68 +108,29 @@
     .skin-list {
         -webkit-overflow-scrolling: touch;
     }
-
-    .modal-close {
-        width: 44px;
-        min-height: 44px;
-    }
-
-    .modal-content {
-        max-height: calc(100vh - 32px);
-        overflow-y: auto;
-    }
 }
 
 @media (max-width: 520px) {
     body {
-        align-items: flex-start;
-        padding: 8px 8px calc(44px + env(safe-area-inset-bottom, 0px));
-    }
-
-    .main {
-        width: 100%;
-        margin: 8px 0 0;
-        padding: 8px;
+        padding: 0.4rem;
     }
 
     #titleheader {
-        margin-bottom: 8px;
-        font-size: 25px;
-        text-align: center;
+        font-size: 1.75rem;
     }
 
     #titleedition {
-        margin-bottom: 14px;
-        font-size: 16px;
+        margin-bottom: 0.9rem;
+        font-size: 0.85rem;
     }
 
-    #main-menu {
-        flex-direction: column;
-    }
-
-    #main-buttons {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    #main-playerSummary,
-    #main-playerModel {
-        width: 100%;
-    }
-
-    .battle-actions {
-        grid-template-columns: 1fr;
-    }
-
+    .battle-actions,
     .inventory-actions {
         grid-template-columns: 1fr;
     }
 
-    input {
-        padding: 8px 10px;
-    }
-
     .stat-line {
-        gap: 8px;
+        gap: 0.5rem;
     }
 
     .combatant h3 {
@@ -219,34 +138,28 @@
     }
 
     .shop-items {
-        max-height: 230px;
-    }
-
-    .shop-layout {
-        grid-template-columns: 1fr;
+        max-height: 16rem;
     }
 
     .skin-list {
         grid-template-columns: 1fr 1fr;
-        max-height: 360px;
+        max-height: 24rem;
     }
 
     .skin-preview {
-        height: 130px;
+        height: 8rem;
     }
 
     .battle-model,
     .enemy-silhouette {
-        height: 150px;
+        height: 9.5rem;
     }
 
     .battle-model img {
-        max-height: 150px;
+        max-height: 9.5rem;
     }
 
     .site-footer {
-        padding: 7px 5px calc(7px + env(safe-area-inset-bottom, 0px));
-        font-size: 10px;
-        line-height: 1.35;
+        font-size: 0.8rem;
     }
 }

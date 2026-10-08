@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=New+Rocker&family=Tagesschrift&display=swap" rel="stylesheet">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Zapamiętany rozmiar interfejsu stosujemy od razu, żeby strona nie "skakała" po załadowaniu. -->
+    <script>
+        try {
+            var uiSize = localStorage.getItem("low-ui-size");
+            if (uiSize) document.documentElement.style.setProperty("--ui-font-size", uiSize + "px");
+        } catch (e) { /* brak dostępu do localStorage - zostaje rozmiar domyślny */ }
+    </script>
     <!-- Podstawowe Meta Tagi dla Google -->
     <title>Legends of Wpierdol Online</title>
     <meta name="google-site-verification" content="5f0gE9YWILI4lI1lq_wBUszcqaEipr71EH8FI_bcwrs" />
@@ -39,14 +46,14 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
 </head>
-<body>
+<body data-theme="noc">
 
     <div class="main">
     <h1 id="titleheader">Legends of Wpierdol</h1>
-    <a id="titleedition">Web Edition</a>
+    <p id="titleedition">Web Edition</p>
 
         <div id="start-screen">
-            <button id="entry-guest-btn" type="button">🎮 Zagraj jako gość</button>
+            <button id="entry-guest-btn" type="button" class="btn-primary">🎮 Zagraj jako gość</button>
             <button id="entry-discord-btn" type="button">🔑 Logowanie przez Discord</button>
             <button id="new-game-btn" type="button" class="hidden">🎮 Nowa gra</button>
             <button id="load-game-btn" type="button" class="hidden">📥 Wczytaj grę</button>
@@ -56,42 +63,69 @@
         </div>
 
         <div id="login-screen" class="hidden">
-            <a>Podaj swój nick:</a>
+            <label for="nickname" class="field-label">Podaj swój nick:</label>
             <input type="text" id="nickname" placeholder="Nick" autocomplete="off">
-            <span id="class-picker-label" class="class-picker-label">Wybierz klasę (nie można jej później zmienić):</span>
+            <span id="class-picker-label" class="class-picker-label field-label">Wybierz klasę (nie można jej później zmienić):</span>
             <input type="hidden" id="class-select" value="assassin">
             <div id="class-cards" class="class-cards" role="radiogroup" aria-labelledby="class-picker-label"></div>
             <p id="class-description" class="screen-message"></p>
-            <button id="start-game">Graj</button>
+            <button id="start-game" class="btn-primary">Graj</button>
         </div>
 
         <div id="main-menu" class="hidden">
-            <div id="main-playerSummary">
-                <div id="main-playerStats">
-                    <a id="mainNickname" class="player-stat">🔤 Nick:</a>
-                    <a id="mainMoney" class="player-stat">💸 Hajs:</a>
-                    <a id="mainLevelSP" class="player-stat">⚡ LVL: | 🎨 SP:</a>
-                    <a id="mainWeapon" class="player-stat">🔫 Broń:</a>
-                    <!-- Do wypelnienia ID -->
-                    <a id="mainDefenseStats" class="player-stat">❤️ HP: | 🛡️ Pancerz:</a>
-                    <a id="mainOffenseStats" class="player-stat">💥 Crit: % | 🗡️ Armor Pen:</a>
-                    <a id="mainMagicStats" class="player-stat">🔷 Mana: | ⭐ AP:</a>
+            <section id="main-playerModel" aria-label="Postać gracza">
+                <h2 id="mainNickname" class="hero-name">Gracz</h2>
+                <div class="hero-level"><span>Poziom</span> <strong id="mainLevel">1</strong></div>
+                <div class="hero-portrait">
+                    <img src="res/skins/player_model.png" alt="Postać gracza">
+                </div>
+                <button id="change-playerModel" type="button">👁️ Zmień skina</button>
+            </section>
+
+            <section id="main-playerSummary" aria-label="Statystyki gracza">
+                <div class="menu-resources">
+                    <div class="resource-pill">
+                        <span class="pill-icon" aria-hidden="true">💸</span>
+                        <span class="pill-text"><span class="pill-label">Hajs</span><strong id="mainMoney">0 $</strong></span>
+                    </div>
+                    <div class="resource-pill">
+                        <span class="pill-icon" aria-hidden="true">🎨</span>
+                        <span class="pill-text"><span class="pill-label">Punkty skinów</span><strong id="mainSP">0</strong></span>
+                    </div>
+                </div>
+
+                <div class="weapon-card">
+                    <div>
+                        <h3 class="menu-section-title">Aktualna broń</h3>
+                        <strong id="mainWeaponName">Pięści</strong>
+                    </div>
+                    <div class="weapon-nums">
+                        <span class="weapon-num"><span class="stat-icon" data-stat-icon="damage"></span><b id="mainWeaponDmg">0</b> DMG</span>
+                        <span class="weapon-num"><span class="stat-icon" data-stat-icon="ad"></span><b id="mainWeaponAd">0</b> AD</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="menu-section-title">Statystyki</h3>
+                    <div id="main-playerStats" class="stat-grid">
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="hp"></span><span class="stat-name">Zdrowie</span><strong id="mainHp">0</strong></div>
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="armor"></span><span class="stat-name">Pancerz</span><strong id="mainArmor">0</strong></div>
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="crit"></span><span class="stat-name">Szansa na krytyka</span><strong id="mainCrit">0%</strong></div>
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="armorPen"></span><span class="stat-name">Penetracja pancerza</span><strong id="mainArmorPen">0</strong></div>
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="mana"></span><span class="stat-name">Mana</span><strong id="mainMana">0</strong></div>
+                        <div class="stat-tile"><span class="stat-icon" data-stat-icon="ap"></span><span class="stat-name">Moc umiejętności</span><strong id="mainAp">0</strong></div>
+                    </div>
                 </div>
 
                 <div id="main-buttons">
-                    <button id="play-btn" type="button">⚔️ Graj</button>
+                    <button id="play-btn" type="button" class="btn-primary">⚔️ Graj</button>
                     <button id="arena-btn" type="button" class="hidden">🏟️ Arena</button>
                     <button id="shop-btn" type="button">🪙 Sklep</button>
                     <button id="inventory-btn" type="button">🎒 Ekwipunek</button>
                     <button id="options-btn" type="button">⚙️ Opcje</button>
                     <button id="wiki-btn" type="button" data-open-wiki>📖 Wiki</button>
                 </div>
-
-            </div> 
-            <div id="main-playerModel">
-                <img src="res/skins/player_model.png" alt="Postać gracza">
-                <button id="change-playerModel" type="button">👁️ Zmień skina</button>
-            </div>
+            </section>
         </div>
 
         <section id="shop-screen" class="hidden" aria-live="polite">
@@ -126,8 +160,8 @@
             <div class="shop-layout">
             <div class="shop-category-tabs" role="tablist" aria-label="Kategorie sklepu">
                 <button class="shop-category active" data-category="weapons" type="button">⚔️ Bronie</button>
-                <button class="shop-category" data-category="ad" type="button">🟥 Przedmioty AD</button>
-                <button class="shop-category" data-category="magic" type="button">🔮 Przedmioty AP</button>
+                <button class="shop-category" data-category="ad" type="button" title="AD - przedmioty zwiększające obrażenia fizyczne">🟥 Przedmioty AD</button>
+                <button class="shop-category" data-category="magic" type="button" title="AP - przedmioty zwiększające moc umiejętności (magię)">🔮 Przedmioty AP</button>
                 <button class="shop-category" data-category="skills" type="button">✨ Wzmocnienia</button>
                 <button class="shop-category" data-category="abilities" type="button">📜 Umiejętności</button>
                 <button class="shop-category" data-category="potions" type="button">🧪 Mikstury</button>
@@ -288,8 +322,8 @@
                     </div>
                     <div id="battle-player-stats">
                         <p id="battle-player-weapon-name" class="weapon-name">Broń: nic</p>
-                        <div id="battle-player-weapon" class="stat-chips"></div>
-                        <div id="battle-player-mana" class="stat-chips"></div>
+                        <span><div id="battle-player-weapon" class="stat-chips"></div></span>
+                        <span><div id="battle-player-mana" class="stat-chips"></div></span>
                     </div>
                 </article>
 
@@ -379,14 +413,23 @@
                 <div class="theme-picker">
                     <label for="theme-select">Motyw interfejsu</label>
                     <select id="theme-select">
-                        <option value="prism">Prism</option>
-                        <option value="night">Night</option>
-                        <option value="neon">Neon</option>
-                        <option value="nature">Nature</option>
+                        <option value="noc">Noc (ciemny)</option>
+                        <option value="dzien">Dzień (jasny)</option>
+                        <option value="kontrast">Wysoki kontrast</option>
+                        <option value="las">Las (ciemna zieleń)</option>
+                    </select>
+                </div>
+                <div class="theme-picker">
+                    <label for="ui-size-select">Rozmiar interfejsu</label>
+                    <select id="ui-size-select">
+                        <option value="">Domyślny</option>
+                        <option value="16">Mały</option>
+                        <option value="20">Duży</option>
+                        <option value="22">Bardzo duży</option>
                     </select>
                 </div>
                 <div class="modal-actions donate-section">
-                    <button id="donate-btn" type="button"><a href="https://tipply.pl/@szczurek9" target="_blank" rel="noopener noreferrer">💸 Podoba ci się gra? Wesprzyj dalszy rozwój!</a></button>
+                    <a id="donate-btn" class="button-link" href="https://tipply.pl/@szczurek9" target="_blank" rel="noopener noreferrer">💸 Podoba ci się gra? Wesprzyj dalszy rozwój!</a>
                 </div>
                 <p id="options-message" class="screen-message" aria-live="polite"></p>
             </div>
@@ -398,7 +441,7 @@
     <footer class="site-footer">
         <span>Copyright © 2026 szczurek9</span>
         <span> | Port made by: </span>
-        <a href="https://github.com/szczurek9" target="_blank" rel="noopener noreferrer">@szczurek9 & @Owcacejk</a>
+        <a href="https://github.com/szczurek9" target="_blank" rel="noopener noreferrer">@szczurek9 &amp; @Owcacejk</a>
         <span> | </span>
         <a href="/privacy">Polityka prywatności</a>
         <span> | </span>

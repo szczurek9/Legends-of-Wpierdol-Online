@@ -45,7 +45,7 @@
     if (!["assassin", "mage", "tank", "samurai", "archer"].includes(player.classId)) {
       throw new Error("Nieprawidłowa klasa.");
     }
-    if (!["prism", "night", "neon", "nature"].includes(player.theme)) {
+    if (!window.isKnownTheme(player.theme)) {
       throw new Error("Nieprawidłowy motyw.");
     }
     const hasInvalidWeapon = player.inventory.some((item) => !item
