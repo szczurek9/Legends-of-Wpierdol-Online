@@ -13,7 +13,7 @@
   const abilities = document.getElementById("shop-abilities");
   const potions = document.getElementById("shop-potions");
   const allItems = document.getElementById("shop-all-items");
-  const message = document.getElementById("shop-message");
+  const sortSelect = document.getElementById("shop-sort");
   const tabs = [...document.querySelectorAll(".shop-category")];
   const sections = {
     all: document.getElementById("shop-all-section"),
@@ -25,9 +25,11 @@
     potions: document.getElementById("shop-potions-section"),
   };
   let category = "weapons";
+  let sortMode = "default";
 
+  // Komunikaty sklepu to toasty — pojawiają się na widoku, a nie na dole długiej strony.
   function showMessage(text, type) {
-    window.setStatusMessage(message, text, "shop-message", type);
+    window.showToast(text, type);
   }
 
   function currentClass() {
@@ -236,7 +238,52 @@
     showMessage(`Kupiono miksturę: ${item.name}.`, "success");
   }
 
+  function priceOf(item, kind) {
+    return kind === "magic" ? magicPrice(item) : (item.price || 0);
+  }
+
+  function ownsWeapon(weapon) {
+    return Boolean(weapon.default) || window.player.inventory.some((owned) => owned.name === weapon.name);
+  }
+
+  function currentWeaponDamage() {
+    const p = window.player;
+    return weaponDamage({ baseDamage: p.weaponBaseDamage || p.weaponDmg, adScaling: p.weaponAdScaling || 0 });
+  }
+
+  // Statystyki przedmiotu jako chipy z ikonami (np. +65 AD, +10% krytyka).
+  function statChips(item, kind) {
+    const chips = [];
+    const add = (stat, value, suffix = "", label) => {
+      if (value) chips.push(window.GameIcons.chip(stat, `${value > 0 ? "+" : ""}${value}${suffix}`, label));
+    };
+    if (kind === "ad") {
+      add("ad", item.ad);
+      add("armorPen", item.armorPenetration);
+      add("armorPen", item.armorPenetrationPercent, "%", "Penetracja pancerza (%)");
+      add("crit", item.critChance, "%");
+      add("accuracy", item.accuracy, "%");
+      add("lifesteal", item.lifesteal, "%");
+    } else if (kind === "magic") {
+      const fx = item.effects || {};
+      add("mana", fx.mana);
+      add("ap", fx.abilityPower);
+      add("magicPen", fx.magicPenetration);
+      add("mr", fx.magicResistance);
+      add("manaRegen", fx.manaRegenPercent, "%", "Regeneracja many (bazowa)");
+      add("lifesteal", fx.magicLifesteal, "%", "Magiczny lifesteal");
+    } else if (kind === "skill") {
+      const effectStat = {
+        maxHealth: ["hp", ""], armor: ["armor", ""], armorPenetration: ["armorPen", ""],
+        lifesteal: ["lifesteal", "%"], accuracy: ["accuracy", "%"], critChance: ["crit", "%"], critChanceAbove50: ["crit", "%"],
+      }[item.effect];
+      if (effectStat) add(effectStat[0], item.value, effectStat[1]);
+    }
+    return chips;
+  }
+
   function createItem(item, index, kind) {
+    const player = window.player;
     const card = document.createElement("article");
     card.className = "shop-item";
 
@@ -247,25 +294,70 @@
     const typeLabel = { M: "Melee", R: "Ranged", H: "Hybrid" }[item.type] || item.type;
     const weaponUniquePreview = kind === "weapon" && item.unique && !item.lootbox;
     const lootboxExhausted = kind === "weapon" && item.lootbox === "uniqueWeapon" && uniqueWeaponLootboxExhausted();
+    const isWeapon = kind === "weapon";
+    const isRealWeapon = isWeapon && !item.lootbox;
+    const owned = isRealWeapon && ownsWeapon(item);
+    const equipped = isRealWeapon && player.weaponName === item.name;
+
+    // Statystyki: dla broni obrażenia + różnica względem wyposażonej, dla reszty „co dostajesz”.
+    const stats = document.createElement("div");
+    stats.className = "stat-chips shop-stats";
+    if (isRealWeapon) {
+      const dmg = weaponDamage(item);
+      stats.appendChild(window.GameIcons.chip("damage", dmg, `Obrażenia (${item.baseDamage} +${Math.round(item.adScaling * 100)}% AD)`));
+      if (!equipped) {
+        const delta = dmg - currentWeaponDamage();
+        const tag = document.createElement("span");
+        tag.className = `delta ${delta > 0 ? "up" : delta < 0 ? "down" : "same"}`;
+        tag.textContent = delta > 0 ? `+${delta}` : delta < 0 ? `${delta}` : "tyle samo";
+        tag.title = "W porównaniu z aktualnie wyposażoną bronią";
+        stats.appendChild(tag);
+      }
+    } else {
+      statChips(item, kind).forEach((chip) => stats.appendChild(chip));
+    }
+    if (stats.children.length) card.appendChild(stats);
 
     const details = document.createElement("p");
-    details.textContent = kind === "weapon"
-      ? (item.lootbox
-        ? `${item.price} $ | losowa unikalna broń`
-        : `${item.baseDamage} DMG +${Math.round(item.adScaling * 100)}% AD | ${typeLabel}${weaponUniquePreview ? " | Tylko z lootboxa" : ` | ${item.price} $`}`)
-      : `${kind === "magic" ? magicPrice(item) : item.price} $`;
-    card.appendChild(details);
+    details.className = "shop-meta";
+    if (isWeapon) {
+      details.textContent = item.lootbox
+        ? "Losowa unikalna broń"
+        : `${typeLabel}${weaponUniquePreview ? " | Tylko z lootboxa" : ""}${equipped ? " | Wyposażona" : owned ? " | Posiadana" : ""}`;
+    } else if (kind === "ad" || kind === "magic") {
+      details.textContent = window.hasFreeItemSlot(kind) ? "Zostanie od razu wyposażony" : "Brak wolnego slotu — trafi do ekwipunku";
+    }
+    if (details.textContent) card.appendChild(details);
 
     const description = document.createElement("p");
     description.className = "shop-description";
     description.textContent = item.description || "";
     card.appendChild(description);
 
+    // Cena + przycisk, z informacją czy stać gracza.
+    const price = priceOf(item, kind);
+    const affordable = player.money >= price;
+    const blocked = (kind === "skill" && skillBlocked(item)) || lootboxExhausted;
+    const alreadyOwnedWeapon = owned || equipped;
+
+    if (kind !== "ability" && !weaponUniquePreview && !alreadyOwnedWeapon) {
+      const priceLine = document.createElement("p");
+      priceLine.className = `shop-price${affordable ? "" : " is-short"}`;
+      priceLine.textContent = `${price} $`;
+      card.appendChild(priceLine);
+    }
+
     const button = document.createElement("button");
     button.type = "button";
-    const blocked = (kind === "skill" && skillBlocked(item)) || lootboxExhausted;
-    button.textContent = kind === "ability" ? "Dostępne" : weaponUniquePreview ? "Tylko z lootboxa" : blocked ? "Limit osiągnięty" : "Kup";
-    button.disabled = kind === "ability" || weaponUniquePreview || blocked;
+    if (kind === "ability") button.textContent = "Dostępne";
+    else if (weaponUniquePreview) button.textContent = "Tylko z lootboxa";
+    else if (blocked) button.textContent = "Limit osiągnięty";
+    else if (equipped) button.textContent = "Wyposażona";
+    else if (owned) button.textContent = "Wyposaż";
+    else if (!affordable) button.textContent = `Brakuje ${price - player.money} $`;
+    else button.textContent = "Kup";
+    button.disabled = kind === "ability" || weaponUniquePreview || blocked || equipped || (!owned && !affordable);
+    if (!affordable && !alreadyOwnedWeapon && !blocked && kind !== "ability" && !weaponUniquePreview) card.classList.add("is-unaffordable");
     button.addEventListener("click", () => {
       if (kind === "weapon") buyWeapon(index);
       if (kind === "ad") buyAdItem(index);
@@ -277,9 +369,16 @@
     return card;
   }
 
-  function visible(items) {
+  function sortItems(list, getPrice, getName = (entry) => entry.name) {
+    if (sortMode === "price-asc") list.sort((x, y) => getPrice(x) - getPrice(y));
+    else if (sortMode === "price-desc") list.sort((x, y) => getPrice(y) - getPrice(x));
+    else if (sortMode === "name") list.sort((x, y) => getName(x).localeCompare(getName(y), "pl"));
+    return list;
+  }
+
+  function visible(items, getPrice = (item) => item.price || 0) {
     const term = search.value.trim().toLowerCase();
-    return items.filter((item) => item.name.toLowerCase().includes(term));
+    return sortItems(items.filter((item) => item.name.toLowerCase().includes(term)), getPrice);
   }
 
   function createAbilityItem(ability, index) {
@@ -316,6 +415,8 @@
 
   function refresh() {
     const player = window.player;
+    // Po zakupie lista rysuje się od nowa — zapamiętujemy przewinięcie, żeby nie skakała na górę.
+    const scrollPositions = [...shopScreen.querySelectorAll(".shop-items")].map((list) => list.scrollTop);
     money.textContent = `💸 Hajs: ${player.money} $`;
     currentWeapon.textContent = `${player.weaponName} | ${weaponDamage({ baseDamage: player.weaponBaseDamage || player.weaponDmg, adScaling: player.weaponAdScaling || 0 })} DMG | ${player.weaponType || "M"}`;
     const slots = window.itemSlotsForClass(player.classId);
@@ -331,12 +432,12 @@
     weapons.replaceChildren(...(player.classId === "mage" ? [] : visible(window.shopWeapons).map((item) => createItem(item, window.shopWeapons.indexOf(item), "weapon"))));
     adItems.replaceChildren(...(player.classId === "mage" ? [] : visible(window.adItems || []).map((item) => createItem(item, window.adItems.indexOf(item), "ad"))));
     skills.replaceChildren(...visible(window.shopSkills).map((item) => createItem(item, window.shopSkills.indexOf(item), "skill")));
-    magicItems.replaceChildren(...visible(window.magicItems).map((item) => createItem(item, window.magicItems.indexOf(item), "magic")));
+    magicItems.replaceChildren(...visible(window.magicItems, magicPrice).map((item) => createItem(item, window.magicItems.indexOf(item), "magic")));
     potions.replaceChildren(...visible(window.shopPotions).map((item) => createItem(item, window.shopPotions.indexOf(item), "potion")));
 
     const classData = window.classAbilities?.[currentClass()] || {};
     const passiveCard = classData.passive ? createPassiveCard(classData.passive) : null;
-    abilities.replaceChildren(...(passiveCard ? [passiveCard] : []), ...visible(classData.active || []).map(createAbilityItem));
+    abilities.replaceChildren(...(passiveCard ? [passiveCard] : []), ...visible(classData.active || [], () => 0).map(createAbilityItem));
 
     const searchTerm = search.value.trim().toLowerCase();
     const combinedItems = [
@@ -346,7 +447,10 @@
       ...window.shopSkills.map((item, index) => ({ item, index, kind: "skill" })),
       ...window.shopPotions.map((item, index) => ({ item, index, kind: "potion" })),
     ].filter(({ item }) => item.name.toLowerCase().includes(searchTerm));
+    sortItems(combinedItems, (entry) => priceOf(entry.item, entry.kind), (entry) => entry.item.name);
     allItems.replaceChildren(...combinedItems.map(({ item, index, kind }) => createItem(item, index, kind)));
+
+    [...shopScreen.querySelectorAll(".shop-items")].forEach((list, position) => { list.scrollTop = scrollPositions[position] || 0; });
 
     window.refreshMainMenu();
   }
@@ -370,7 +474,6 @@
     selectCategory(category);
     mainMenu.classList.add("hidden");
     shopScreen.classList.remove("hidden");
-    showMessage("Wybierz przedmiot.");
   }
 
   function closeShop() {
@@ -381,6 +484,7 @@
 
   tabs.forEach((tab) => tab.addEventListener("click", () => selectCategory(tab.dataset.category)));
   search.addEventListener("input", refresh);
+  sortSelect.addEventListener("change", () => { sortMode = sortSelect.value; refresh(); });
   shopButton.addEventListener("click", openShop);
   backButton.addEventListener("click", closeShop);
 

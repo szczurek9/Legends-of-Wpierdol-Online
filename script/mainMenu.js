@@ -5,6 +5,7 @@ const mainPlayerModelImage = document.querySelector("#main-playerModel img");
 const input = document.getElementById("nickname");
 const classSelect = document.getElementById("class-select");
 const classDescription = document.getElementById("class-description");
+const classCards = document.getElementById("class-cards");
 const startButton = document.getElementById("start-game");
 const startMessage = document.getElementById("start-message");
 const optionsModal = document.getElementById("options-modal");
@@ -48,6 +49,7 @@ function showNewGameLogin() {
   if (window.applyInterfaceTheme) window.applyInterfaceTheme(window.player.theme);
   input.value = "";
   classSelect.value = "assassin";
+  renderClassCards();
   updateClassDescription();
   startMessage.textContent = "";
   startScreen.classList.add("hidden");
@@ -59,7 +61,88 @@ function showNewGameLogin() {
 function updateClassDescription() {
   const selected = window.gameClasses?.find((item) => item.id === classSelect.value);
   classDescription.textContent = selected ? selected.description : "Wybierz klasę.";
+  syncClassCards();
 }
+
+// --- Karty wyboru klasy (zamiast listy rozwijanej) ---
+function syncClassCards() {
+  classCards.querySelectorAll(".class-card").forEach((card) => {
+    const selected = card.dataset.classId === classSelect.value;
+    card.classList.toggle("is-selected", selected);
+    card.setAttribute("aria-checked", String(selected));
+    card.tabIndex = selected ? 0 : -1;
+  });
+}
+
+function selectClass(classId) {
+  classSelect.value = classId;
+  classSelect.dispatchEvent(new Event("change"));
+}
+
+function renderClassCards() {
+  if (!window.gameClasses) {
+    // Dane jeszcze się ładują — narysujemy karty, gdy będą gotowe.
+    window.gameDataReady?.then(renderClassCards);
+    return;
+  }
+  const icons = window.GameIcons;
+  classCards.replaceChildren();
+  window.gameClasses.forEach((gameClass) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "class-card";
+    card.dataset.classId = gameClass.id;
+    card.setAttribute("role", "radio");
+
+    card.appendChild(icons.classIcon(gameClass.id, "class-card-icon"));
+
+    const head = document.createElement("span");
+    head.className = "class-card-head";
+    const name = document.createElement("span");
+    name.className = "class-card-name";
+    name.textContent = gameClass.name;
+    head.append(name, icons.stars(gameClass.difficulty || 1));
+    card.appendChild(head);
+
+    const role = document.createElement("span");
+    role.className = "class-card-role";
+    role.textContent = gameClass.role || "";
+    card.appendChild(role);
+
+    // Podgląd umiejętności aktywnych tej klasy.
+    const abilities = window.classAbilities?.[gameClass.id]?.active || [];
+    const strip = document.createElement("span");
+    strip.className = "class-card-abilities";
+    abilities.forEach((ability) => {
+      const holder = icons.abilityIcon(gameClass.id, ability, "class-ability-icon");
+      holder.title = ability.name;
+      strip.appendChild(holder);
+    });
+    card.appendChild(strip);
+
+    card.addEventListener("click", () => selectClass(gameClass.id));
+    classCards.appendChild(card);
+  });
+  syncClassCards();
+}
+
+// Strzałki przełączają klasę (jak w grupie radio).
+classCards.addEventListener("keydown", (event) => {
+  const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+  if (!(event.key in keys)) return;
+  const cards = [...classCards.querySelectorAll(".class-card")];
+  const current = cards.findIndex((card) => card.dataset.classId === classSelect.value);
+  const next = cards[(current + keys[event.key] + cards.length) % cards.length];
+  if (!next) return;
+  event.preventDefault();
+  selectClass(next.dataset.classId);
+  next.focus();
+});
+
+// Gdy dojdą pliki ikon, odśwież karty (tylko jeśli ekran wyboru jest widoczny).
+document.addEventListener("gameicons:ready", () => {
+  if (!loginScreen.classList.contains("hidden")) renderClassCards();
+});
 
 function showOptionsMessage(text, type) {
   window.setStatusMessage(optionsMessage, text, "screen-message", type);

@@ -113,6 +113,11 @@
     });
   }
 
+  // Wiersz chipów „ikona + wartość”. Wpis: [klucz statystyki, wartość, (opcjonalnie) własna etykieta].
+  function renderChips(container, entries) {
+    container.replaceChildren(...entries.map(([stat, value, label]) => window.GameIcons.chip(stat, value, label)));
+  }
+
   function render(refs, state) {
     const player = window.player;
     const enemy = window.BattleState.enemyOf(state);
@@ -127,17 +132,34 @@
     setBar(refs.playerManaBar, player.manaPoints, player.maxManaPoints);
     renderPlayerModel(refs, false);
     const currentWeaponDamage = window.BattleMath.currentWeaponDamage();
-    refs.playerWeapon.textContent = `⚔️: ${player.weaponName} - ${currentWeaponDamage} DMG | AD: ${player.ad} | 💥: ${player.critChance}% | 🗡️: ${player.armorPenetration}`;
+    refs.playerWeaponName.textContent = player.weaponName;
+    renderChips(refs.playerWeapon, [
+      ["damage", currentWeaponDamage, `Obrażenia broni (${player.weaponName})`],
+      ["ad", player.ad],
+      ["crit", `${player.critChance}%`],
+      ["armorPen", player.armorPenetration],
+    ]);
 
     const manaRegen = window.BattleMath.manaRegenAmount(player.manaRegenPercent);
     const effectiveAP = window.BattleSystem.getEffectiveAbilityPower ? window.BattleSystem.getEffectiveAbilityPower() : player.abilityPower + player.adeptBookStacks;
-    refs.playerMana.textContent = `⭐: ${effectiveAP} | 🔷: +${manaRegen}/turn | 🛡️: ${player.armorPoints} | MR: ${player.magicResistance}`;
+    renderChips(refs.playerMana, [
+      ["ap", effectiveAP],
+      ["manaRegen", `+${manaRegen}`],
+      ["armor", player.armorPoints],
+      ["mr", player.magicResistance],
+    ]);
 
     refs.enemyName.textContent = enemy.name;
     flashIfHit(document.querySelector(".combatant-enemy"), refs.enemyHp, state.enemyHealth);
     refs.enemyHp.textContent = `${state.enemyHealth} / ${state.enemyMaxHealth}`;
     setBar(refs.enemyHealthBar, state.enemyHealth, state.enemyMaxHealth);
-    refs.enemyStats.textContent = `⚔️: ${state.enemyDamage} DMG | 💥: ${enemy.critChance}% | 🛡️: ${state.enemyArmor} | MR️: ${state.enemyMagicResistance} | 🗡️: ${enemy.armorPenetration}`;
+    renderChips(refs.enemyStats, [
+      ["damage", state.enemyDamage],
+      ["crit", `${enemy.critChance}%`],
+      ["armor", state.enemyArmor],
+      ["mr", state.enemyMagicResistance],
+      ["armorPen", enemy.armorPenetration],
+    ]);
     renderEnemyModel(refs, enemy, state.enemyDefeated === true);
 
     refs.escapeButton.disabled = player.usedEscape && !state.arena;
@@ -145,10 +167,66 @@
     renderEffects(refs, state);
   }
 
+  // Kafelek akcji: ikona w ramce + plakietki (skrót, koszt many, cooldown) + podpis.
+  function buildTile(button, { icon, name, hotkey, cost, cooldown, noMana, sub }) {
+    const frame = document.createElement("span");
+    frame.className = "tile-frame";
+    frame.appendChild(icon);
+    if (hotkey) {
+      const key = document.createElement("span");
+      key.className = "tile-key";
+      key.textContent = hotkey;
+      frame.appendChild(key);
+    }
+    if (cost > 0) {
+      const badge = document.createElement("span");
+      badge.className = "tile-cost";
+      badge.append(window.GameIcons.stat("mana", "tile-cost-icon"), String(cost));
+      frame.appendChild(badge);
+    }
+    if (cooldown > 0) {
+      const overlay = document.createElement("span");
+      overlay.className = "tile-cooldown";
+      overlay.textContent = String(cooldown);
+      frame.appendChild(overlay);
+    }
+    button.replaceChildren(frame);
+
+    const label = document.createElement("span");
+    label.className = "tile-name";
+    label.textContent = name;
+    button.appendChild(label);
+    if (sub) {
+      const subLine = document.createElement("span");
+      subLine.className = "tile-sub";
+      subLine.textContent = sub;
+      button.appendChild(subLine);
+    }
+    button.classList.toggle("is-cooldown", cooldown > 0);
+    button.classList.toggle("is-no-mana", Boolean(noMana) && !(cooldown > 0));
+  }
+
+  function describeTile({ name, hotkey, cost, cooldown, noMana, maxCooldown }) {
+    const parts = [name];
+    if (hotkey) parts.push(`skrót ${hotkey}`);
+    if (cost > 0) parts.push(`koszt ${cost} many${noMana ? " (za mało many)" : ""}`);
+    if (cooldown > 0) parts.push(`odnowienie: jeszcze ${cooldown} tur`);
+    else if (maxCooldown) parts.push(`odnowienie ${maxCooldown} tur`);
+    return parts.join(", ");
+  }
+
   function renderAbilities(refs, state, onUseAbility) {
     refs.abilitiesPanel.replaceChildren();
     const isMage = window.player.classId === "mage";
-    refs.attackButton.textContent = "⚔️ Atakuj (Q)";
+
+    // Atak bronią (Q) — ten sam przycisk co zawsze, tylko w formie kafelka.
+    buildTile(refs.attackButton, {
+      icon: window.GameIcons.stat("damage", "tile-glyph"),
+      name: "Atakuj",
+      hotkey: "Q",
+    });
+    refs.attackButton.title = `Atak bronią: ${window.player.weaponName}`;
+    refs.attackButton.setAttribute("aria-label", "Atakuj, skrót Q");
     refs.abilitiesPanel.appendChild(refs.attackButton);
 
     const classAbilities = window.classAbilities?.[window.player.classId]?.active || [];
@@ -158,21 +236,20 @@
       button.className = "ability-button";
       button.title = `${ability.description} Koszt: ${ability.cost} many${ability.cooldown ? ` | CD: ${ability.cooldown} tur` : ""}`;
 
-      button.appendChild(createActionIcon(`res/abilities/${window.player.classId}/${ability.icon}`, ability.name));
-
-      const shortcut = isMage ? ["Q", "W", "E", "R"][abilityIndex] : ["W", "E", "R"][abilityIndex];
-      const abilityName = ability.id === "senNoKata" ? `${ability.name} (${state.senMode === "boei" ? "Bōei" : "Chikara"})` : ability.name;
-      const label = document.createElement("span");
-      label.textContent = `${abilityName}${shortcut ? ` (${shortcut})` : ""}`;
-      button.appendChild(label);
-
-      const cooldown = state.cooldowns?.[ability.id] || 0;
-      button.disabled = cooldown > 0 || window.player.manaPoints < ability.cost;
-      if (ability.id !== "senNoKata" && cooldown > 0) label.textContent += ` — CD: ${cooldown}`;
-      if (ability.id === "senNoKata") {
+      const hotkey = isMage ? ["Q", "W", "E", "R"][abilityIndex] : ["W", "E", "R"][abilityIndex];
+      const isToggle = ability.id === "senNoKata";
+      const cooldown = isToggle ? 0 : (state.cooldowns?.[ability.id] || 0);
+      const noMana = window.player.manaPoints < ability.cost;
+      let sub = "";
+      if (isToggle) {
         button.classList.add(state.senMode === "boei" ? "ability-mode-boei" : "ability-mode-chikara");
-        label.textContent += state.senMode === "boei" ? ` | atak: ${state.senAttackCount}/3` : "";
+        sub = state.senMode === "boei" ? `Bōei · atak ${state.senAttackCount}/3` : "Chikara";
       }
+
+      const tile = { name: ability.name, hotkey, cost: ability.cost, cooldown, noMana, sub, maxCooldown: ability.cooldown };
+      buildTile(button, { ...tile, icon: window.GameIcons.abilityIcon(window.player.classId, ability, "tile-img") });
+      button.setAttribute("aria-label", describeTile(tile));
+      button.disabled = cooldown > 0 || noMana;
 
       button.addEventListener("click", () => onUseAbility(ability.id));
       refs.abilitiesPanel.appendChild(button);
@@ -194,7 +271,20 @@
       button.type = "button";
       button.className = "potion-button";
       button.title = potion.description;
-      button.textContent = `🧪 ${potion.name} (${count})`;
+      button.setAttribute("aria-label", `${potion.name}, ${count} szt. ${potion.description}`);
+
+      const frame = document.createElement("span");
+      frame.className = "tile-frame";
+      frame.appendChild(window.GameIcons.potionIcon(id, "tile-img"));
+      const badge = document.createElement("span");
+      badge.className = "tile-count";
+      badge.textContent = `×${count}`;
+      frame.appendChild(badge);
+      const label = document.createElement("span");
+      label.className = "tile-name";
+      label.textContent = potion.name;
+      button.append(frame, label);
+
       button.addEventListener("click", () => onUsePotion(id));
       refs.potionsPanel.appendChild(button);
     });

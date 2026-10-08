@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="style/responsive.css">
     <link rel="stylesheet" href="style/modals.css">
     <link rel="stylesheet" href="style/utilities.css">
+    <link rel="stylesheet" href="style/hud.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
 </head>
@@ -57,14 +58,9 @@
         <div id="login-screen" class="hidden">
             <a>Podaj swój nick:</a>
             <input type="text" id="nickname" placeholder="Nick" autocomplete="off">
-            <label for="class-select">Wybierz klasę (nie można jej później zmienić):</label>
-            <select id="class-select">
-                <option value="assassin">Zabójca</option>
-                <option value="mage">Mag</option>
-                <option value="tank">Tank</option>
-                <option value="samurai">Samurai</option>
-                <option value="archer">Łucznik</option>
-            </select>
+            <span id="class-picker-label" class="class-picker-label">Wybierz klasę (nie można jej później zmienić):</span>
+            <input type="hidden" id="class-select" value="assassin">
+            <div id="class-cards" class="class-cards" role="radiogroup" aria-labelledby="class-picker-label"></div>
             <p id="class-description" class="screen-message"></p>
             <button id="start-game">Graj</button>
         </div>
@@ -108,8 +104,19 @@
             </div>
 
             <div class="shop-search-row">
-                <label for="shop-search">Szukaj w sklepie</label>
-                <input id="shop-search" type="search" placeholder="Wpisz nazwę przedmiotu..." autocomplete="off">
+                <div class="shop-search-field">
+                    <label for="shop-search">Szukaj w sklepie</label>
+                    <input id="shop-search" type="search" placeholder="Wpisz nazwę przedmiotu..." autocomplete="off">
+                </div>
+                <div class="shop-sort-field">
+                    <label for="shop-sort">Sortuj</label>
+                    <select id="shop-sort">
+                        <option value="default">Domyślnie</option>
+                        <option value="price-asc">Cena: rosnąco</option>
+                        <option value="price-desc">Cena: malejąco</option>
+                        <option value="name">Nazwa A–Z</option>
+                    </select>
+                </div>
             </div>
 
             <div class="shop-current-weapon">
@@ -162,7 +169,6 @@
             </div>
             </div>
 
-            <div id="shop-message" class="shop-message" aria-live="polite">Wybierz przedmiot.</div>
             <button id="shop-back-btn" class="secondary-button" type="button">Wróć do menu</button>
         </section>
 
@@ -272,17 +278,18 @@
                     </div>
                     <div class="battle-resource-bars">
                         <div>
-                            <span class="resource-label">❤️ HP: <strong id="battle-player-hp">100 / 100</strong></span>
+                            <span class="resource-label"><span class="stat-icon" data-stat-icon="hp"></span> HP: <strong id="battle-player-hp">100 / 100</strong></span>
                             <div class="health-bar"><span id="battle-player-health-bar"></span></div>
                         </div>
                         <div>
-                            <span class="resource-label">🔷 Mana: <strong id="battle-player-mana-value">100 / 100</strong></span>
+                            <span class="resource-label"><span class="stat-icon" data-stat-icon="mana"></span> Mana: <strong id="battle-player-mana-value">100 / 100</strong></span>
                             <div class="health-bar mana-bar"><span id="battle-player-mana-bar"></span></div>
                         </div>
                     </div>
                     <div id="battle-player-stats">
-                        <p id="battle-player-weapon">Broń: nic | 0 DMG</p>
-                        <p id="battle-player-mana">⭐ AP: 0 | Regen: +3 | MR: 0</p>
+                        <p id="battle-player-weapon-name" class="weapon-name">Broń: nic</p>
+                        <div id="battle-player-weapon" class="stat-chips"></div>
+                        <div id="battle-player-mana" class="stat-chips"></div>
                     </div>
                 </article>
 
@@ -295,9 +302,9 @@
                         <img id="battle-enemy-model" src="" alt="Przeciwnik">
                         <div id="enemy-model-fallback" class="enemy-silhouette hidden" aria-hidden="true">☠</div>
                     </div>
-                    <div class="stat-line"><span>HP</span><strong id="battle-enemy-hp">0 / 0</strong></div>
+                    <div class="stat-line"><span><span class="stat-icon" data-stat-icon="hp"></span> HP</span><strong id="battle-enemy-hp">0 / 0</strong></div>
                     <div class="health-bar enemy-health-bar"><span id="battle-enemy-health-bar"></span></div>
-                    <p id="battle-enemy-stats">DMG: 0 | Szansa ataku: 0%</p>
+                    <div id="battle-enemy-stats" class="stat-chips"></div>
                 </article>
             </div>
 
@@ -307,8 +314,10 @@
                 <button id="attack-btn" type="button">⚔️ Atakuj</button>
                 <button id="escape-btn" type="button">🏃 Uciekaj</button>
             </div>
-            <div id="battle-abilities" class="battle-abilities"></div>
-            <div id="battle-potions" class="battle-potions"></div>
+            <div id="battle-dock" class="battle-dock">
+                <div id="battle-abilities" class="battle-abilities"></div>
+                <div id="battle-potions" class="battle-potions"></div>
+            </div>
             <div id="battle-effects" class="battle-effects">Brak aktywnych efektów.</div>
             <button id="battle-back-btn" class="secondary-button hidden" type="button">Wróć do menu</button>
 
@@ -400,6 +409,8 @@
 
     <script src="script/variables.js"></script>
     <script src="script/dataLoader.js"></script>
+    <script src="script/icons.js"></script>
+    <script src="script/uiHelpers.js"></script>
     <script src="script/pullFromHTML.js"></script>
     <script src="script/saveCodec.js"></script>
     <script src="script/saveSystem.js"></script>

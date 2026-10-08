@@ -69,15 +69,6 @@
         padding: 10px;
     }
 
-    .battle-arena {
-        grid-template-columns: 1fr;
-    }
-
-    .battle-versus {
-        justify-content: center;
-        height: 24px;
-    }
-
     .battle-header,
     .shop-header {
         align-items: flex-start;
@@ -144,11 +135,6 @@
         padding-top: 8px;
     }
 
-    .battle-abilities,
-    .battle-potions {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     /* Mniej sztywnej wysokości grafik walki, żeby zmieściły się na ekranie telefonu. */
     .battle-model,
     .enemy-silhouette {
@@ -199,8 +185,7 @@
         font-size: 16px;
     }
 
-    #main-menu,
-    .battle-arena {
+    #main-menu {
         flex-direction: column;
     }
 
@@ -211,15 +196,6 @@
     #main-playerSummary,
     #main-playerModel {
         width: 100%;
-    }
-
-    .battle-arena {
-        grid-template-columns: 1fr;
-    }
-
-    .battle-versus {
-        justify-content: center;
-        height: 24px;
     }
 
     .battle-actions {
@@ -248,11 +224,6 @@
 
     .shop-layout {
         grid-template-columns: 1fr;
-    }
-
-    .battle-abilities,
-    .battle-potions {
-        grid-template-columns: 1fr 1fr;
     }
 
     .skin-list {

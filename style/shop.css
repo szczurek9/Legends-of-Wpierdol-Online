@@ -28,9 +28,32 @@
 
 .shop-search-row {
     display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.shop-search-field,
+.shop-sort-field {
+    display: flex;
     flex-direction: column;
     gap: 5px;
-    margin: 10px 0;
+}
+
+.shop-search-field {
+    flex: 1 1 220px;
+}
+
+.shop-sort-field {
+    flex: 0 1 180px;
+}
+
+#shop-sort {
+    padding: 8px 10px;
+    border: 1px solid black;
+    color: var(--control-text-color);
+    background: var(--shop-control-background);
 }
 
 #shop-search {

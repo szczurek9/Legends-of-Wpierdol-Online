@@ -26,6 +26,7 @@
     playerHealthBar: document.getElementById("battle-player-health-bar"),
     playerManaBar: document.getElementById("battle-player-mana-bar"),
     playerManaValue: document.getElementById("battle-player-mana-value"),
+    playerWeaponName: document.getElementById("battle-player-weapon-name"),
     playerWeapon: document.getElementById("battle-player-weapon"),
     playerMana: document.getElementById("battle-player-mana"),
     enemyName: document.getElementById("battle-enemy-name"),
