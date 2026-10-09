@@ -73,7 +73,7 @@
             <button id="start-game" class="btn-primary">Graj</button>
         </div>
 
-        <div id="main-menu" class="hidden swipe-cards" data-swipe-titles="Postać|Statystyki|Akcje" data-swipe-default="1">
+        <div id="main-menu" class="hidden swipe-cards" data-swipe-key="menu" data-swipe-titles="Postać|Statystyki|Akcje" data-swipe-default="1">
             <section id="main-playerModel" class="swipe-pane" aria-label="Postać gracza">
                 <h2 id="mainNickname" class="hero-name">Gracz</h2>
                 <div class="hero-level"><span>Poziom</span> <strong id="mainLevel">1</strong></div>
@@ -144,7 +144,7 @@
                 Aktualna broń: <strong id="shop-current-weapon-value">Pięści</strong>
             </div>
 
-            <div class="shop-store-layout swipe-cards" data-swipe-titles="Filtry|Przedmioty" data-swipe-default="1">
+            <div class="shop-store-layout swipe-cards" data-swipe-key="shop" data-swipe-titles="Filtry|Przedmioty" data-swipe-default="1">
                 <div class="shop-pane swipe-pane">
                 <aside class="shop-filters" aria-label="Kategorie sklepu">
                     <h3>Filtry</h3>
@@ -247,7 +247,7 @@
                 <div id="inventory-money">💸 Hajs: 0 $</div>
             </div>
 
-            <div class="inventory-layout swipe-cards" data-swipe-titles="Bronie|Przedmioty|Umiejętności" data-swipe-default="1">
+            <div class="inventory-layout swipe-cards" data-swipe-key="inventory" data-swipe-titles="Bronie|Przedmioty|Umiejętności" data-swipe-default="1">
                 <div class="swipe-wrap swipe-pane">
                 <article class="inventory-current">
                     <h3>Aktualna broń</h3>
@@ -458,5 +458,6 @@
     <script src="script/battleUIRender.js"></script>
     <script src="script/battleUI.js"></script>
     <script src="script/mobileCards.js"></script>
+    <script src="script/navGuard.js"></script>
 </body>
 </html>

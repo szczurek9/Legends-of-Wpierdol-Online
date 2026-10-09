@@ -88,6 +88,7 @@
 
   discordBtn.addEventListener("click", () => {
     if (!me.loggedIn) {
+      window.LowNavGuard?.allowLeave();
       window.location.href = "/api/auth/login";
       return;
     }
