@@ -35,7 +35,7 @@
     "id": "archer",
     "name": "Łucznik",
     "armorCap": 60,
-    "description": "+30% celności, 200 many, 8 dynamicznych slotów (AD lub AP), pancerz maks. 60.",
+    "description": "+30% celności, +5% lifestealu, 200 many, 8 dynamicznych slotów (AD lub AP), pancerz maks. 60.",
     "difficulty": 3,
     "role": "Hybryda AD/AP z 8 slotami"
   }

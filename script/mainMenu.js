@@ -232,6 +232,7 @@ startButton.addEventListener("click", () => {
     window.player.armorPoints = 5;
   } else if (window.player.classId === "archer") {
     window.player.bonusAccuracy = 30;
+    window.player.bonusLifesteal = 5;
     window.player.maxManaPoints = 200;
     window.player.manaPoints = 200;
   }

@@ -126,7 +126,7 @@
   // się z magicznego lifestealu z 50% skutecznością).
   function damageHeal(amount, magic, efficiency = 1) {
     const player = window.player;
-    const percentage = magic ? player.magicLifesteal : player.lifesteal + (classId() === "assassin" ? player.bonusLifesteal : 0);
+    const percentage = magic ? player.magicLifesteal : player.lifesteal + (["assassin", "archer"].includes(classId()) ? player.bonusLifesteal : 0);
     const restored = Math.floor(amount * percentage * efficiency / 100);
     player.healthPoints = clamp(player.healthPoints + restored, 0, player.maxHealthPoints);
     return restored;
