@@ -111,7 +111,25 @@
     const amount = (key) => Number(item[key] || 0) * direction;
     p.ad += amount("ad"); p.armorPenetration += amount("armorPenetration");
     p.armorPenetrationPercent += amount("armorPenetrationPercent");
-    p.critChance += amount("critChance"); p.bonusAccuracy += amount("accuracy"); p.lifesteal += amount("lifesteal");
+    p.bonusAccuracy += amount("accuracy"); p.lifesteal += amount("lifesteal");
+    adjustItemCrit(item, direction);
+  }
+
+  // Krytyk z przedmiotu nigdy nie przekracza 100%. Zapamiętujemy, ile naprawdę dodano (critApplied),
+  // żeby zdjęcie/sprzedaż przedmiotu odejmowało dokładnie tyle samo.
+  function adjustItemCrit(item, direction) {
+    const p = window.player;
+    const base = Number(item.critChance || 0);
+    if (!base) return;
+    if (direction > 0) {
+      const applied = Math.max(0, Math.min(base, 100 - (p.critChance || 0)));
+      item.critApplied = applied;
+      p.critChance = Math.min(100, (p.critChance || 0) + applied);
+    } else {
+      const applied = Number(item.critApplied ?? base);
+      p.critChance = Math.max(0, Math.min(100, (p.critChance || 0) - applied));
+      item.critApplied = 0;
+    }
   }
 
   function adjustMagicEffects(item, direction) {
@@ -546,7 +564,7 @@
       rows.push(row("damage", "Obrażenia bronią", currentWeaponDamage(), weaponDamage({ baseDamage: p.weaponBaseDamage || p.weaponDmg, adScaling: p.weaponAdScaling || 0 }, newAd)));
       if (item.armorPenetration) rows.push(row("armorPen", "Penetracja pancerza", p.armorPenetration, p.armorPenetration + item.armorPenetration));
       if (item.armorPenetrationPercent) rows.push(row("armorPen", "Penetracja pancerza (%)", p.armorPenetrationPercent, p.armorPenetrationPercent + item.armorPenetrationPercent, "%"));
-      if (item.critChance) rows.push(row("crit", "Szansa na krytyka", p.critChance, p.critChance + item.critChance, "%"));
+      if (item.critChance) rows.push(row("crit", "Szansa na krytyka", p.critChance, Math.min(100, p.critChance + item.critChance), "%"));
       if (item.accuracy) rows.push(row("accuracy", "Celność", p.bonusAccuracy, p.bonusAccuracy + item.accuracy, "%"));
       if (item.lifesteal) rows.push(row("lifesteal", "Lifesteal", p.lifesteal, p.lifesteal + item.lifesteal, "%"));
       if (item.bonusDamage) {
