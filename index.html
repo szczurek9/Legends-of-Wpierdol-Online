@@ -65,7 +65,10 @@
 
         <div id="login-screen" class="hidden">
             <label for="nickname" class="field-label">Podaj swój nick:</label>
-            <input type="text" id="nickname" placeholder="Nick" autocomplete="off">
+            <div class="nick-row">
+                <input type="text" id="nickname" placeholder="Nick" autocomplete="off">
+                <button type="button" id="nick-random" class="nick-random" title="Wylosuj nick" aria-label="Wylosuj nick">🎲 Losuj</button>
+            </div>
             <span id="class-picker-label" class="class-picker-label field-label">Wybierz klasę (nie można jej później zmienić):</span>
             <input type="hidden" id="class-select" value="assassin">
             <div id="class-cards" class="class-cards" role="radiogroup" aria-labelledby="class-picker-label"></div>
@@ -458,6 +461,7 @@
     <script src="script/battleUIRender.js"></script>
     <script src="script/battleUI.js"></script>
     <script src="script/mobileCards.js"></script>
+    <script src="script/nickGenerator.js"></script>
     <script src="script/navGuard.js"></script>
 </body>
 </html>

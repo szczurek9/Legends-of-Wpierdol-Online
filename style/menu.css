@@ -351,3 +351,20 @@
         font-size: 1rem;
     }
 }
+
+/* Pole nicku + przycisk losowania. */
+.nick-row {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.nick-row #nickname {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.nick-random {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
