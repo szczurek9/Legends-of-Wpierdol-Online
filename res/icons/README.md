@@ -4,7 +4,7 @@ Gra sama podmienia emotkę na obrazek, gdy tylko plik pojawi się w odpowiednim
 folderze (nazwy dokładnie jak niżej, małe litery, PNG z przezroczystością).
 Brak pliku = wyświetla się emotka zastępcza, więc ikony można dorysowywać po kolei.
 
-## Statystyki — `res/icons/stats/` (64×64 px)
+## ZROBIONE Statystyki — `res/icons/stats/` (64×64 px)
 
 | Plik            | Co oznacza                  | Emotka zastępcza |
 |-----------------|-----------------------------|------------------|
@@ -30,7 +30,7 @@ kształt wygląda lepiej niż szczegóły.
 `assassin.png`, `mage.png`, `tank.png`, `samurai.png`, `archer.png`
 (emotki zastępcze: 🥷 🧙 🛡️ ⚔️ 🏹)
 
-## Mikstury — `res/icons/potions/` (64×64 px)
+## ZROBIONE Mikstury — `res/icons/potions/` (64×64 px)
 
 `healthPotion.png`, `precisionElixir.png`, `vampireCocktail.png` (zastępcza: 🧪)
 
