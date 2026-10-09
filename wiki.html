@@ -23,195 +23,44 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=New+Rocker&family=Tagesschrift&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:rgb(27,103,126); --shadow:rgb(19,67,79);
-  --card:rgba(19,94,49,.55); --info:rgba(95,58,160,.45);
-  --control:rgba(58,156,160,.8); --menu:rgba(90,130,121,.8);
-  --border:rgb(11,37,75); --text:#eef6fb; --muted:#c7dce7;
-  --glow:rgb(47,172,255); --accent:#ffd45c;
-  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-}
-[data-theme="night"]{ --bg:#343940; --shadow:#1d2025; --card:rgba(70,75,82,.9); --info:rgba(30,34,39,.9); --control:rgba(112,120,130,.95); --menu:rgba(112,120,130,.95); --border:#aab4c0; --text:#f0f2f4; --muted:#c3ccd4; --glow:#aab4c0; --accent:#ffd45c; }
-[data-theme="neon"]{ --bg:#171126; --shadow:#090611; --card:rgba(39,20,59,.9); --info:rgba(55,15,76,.9); --control:rgba(18,51,64,.95); --menu:rgba(18,51,64,.95); --border:#00e5ff; --text:#eaffff; --muted:#a8d9e0; --glow:#00e5ff; --accent:#ff8cd8; }
-[data-theme="nature"]{ --bg:#8aa47c; --shadow:#536b4d; --card:rgba(139,166,124,.85); --info:rgba(166,184,162,.9); --control:rgba(111,154,114,.95); --menu:rgba(111,154,114,.95); --border:#405c43; --text:#1c2a1d; --muted:#33422f; --glow:#dff2b8; --accent:#c97f2a; }
-*{box-sizing:border-box;}
-html,body{height:100%;}
-body{
-  margin:0; background:var(--bg); color:var(--text);
-  font-family:"Segoe UI",system-ui,sans-serif;
-  transition:background .3s ease;
-  /* Rezerwuje stałe miejsce z lewej strony na menu boczne dla całego widoku */
-  padding-left: 220px;
-}
-h1,h2,h3,.brand,.chip,button,nav a{ font-family:"Tagesschrift",system-ui; }
-h1{ font-family:"New Rocker",system-ui; }
-a{color:inherit;}
-
-/* Kontener główny - idealnie wycentrowany w dostępnej przestrzeni */
-.wrap{
-  max-width:960px; 
-  margin:0 auto; 
-  padding:0 16px 60px;
-}
-
-header.hero{
-  background:linear-gradient(180deg, var(--shadow), var(--bg));
-  border-bottom:1px solid var(--border);
-  padding:28px 16px 20px; 
-  text-align:center;
-}
-header.hero h1{
-  font-size:clamp(22px,5vw,34px); margin:0 0 4px; text-shadow:0 2px 8px var(--glow);
-}
-header.hero p{margin:4px 0 18px; color:var(--muted); font-size:14px;}
-.themebar{display:flex; gap:8px; justify-content:center; flex-wrap:wrap;}
-.themebar button{
-  border:1px solid var(--border); background:var(--menu); color:var(--text);
-  padding:6px 12px; border-radius:3px; cursor:pointer; font-size:12px;
-}
-.themebar button[aria-pressed="true"]{ outline:2px solid var(--accent); }
-
-/* Przycisk hamburger dla wersji mobilnej (domyślnie ukryty) */
-.nav-toggle {
-  display: none;
-  position: fixed;
-  top: 12px;
-  left: 12px;
-  z-index: 1000;
-  background: var(--menu);
-  color: var(--text);
-  border: 1px solid var(--border);
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 18px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-/* Panel nawigacyjny po lewej stronie (Desktop) */
-nav.toc{
-  position:fixed; 
-  top:0; 
-  left:0; 
-  width:220px; 
-  height:100vh; 
-  z-index:100; 
-  background:var(--bg);
-  border-right:1px solid var(--border); 
-  border-bottom:none;
-  overflow-y:auto; 
-  padding:16px 12px;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  transition: transform 0.3s ease;
-}
-nav.toc a{
-  display:block; 
-  padding:8px 10px; 
-  font-size:12px;
-  background:var(--control); 
-  border:1px solid var(--border); 
-  border-radius:3px; 
-  text-decoration:none;
-}
-
-section{margin-top:34px;}
-section h2{
-  font-size:20px; border-bottom:2px solid var(--border); padding-bottom:6px; text-shadow:0 1px 4px var(--glow);
-}
-section h3{font-size:16px; margin-bottom:6px;}
-p{line-height:1.55; font-size:14px;}
-.note{ font-size:13px; color:var(--muted); border-left:3px solid var(--border); padding:6px 10px; background:var(--info); }
-
-.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin:14px 0;}
-.card{
-  background:var(--card); border:1px solid var(--border); padding:12px 14px;
-  box-shadow:4px 4px 0 var(--shadow);
-}
-.card h3{margin:0 0 6px;}
-.card ul{margin:6px 0 0; padding-left:18px; font-size:13px; line-height:1.5;}
-.tag{display:inline-block; font-size:11px; padding:2px 7px; background:var(--control); border:1px solid var(--border); border-radius:10px; margin-bottom:6px;}
-
-.formula{
-  background:var(--info); border:1px solid var(--border); padding:10px 12px;
-  font-family:ui-monospace,Consolas,monospace; font-size:12.5px; white-space:pre-wrap;
-  margin:10px 0; overflow-x:auto;
-}
-
-table{width:100%; border-collapse:collapse; font-size:13px; margin:10px 0;}
-th,td{border:1px solid var(--border); padding:6px 8px; text-align:left; vertical-align:top;}
-th{background:var(--control);}
-tr:nth-child(even) td{background:rgba(255,255,255,.05);}
-.tablewrap{overflow-x:auto; border:1px solid var(--border);}
-.tablewrap table{margin:0;}
-.boss{color:var(--accent); font-weight:bold;}
-
-details{background:var(--card); border:1px solid var(--border); margin:8px 0; padding:0;}
-details summary{cursor:pointer; padding:10px 12px; font-family:"Tagesschrift",system-ui; font-size:14px;}
-details[open] summary{border-bottom:1px solid var(--border);}
-details .inner{padding:10px 14px;}
-
-.rarity-basic{color:#d7eeee;} .rarity-rare{color:#72b7ff;} .rarity-epic{color:#d39cff;}
-.rarity-mythic{color:#ff8cd8;} .rarity-legendary{color:#ffd45c;} .rarity-ultimate{color:#ff8a5b;}
-
-footer{ text-align:center; padding:24px 16px 40px; color:var(--muted); font-size:12px; }
-
-/* REPOZYCJONOWANIE I HAMBURGER DLA EKRANÓW MOBILNYCH (szerokość <= 768px) */
-@media (max-width: 768px) {
-  body {
-    padding-left: 0; /* Zerujemy lewy padding body na mobilkach */
-  }
-
-  .nav-toggle {
-    display: block; /* Pokazujemy przycisk na telefonach */
-  }
-
-  header.hero {
-    padding-top: 60px; /* Dodatkowy margines górny dla nagłówka pod przycisk */
-  }
-
-  nav.toc {
-    transform: translateX(-100%); /* Domyślnie chowa menu poza ekranem po lewej */
-    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5);
-    padding-top: 50px;
-  }
-
-  /* Klasa dodawana skryptem JS po kliknięciu buttona */
-  nav.toc.open {
-    transform: translateX(0); /* Wysuwa panel */
-  }
-}
-</style>
+<!-- Wspólne motywy i style z gry, dzięki temu wiki wygląda tak samo jak interfejs gry. -->
+<link rel="stylesheet" href="style/themes.css">
+<link rel="stylesheet" href="style/base.css">
+<link rel="stylesheet" href="style/wiki.css">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 </head>
-<body data-theme="prism">
+<body data-theme="noc">
 
-<button class="nav-toggle" id="navToggle" aria-label="Otwórz menu">☰ Menu</button>
+<div class="main wiki-main">
+  <h1 id="titleheader">Legends of Wpierdol</h1>
+  <p id="titleedition">Wiki mechanik · Web Edition</p>
 
-<header class="hero">
-  <h1>Legends of Wpierdol — Online</h1>
-  <p>Wiki mechanik gry — Web/JS Edition</p>
-  <div class="themebar" role="group" aria-label="Motyw">
-    <button data-theme-btn="prism" aria-pressed="true">Prism</button>
-    <button data-theme-btn="night" aria-pressed="false">Night</button>
-    <button data-theme-btn="neon" aria-pressed="false">Neon</button>
-    <button data-theme-btn="nature" aria-pressed="false">Nature</button>
+  <div class="wiki-toolbar">
+    <a class="wiki-play" href="index.html">🎮 Zagraj w grę</a>
+    <label class="wiki-theme">
+      <span>Motyw</span>
+      <select id="wiki-theme">
+        <option value="noc">Noc (ciemny)</option>
+        <option value="dzien">Dzień (jasny)</option>
+        <option value="kontrast">Wysoki kontrast</option>
+        <option value="las">Las (ciemna zieleń)</option>
+      </select>
+    </label>
   </div>
-</header>
 
-<nav class="toc" aria-label="Spis treści">
-  <a href="#klasy">Klasy</a><a href="#walka">Walka</a><a href="#umiejetnosci">Umiejętności</a>
-  <a href="#efekty">Efekty</a><a href="#bronie">Bronie</a><a href="#ad">Przedmioty AD</a>
-  <a href="#magiczne">Magiczne</a><a href="#mikstury">Mikstury</a><a href="#skille">Skille</a>
-  <a href="#przeciwnicy">Przeciwnicy</a><a href="#fale">Fale i ucieczka</a><a href="#arena">Arena</a><a href="#sklep">Sklep</a>
-  <a href="#skiny">Skiny</a><a href="#sterowanie">Sterowanie</a>
-</nav>
+  <div class="wiki-layout">
+    <nav class="toc" aria-label="Spis treści">
+      <a href="#klasy">Klasy</a><a href="#walka">Walka</a><a href="#umiejetnosci">Umiejętności</a>
+      <a href="#efekty">Efekty</a><a href="#bronie">Bronie</a><a href="#ad">Przedmioty AD</a>
+      <a href="#magiczne">Magiczne</a><a href="#mikstury">Mikstury</a><a href="#skille">Skille</a>
+      <a href="#przeciwnicy">Przeciwnicy</a><a href="#fale">Fale i ucieczka</a><a href="#arena">Arena</a><a href="#sklep">Sklep</a>
+      <a href="#skiny">Skiny</a><a href="#sterowanie">Sterowanie</a>
+    </nav>
 
 <div class="wrap">
 
 <section id="wstep">
-<p>Gra to turowy „idle-RPG" przeglądarkowy: gracz tworzy postać, wybiera jedną z 4 klas i wspina się przez 50 poziomów przeciwników, kupując bronie, przedmioty i ulepszenia za zdobywane pieniądze oraz odblokowując kosmetyczne skiny za Skin Pointy.</p>
+<p>Gra to turowy „idle-RPG" przeglądarkowy: gracz tworzy postać, wybiera jedną z 5 klas i wspina się przez 50 poziomów przeciwników, kupując bronie, przedmioty i ulepszenia za zdobywane pieniądze oraz odblokowując kosmetyczne skiny za Skin Pointy.</p>
 </section>
 
 <section id="klasy">
@@ -267,7 +116,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <p class="note">100 pkt pancerza/odporności redukuje obrażenia o 50%; redukcja rośnie asymptotycznie do 100%, ale finalne obrażenia nigdy nie spadają poniżej 1.</p>
 
 <details><summary>Pełny łańcuch obliczeń ataku bronią gracza</summary><div class="inner">
-<ol style="font-size:13px; line-height:1.6;">
+<ol>
 <li>weaponDamage = max(1, floor(baseDamage + AD*adScaling))</li>
 <li>Mnożnik klasy: Zabójca +10%, Samurai +15%, Łucznik +10% (broń Ranged), Tank -25%/-20% (broń &gt;500 dmg), Chikara +7,5%</li>
 <li>Sen no Kata / Bōei: co 3. atak = 10% obrażeń, ale ogłusza wroga na 1 turę</li>
@@ -579,33 +428,64 @@ Kupowane za Skin Pointy, część należy do tematycznych kolekcji (np. Cyberpun
 </section>
 
 </div>
-<footer>Copyright © 2026 szczurek9 | Wiki made by: <a href="https://github.com/szczurek9" target="_blank" rel="noopener noreferrer">@szczurek9</a></footer>
+  </div>
+</div>
+
+<footer class="site-footer">Copyright © 2026 szczurek9 | Wiki made by: <a href="https://github.com/szczurek9" target="_blank" rel="noopener noreferrer">@szczurek9</a> | <a href="index.html">Zagraj w grę</a></footer>
 
 <script>
-(function() {
-  const navToggleBtn = document.getElementById('navToggle');
-  const tocNavElem = document.querySelector('nav.toc');
+(function () {
+  var THEMES = ["noc", "dzien", "kontrast", "las"];
+  var LEGACY = { prism: "noc", night: "noc", neon: "kontrast", nature: "las" };
+  var themeSelect = document.getElementById("wiki-theme");
 
-  if (navToggleBtn && tocNavElem) {
-    navToggleBtn.addEventListener('click', function() {
-      tocNavElem.classList.toggle('open');
-    });
-
-    tocNavElem.querySelectorAll('a').forEach(function(link) {
-      link.addEventListener('click', function() {
-        tocNavElem.classList.remove('open');
-      });
-    });
+  function normalize(theme) {
+    return THEMES.indexOf(theme) >= 0 ? theme : (LEGACY[theme] || "noc");
+  }
+  function read(key) {
+    try { return localStorage.getItem(key) || ""; } catch (error) { return ""; }
   }
 
-  document.querySelectorAll('[data-theme-btn]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      document.body.dataset.theme = btn.dataset.themeBtn;
-      document.querySelectorAll('[data-theme-btn]').forEach(function(b){ 
-        b.setAttribute('aria-pressed', b === btn); 
-      });
-    });
+  // Motyw wiki jest zapamiętany w przeglądarce; rozmiar interfejsu bierzemy z ustawień gry.
+  function applyTheme(theme) {
+    var selected = normalize(theme);
+    document.body.dataset.theme = selected;
+    themeSelect.value = selected;
+  }
+  applyTheme(read("low-wiki-theme"));
+  themeSelect.addEventListener("change", function () {
+    applyTheme(themeSelect.value);
+    try { localStorage.setItem("low-wiki-theme", themeSelect.value); } catch (error) { /* brak storage */ }
   });
+  var size = read("low-ui-size");
+  if (size) document.documentElement.style.setProperty("--ui-font-size", size + "px");
+
+  // Podświetlanie w spisie treści sekcji, którą aktualnie czytasz.
+  var toc = document.querySelector("nav.toc");
+  var links = {};
+  toc.querySelectorAll("a").forEach(function (link) { links[link.getAttribute("href").slice(1)] = link; });
+  var phone = window.matchMedia("(max-width: 760px)");
+
+  function activate(id) {
+    Object.keys(links).forEach(function (key) {
+      links[key].classList.toggle("active", key === id);
+    });
+    // Na telefonie spis to pasek chipów - aktywny chip wjeżdża na środek paska.
+    if (phone.matches && links[id]) {
+      toc.scrollTo({ left: links[id].offsetLeft - (toc.clientWidth - links[id].offsetWidth) / 2, behavior: "smooth" });
+    }
+  }
+
+  if ("IntersectionObserver" in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && links[entry.target.id]) activate(entry.target.id);
+      });
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    document.querySelectorAll("section[id]").forEach(function (section) {
+      if (links[section.id]) observer.observe(section);
+    });
+  }
 })();
 </script>
 </body>
