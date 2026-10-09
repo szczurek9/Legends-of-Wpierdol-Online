@@ -8,6 +8,10 @@
 //   res/icons/classes/<id>.png     96x96   (jak ikony umiejętności)
 //   res/icons/potions/<id>.png     64x64
 //   res/abilities/<klasa>/abilityN.png      (już istniejące, 96x96)
+//   res/icons/weapons|ad-items|magic-items|skills/<id>.png   ikony przedmiotów sklepu (64x64)
+//   res/icons/passives/<klasa>.png                           ikony pasywek klas
+//   res/icons/effects/<id>.png                               ikony aktywnych efektów w walce (64x64)
+// Brakujący plik przedmiotu lub efektu = emotka ℹ️.
 (function () {
   const STATS = {
     hp:        { file: "hp",         glyph: "❤️", label: "Zdrowie (HP)" },
@@ -28,6 +32,23 @@
   const CLASS_GLYPHS = { assassin: "🥷", mage: "🧙", tank: "🛡️", samurai: "⚔️", archer: "🏹" };
   const ABILITY_GLYPHS = { physical: "⚔️", magic: "🔮", utility: "✨", hybrid: "⚡", toggle: "🔄" };
   const POTION_GLYPH = "🧪";
+  const INFO_GLYPH = "ℹ️";
+
+  // Efekty, które mogą pojawić się w walce (id pliku = nazwa pliku PNG).
+  const EFFECTS = {
+    potionAccuracy: "Eliksir Precyzji",
+    potionLifesteal: "Koktajl Wampira",
+    stun: "Ogłuszenie",
+    poison: "Zatrucie",
+    vines: "Pnącza",
+    mirror: "Śmiertelne Lustro",
+    mushin: "Mushin",
+    ironTaunt: "Prowokacja",
+    bastion: "Bastion",
+    rageArmor: "Pancerz z wściekłości",
+    focusMark: "Znacznik Skupienia",
+    evadeNext: "Unik następnego ataku",
+  };
 
   // Które adresy obrazków istnieją (wiemy dopiero po próbnym załadowaniu).
   const known = new Map(); // url -> true | false | Promise
@@ -46,6 +67,8 @@
   const classUrl = (id) => `res/icons/classes/${id}.png`;
   const potionUrl = (id) => `res/icons/potions/${id}.png`;
   const abilityUrl = (classId, ability) => `res/abilities/${classId}/${ability.icon}`;
+  const itemUrl = (group, id) => `res/icons/${group}/${id}.png`;
+  const effectUrl = (id) => `res/icons/effects/${id}.png`;
 
   // Element ikony: <img> jeśli plik istnieje, w przeciwnym razie emotka.
   function make(url, glyph, className, isText) {
@@ -108,6 +131,29 @@
     return make(abilityUrl(classId, ability), ABILITY_GLYPHS[ability.type] || "✨", className);
   }
 
+  // Ikona przedmiotu sklepu: group = weapons | ad-items | magic-items | skills | passives.
+  function itemIcon(group, id, className) {
+    return make(itemUrl(group, id), INFO_GLYPH, className);
+  }
+
+  // Chip aktywnego efektu w walce: ta sama ramka i rozmiar co chipy statystyk.
+  function effectChip(id, value, label) {
+    const text = label || EFFECTS[id] || id;
+    const element = document.createElement("span");
+    element.className = "stat-chip effect-icon-chip";
+    element.dataset.label = text;
+    element.tabIndex = 0;
+    element.setAttribute("role", "img");
+    element.setAttribute("aria-label", text);
+    element.appendChild(make(effectUrl(id), INFO_GLYPH));
+    if (value !== "") {
+      const number = document.createElement("b");
+      number.textContent = value;
+      element.appendChild(number);
+    }
+    return element;
+  }
+
   // Gwiazdki trudności, np. stars(2) → ★★☆
   function stars(count, max = 3, label = "Poziom trudności") {
     const element = document.createElement("span");
@@ -130,6 +176,7 @@
   const initial = [
     ...Object.keys(STATS).map(statUrl),
     ...Object.keys(CLASS_GLYPHS).map(classUrl),
+    ...Object.keys(EFFECTS).map(effectUrl),
   ];
   const ready = Promise.all(initial.map(probe)).then(() => {
     hydrate();
@@ -141,6 +188,11 @@
     window.gameDataReady.then(() => {
       const urls = [];
       (window.shopPotions || []).forEach((potion) => urls.push(potionUrl(potion.id)));
+      (window.shopWeapons || []).forEach((item) => urls.push(itemUrl("weapons", item.id)));
+      (window.adItems || []).forEach((item) => urls.push(itemUrl("ad-items", item.id)));
+      (window.magicItems || []).forEach((item) => urls.push(itemUrl("magic-items", item.id)));
+      (window.shopSkills || []).forEach((item) => urls.push(itemUrl("skills", item.id)));
+      Object.keys(CLASS_GLYPHS).forEach((classId) => urls.push(itemUrl("passives", classId)));
       Object.entries(window.classAbilities || {}).forEach(([classId, data]) => {
         (data.active || []).forEach((ability) => urls.push(abilityUrl(classId, ability)));
       });
@@ -159,5 +211,5 @@
 
   hydrate();
 
-  window.GameIcons = { STATS, ready, probe, stat, chip, classIcon, potionIcon, abilityIcon, stars, hydrate };
+  window.GameIcons = { STATS, EFFECTS, ready, probe, stat, chip, effectChip, itemIcon, classIcon, potionIcon, abilityIcon, stars, hydrate };
 })();

@@ -34,6 +34,25 @@ kształt wygląda lepiej niż szczegóły.
 
 `healthPotion.png`, `precisionElixir.png`, `vampireCocktail.png` (zastępcza: 🧪)
 
+## Przedmioty sklepu (64×64 px, ikona w prawym dolnym rogu karty)
+
+Brak pliku = emotka ℹ️. Nazwa pliku = `id` przedmiotu z plików w `data/`.
+
+- `res/icons/weapons/<id>.png` — bronie (`data/weapons.json`)
+- `res/icons/ad-items/<id>.png` — przedmioty AD (`data/ad-items.json`)
+- `res/icons/magic-items/<id>.png` — przedmioty AP (`data/magic-items.json`)
+- `res/icons/skills/<id>.png` — wzmocnienia (`data/skills.json`)
+- `res/icons/potions/<id>.png` — mikstury (już opisane wyżej)
+- `res/icons/passives/<klasa>.png` — pasywki klas (`assassin`, `mage`, `tank`, `samurai`, `archer`)
+
+## Aktywne efekty w walce — `res/icons/effects/` (64×64 px)
+
+Brak pliku = emotka ℹ️.
+
+`potionAccuracy.png`, `potionLifesteal.png`, `stun.png`, `poison.png`, `vines.png`,
+`mirror.png`, `mushin.png`, `ironTaunt.png`, `bastion.png`, `rageArmor.png`,
+`focusMark.png`, `evadeNext.png`
+
 ## Umiejętności łucznika
 
 Łucznik nie ma jeszcze folderu `res/abilities/archer/`. Pliki `ability1.png`,

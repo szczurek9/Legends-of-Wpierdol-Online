@@ -113,6 +113,33 @@
     outline-offset: 2px;
 }
 
+/* Statystyki gracza w walce: dwie grupy chipów płyną w jednym rzędzie (zawijają się dopiero, gdy brakuje miejsca). */
+.chips-group {
+    display: contents;
+}
+
+#battle-player-chips .stat-chip::after {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+}
+
+#battle-player-weapon .stat-chip:first-child::after {
+    left: 0;
+    transform: none;
+}
+
+#battle-player-mana .stat-chip:last-child::after {
+    right: 0;
+    left: auto;
+    transform: none;
+}
+
+#battle-player-chips {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
 .weapon-name {
     margin: 0;
     overflow: hidden;
@@ -322,6 +349,17 @@
     border: 1px solid var(--shop-border-color);
     border-radius: 6px;
     background: var(--shop-info-background);
+}
+
+/* Ramki ikon przycinają obrazek do zaokrąglonych rogów (wcześniej rogi PNG wystawały poza ramkę). */
+.class-card-icon,
+.class-ability-icon {
+    overflow: hidden;
+}
+
+.class-card-icon img,
+.class-ability-icon img {
+    border-radius: inherit;
 }
 
 .class-card-icon .game-icon-glyph {

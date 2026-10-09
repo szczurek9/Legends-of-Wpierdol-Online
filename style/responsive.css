@@ -116,29 +116,6 @@
         max-height: 18rem;
     }
 
-    .shop-store-layout {
-        grid-template-columns: 1fr;
-    }
-
-    /* Filtry jako poziomy pasek chipów nad listą. */
-    .shop-filters {
-        flex-direction: row;
-        gap: 0.4rem;
-        padding: 0.4rem;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .shop-filters h3 {
-        display: none;
-    }
-
-    .shop-filter {
-        flex: 0 0 auto;
-        align-items: center;
-        white-space: nowrap;
-    }
-
     /* Podgląd przedmiotu jako okno po kliknięciu karty. */
     .shop-details {
         position: fixed;
@@ -175,10 +152,6 @@
         top: 0.5rem;
         right: 0.5rem;
         display: block;
-    }
-
-    .shop-list {
-        max-height: 24rem;
     }
 
     /* Mniej sztywnej wysokości grafik walki, żeby zmieściły się na ekranie telefonu. */
@@ -234,16 +207,12 @@
         max-height: 24rem;
     }
 
-    .shop-list {
-        max-height: 24rem;
-    }
-
     .shop-list-filtered .shop-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
 
     .shop-list:not(.shop-list-filtered) .shop-card {
-        flex-basis: 9rem;
+        flex-basis: 15rem;
     }
 
     .skin-list-filtered .skin-grid {

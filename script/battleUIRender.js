@@ -74,43 +74,27 @@
     return image;
   }
 
-  const EFFECT_LABELS = {
-    potionAccuracy: "Eliksir Precyzji",
-    potionLifesteal: "Koktajl Wampira",
-    accuracy: "Celność",
-    enemyAccuracy: "Celność wroga",
-    stun: "Ogłuszenie",
-    poison: "Zatrucie",
-    vines: "Pnącza",
-    mirror: "Śmiertelne Lustro",
-    mushin: "Mushin",
-    ironTaunt: "Prowokacja",
-    bastionTurns: "Bastion",
-    bastionArmor: "Bonus pancerza",
-  };
-
+  // Efekty: [id ikony, wartość przy ikonie, podpis w dymku].
   function renderEffects(refs, state) {
-    const effectNames = Object.entries(state.effects || {})
-      .filter(([name]) => !["accuracy", "enemyAccuracy", "bastionArmor", "evadeNext"].includes(name))
+    const effects = state.effects || {};
+    const chips = Object.entries(effects)
+      .filter(([name]) => !["accuracy", "enemyAccuracy", "bastionArmor", "evadeNext", "accuracyTurns", "enemyAccuracyTurns"].includes(name))
       .map(([name, value]) => {
-        const label = name.endsWith("Turns") ? name.slice(0, -5) : name;
-        return `${EFFECT_LABELS[label] || label}: ${name.endsWith("Turns") ? value : `${value} tur`}`;
+        const id = name.endsWith("Turns") ? name.slice(0, -5) : name;
+        const label = window.GameIcons.EFFECTS[id] || id;
+        if (id === "rageArmor") return [id, `+${value}`, `${label}: +${value}`];
+        return [id, value, `${label}: ${value} tur`];
       });
     // Łucznik: znacznik Skupienia i unik z Rytmu Wojny nie mają licznika tur.
-    if (state.focusMark) effectNames.push("Znacznik Skupienia: następny atak (Q)");
-    if ((state.effects || {}).evadeNext) effectNames.push("Unik następnego ataku wroga");
-    // Efekty jako osobne "chipy" zamiast jednej długiej linii.
+    if (state.focusMark) chips.push(["focusMark", "", "Znacznik Skupienia: następny atak (Q)"]);
+    if (effects.evadeNext) chips.push(["evadeNext", "", "Unik następnego ataku wroga"]);
+    // Efekty jako ikony (jak chipy statystyk): liczba tur przy ikonie, nazwa po najechaniu lub dotknięciu.
     refs.effectsPanel.replaceChildren();
-    if (!effectNames.length) {
+    if (!chips.length) {
       refs.effectsPanel.textContent = "Brak aktywnych efektów.";
       return;
     }
-    effectNames.forEach((text) => {
-      const chip = document.createElement("span");
-      chip.className = "effect-chip";
-      chip.textContent = text;
-      refs.effectsPanel.appendChild(chip);
-    });
+    chips.forEach(([id, value, label]) => refs.effectsPanel.appendChild(window.GameIcons.effectChip(id, value, label)));
   }
 
   // Wiersz chipów „ikona + wartość”. Wpis: [klucz statystyki, wartość, (opcjonalnie) własna etykieta].
@@ -132,9 +116,8 @@
     setBar(refs.playerManaBar, player.manaPoints, player.maxManaPoints);
     renderPlayerModel(refs, false);
     const currentWeaponDamage = window.BattleMath.currentWeaponDamage();
-    refs.playerWeaponName.textContent = player.weaponName;
     renderChips(refs.playerWeapon, [
-      ["damage", currentWeaponDamage, `Obrażenia broni (${player.weaponName})`],
+      ["damage", currentWeaponDamage, "Obrażenia broni"],
       ["ad", player.ad],
       ["crit", `${player.critChance}%`],
       ["armorPen", player.armorPenetration],

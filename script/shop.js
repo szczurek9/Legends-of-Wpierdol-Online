@@ -626,10 +626,18 @@
     return element;
   }
 
+  // Każdy przedmiot ma ikonę (plik w res/icons/..., a bez pliku emotka ℹ️); umiejętności klas są większe.
   function entryIcon(entry, className) {
-    if (entry.kind === "potion") return window.GameIcons.potionIcon(entry.item.id, className);
-    if (entry.kind === "ability" && !entry.item.passive) return window.GameIcons.abilityIcon(currentClass(), entry.item, className);
-    return null;
+    const { kind, item } = entry;
+    if (kind === "potion") return window.GameIcons.potionIcon(item.id, className);
+    if (kind === "ability") {
+      const large = `${className} is-large`;
+      return item.passive
+        ? window.GameIcons.itemIcon("passives", currentClass(), large)
+        : window.GameIcons.abilityIcon(currentClass(), item, large);
+    }
+    const group = { weapon: "weapons", ad: "ad-items", magic: "magic-items", skill: "skills" }[kind];
+    return window.GameIcons.itemIcon(group, item.id, className);
   }
 
   function kindLine(entry) {
@@ -783,24 +791,23 @@
     });
     if (entry.key === selectedKey) card.classList.add("shop-card-selected");
 
-    const icon = entryIcon(entry, "shop-card-icon");
-    if (icon) card.appendChild(icon);
-
     const title = document.createElement("h4");
     title.textContent = entry.item.name;
     card.appendChild(title);
 
     if (state.price !== null && !state.blocked) {
       const missing = Math.max(0, state.price - player.money);
-      const price = document.createElement("p");
+      // Cena i braki w jednej linii: „25 $ | Brakuje 20 $”.
+      const line = document.createElement("p");
+      line.className = "shop-card-priceline";
+      const price = document.createElement("b");
       price.className = "shop-card-price";
       price.textContent = `${state.price} $`;
-      card.appendChild(price);
-
-      const short = document.createElement("p");
+      const short = document.createElement("span");
       short.className = `shop-card-missing${missing > 0 ? " is-short" : ""}`;
       short.textContent = missing > 0 ? `Brakuje ${missing} $` : "Stać Cię";
-      card.appendChild(short);
+      line.append(price, " | ", short);
+      card.appendChild(line);
       if (missing > 0) card.classList.add("shop-card-unaffordable");
     } else {
       const status = document.createElement("p");
@@ -810,6 +817,10 @@
       if (state.action === null || state.blocked) card.classList.add("shop-card-locked");
     }
     if (state.badge === "Wyposażona") card.classList.add("shop-card-equipped");
+
+    // Ikona w prawym dolnym rogu karty.
+    const icon = entryIcon(entry, "shop-card-icon");
+    if (icon) card.appendChild(icon);
     return card;
   }
 
@@ -835,10 +846,6 @@
       slots.textContent = window.itemSlotLabel(categoryId);
       title.appendChild(slots);
     }
-    const count = document.createElement("span");
-    count.className = "shop-group-count";
-    count.textContent = String(entries.length);
-    title.appendChild(count);
     section.appendChild(title);
 
     section.appendChild(createGrid(entries));
@@ -873,6 +880,8 @@
         : entriesOfCategory(id).length;
       if (id === "all") total = count;
       filter.querySelector(".shop-filter-count").textContent = String(count);
+      const slotsLabel = filter.querySelector(".shop-filter-slots");
+      if (slotsLabel) slotsLabel.textContent = window.itemSlotLabel(id);
       const active = id === category;
       filter.classList.toggle("active", active);
       filter.setAttribute("aria-pressed", String(active));
