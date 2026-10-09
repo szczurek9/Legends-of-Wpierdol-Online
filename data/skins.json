@@ -22,8 +22,8 @@
   {
     "id": "skin2",
     "name": "Czarek Kirkowski",
-    "rarity": "legendary",
-    "cost": 10,
+    "rarity": "mythic",
+    "cost": 6,
     "collection": "Social Media",
     "modelAlive": "res/skins/sa2.png",
     "modelDead": "res/skins/sd2.png",

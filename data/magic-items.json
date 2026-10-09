@@ -27,7 +27,6 @@
     "description": "+100 many, +5 mocy umiejętności, +80% bazowej regeneracji many (z malejącą skutecznością).",
     "effects": {
       "mana": 100,
-      "abilityPower": 5,
       "manaRegenPercent": 80
     }
   },
