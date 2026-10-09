@@ -24,7 +24,7 @@
     "id": "healerNecklace",
     "name": "Naszyjnik Uzdrowicielki",
     "price": 350,
-    "description": "+100 many, +5 mocy umiejętności, +80% bazowej regeneracji many (z malejącą skutecznością).",
+    "description": "+100 many, +80% bazowej regeneracji many (z malejącą skutecznością).",
     "effects": {
       "mana": 100,
       "manaRegenPercent": 80
