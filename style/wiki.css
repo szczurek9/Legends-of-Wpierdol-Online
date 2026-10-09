@@ -322,3 +322,18 @@ details .inner {
         scroll-margin-top: 4rem;
     }
 }
+
+
+/* --- Ikony statystyk w tabeli ---------------------------------------------- */
+td.icon-cell {
+    width: 3rem;
+    text-align: center;
+}
+
+.wiki-icon {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto;
+    object-fit: contain;
+}

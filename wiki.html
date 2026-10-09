@@ -50,7 +50,7 @@
 
   <div class="wiki-layout">
     <nav class="toc" aria-label="Spis treści">
-      <a href="#klasy">Klasy</a><a href="#walka">Walka</a><a href="#umiejetnosci">Umiejętności</a>
+      <a href="#klasy">Klasy</a><a href="#walka">Walka</a><a href="#ikony">Ikony</a><a href="#umiejetnosci">Umiejętności</a>
       <a href="#efekty">Efekty</a><a href="#bronie">Bronie</a><a href="#ad">Przedmioty AD</a>
       <a href="#magiczne">Magiczne</a><a href="#mikstury">Mikstury</a><a href="#skille">Skille</a>
       <a href="#przeciwnicy">Przeciwnicy</a><a href="#fale">Fale i ucieczka</a><a href="#arena">Arena</a><a href="#sklep">Sklep</a>
@@ -129,6 +129,27 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <li>Leczenie z puli Overkill: floor(pula * (5 + floor(penPancerza/0,7) + floor(pancerz/0,8)) / 100)</li>
 <li>Regeneracja many na turę: floor(bazowa_mana_klasy * 0,03 * (1 + 3,25 * R / (R + 200))), gdzie R = suma % regeneracji many z klasy i przedmiotów, a bazowa mana klasy to 320 (Mag), 200 (Łucznik) lub 100 (reszta). Mana z przedmiotów powiększa tylko pulę, nie regenerację. Skuteczność maleje z każdym kolejnym punktem R, a maksymalny bonus to +325%.</li>
 </ol></div></details>
+</section>
+
+<section id="ikony">
+<h2>Ikony statystyk</h2>
+<p>W grze statystyki oznaczone są małymi ikonami (w walce, w sklepie i na kartach przedmiotów). Po najechaniu na ikonę, a na telefonie po jej dotknięciu, pojawia się jej nazwa. Poniżej znaczenie każdej z nich.</p>
+<div class="tablewrap"><table>
+<tr><th>Ikona</th><th>Statystyka</th><th>Co oznacza</th></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/hp.png" alt="Zdrowie (HP)" width="32" height="32" loading="lazy"></td><td><b>Zdrowie (HP)</b></td><td>Punkty życia postaci. Gdy spadną do 0, następuje śmierć (zob. <a href="#fale">Fale, poziomy, ucieczka i śmierć</a>). Leczą je mikstury, lifesteal i umiejętności lecznicze, a maksymalne HP podnoszą ulepszenia sklepowe (Skała Zdrowia, Woda Życia).</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/mana.png" alt="Mana" width="32" height="32" loading="lazy"></td><td><b>Mana</b></td><td>Zasób potrzebny do rzucania umiejętności (kolumna „Koszt” w tabelach umiejętności). Regeneruje się co turę. Przedmioty z manem zwiększają tylko jej pulę, nie tempo regeneracji.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/mana-regen.png" alt="Regeneracja many" width="32" height="32" loading="lazy"></td><td><b>Regeneracja many</b></td><td>Procentowy bonus do regeneracji many na turę (z klasy Maga oraz przedmiotów magicznych). Im więcej już masz, tym mniej daje każdy kolejny punkt — maksymalny bonus to +325%. Wzór w <a href="#walka">Pełnym łańcuchu obliczeń</a>.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/damage.png" alt="Obrażenia" width="32" height="32" loading="lazy"></td><td><b>Obrażenia</b></td><td>Ilość obrażeń zadawanych przez atak. Ta sama ikona oznacza też przycisk zwykłego ataku („Atakuj”).</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/ad.png" alt="Siła ataku (AD)" width="32" height="32" loading="lazy"></td><td><b>Siła ataku (AD)</b></td><td>Podbija obrażenia broni: <code>obrażenia bazowe + AD × skalowanie AD broni</code>. Daje ją większość przedmiotów AD (niedostępnych dla Maga) i skaluje się z nią część umiejętności.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/ap.png" alt="Moc umiejętności (AP)" width="32" height="32" loading="lazy"></td><td><b>Moc umiejętności (AP)</b></td><td>Skaluje umiejętności zadające obrażenia magiczne, np. Gwiezdne Uderzenie: 60 + 90% AP. Zdobywasz ją z przedmiotów magicznych.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/crit.png" alt="Szansa na krytyka" width="32" height="32" loading="lazy"></td><td><b>Szansa na krytyka</b></td><td>Prawdopodobieństwo ciosu krytycznego. Standardowy mnożnik to x1,5; Samurai ma x1,2, a Zabójca potrafi zadać super-krytyka x2,25.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/accuracy.png" alt="Celność" width="32" height="32" loading="lazy"></td><td><b>Celność</b></td><td>Szansa na trafienie przeciwnika: <code>(100 − unik wroga) + bonus celności</code>, ograniczona do 0–100%. Zwiększają ją klasy, bronie, przedmioty i Eliksir Precyzji.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/lifesteal.png" alt="Kradzież życia (lifesteal)" width="32" height="32" loading="lazy"></td><td><b>Kradzież życia (lifesteal)</b></td><td>Procent zadanych obrażeń, który wraca do ciebie jako leczenie. Źródła: klasy (Zabójca, Łucznik), przedmioty AD, Koktajl Wampira oraz osobny lifesteal magiczny z przedmiotów magicznych.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/armor.png" alt="Pancerz" width="32" height="32" loading="lazy"></td><td><b>Pancerz</b></td><td>Zmniejsza obrażenia fizyczne: <code>redukcja = pancerz / (pancerz + 100)</code>, więc 100 pkt to −50% obrażeń. Każda klasa ma własny limit pancerza.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/armor-pen.png" alt="Penetracja pancerza" width="32" height="32" loading="lazy"></td><td><b>Penetracja pancerza</b></td><td>Ignoruje część pancerza wroga — procentowo i/lub płasko — przez co twoje obrażenia fizyczne są mniej redukowane. Przebita (pęknięta) tarcza na ikonie to ten sam motyw co przy pancerzu.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/mr.png" alt="Odporność magiczna (MR)" width="32" height="32" loading="lazy"></td><td><b>Odporność magiczna (MR)</b></td><td>Zmniejsza obrażenia magiczne według tego samego wzoru co pancerz: <code>redukcja = MR / (MR + 100)</code>.</td></tr>
+<tr><td class="icon-cell"><img class="wiki-icon" src="res/icons/stats/magic-pen.png" alt="Penetracja magii" width="32" height="32" loading="lazy"></td><td><b>Penetracja magii</b></td><td>Płaska wartość odejmowana od odporności magicznej wroga, dzięki czemu twoje obrażenia magiczne są mniej redukowane.</td></tr>
+</table></div>
 </section>
 
 <section id="umiejetnosci">
