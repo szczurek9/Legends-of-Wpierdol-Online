@@ -18,7 +18,7 @@
   const deadPreview = document.getElementById("skin-dead-preview");
   const actions = document.getElementById("skin-actions");
   const filters = [...document.querySelectorAll(".skin-filter")];
-  const rarityOrder = ["ultimate", "legendary", "mythic", "epic", "rare", "basic"];
+  const rarityOrder = ["secret", "ultimate", "legendary", "mythic", "epic", "rare", "basic"];
   let selectedRarity = null;
   let selectedSkinId = null;
 
@@ -49,8 +49,97 @@
     return window.player.skinInventory.includes(id);
   }
 
+  // Sekretne skiny są niewidoczne (na liście, w wyszukiwarce i w filtrach), dopóki gracz ich nie posiada.
+  function isVisible(skin) {
+    return skin.rarity !== "secret" || isOwned(skin.id);
+  }
+
+  // Sekret odblokowuje się po zdobyciu wszystkich pozostałych skinów z jego kolekcji.
+  function secretUnlocked(secret) {
+    if (!secret.collection || secret.collection === "no") return false;
+    const required = window.skinCatalog.filter((skin) => skin.collection === secret.collection && skin.rarity !== "secret");
+    return required.length > 0 && required.every((skin) => isOwned(skin.id));
+  }
+
+  // Nadaje sekrety, których warunek jest spełniony, i zabiera te, których już nie jest
+  // (np. po sprzedaży skina z kolekcji). Zwraca listy nadanych i odebranych skinów.
+  function syncSecretSkins() {
+    const player = window.player;
+    const granted = [];
+    const removed = [];
+    window.skinCatalog.filter((skin) => skin.rarity === "secret").forEach((secret) => {
+      const unlocked = secretUnlocked(secret);
+      const owned = isOwned(secret.id);
+      if (unlocked && !owned) {
+        player.skinInventory.push(secret.id);
+        granted.push(secret);
+      } else if (!unlocked && owned) {
+        player.skinInventory = player.skinInventory.filter((id) => id !== secret.id);
+        removed.push(secret);
+      }
+    });
+    if (removed.some((skin) => skin.id === player.skinName)) player.skinName = "default";
+    return { granted, removed };
+  }
+
+  // Okienko po odnalezieniu sekretu; kilka naraz wyświetla się kolejno.
+  function showSecretUnlock(skins) {
+    const [skin, ...rest] = skins;
+    if (!skin) return;
+
+    const overlay = document.createElement("section");
+    overlay.className = "modal";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-labelledby", "secret-unlock-title");
+
+    const content = document.createElement("div");
+    content.className = "modal-content secret-unlock-content";
+
+    const title = document.createElement("h2");
+    title.id = "secret-unlock-title";
+    title.textContent = "Gratulacje!";
+
+    const image = document.createElement("img");
+    setModelPreview(image, skin);
+
+    const text = document.createElement("p");
+    text.textContent = "Odnalazłeś sekretnego skina!";
+
+    const name = document.createElement("p");
+    name.className = "skin-rarity skin-rarity-secret";
+    name.textContent = skin.collection && skin.collection !== "no" ? `${skin.name} — ${skin.collection}` : skin.name;
+
+    const ok = createActionButton("Super!", false, close);
+    content.append(title, image, text, name, ok);
+    overlay.appendChild(content);
+
+    function onKey(event) {
+      if (event.key === "Escape") close();
+    }
+
+    function close() {
+      document.removeEventListener("keydown", onKey);
+      overlay.remove();
+      showSecretUnlock(rest);
+    }
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) close();
+    });
+    document.addEventListener("keydown", onKey);
+    document.body.appendChild(overlay);
+    ok.focus();
+  }
+
+  // Wspólna obsługa po zmianie kolekcji: nadaje/odbiera sekrety i informuje gracza.
+  function applySecretChanges() {
+    const { granted, removed } = syncSecretSkins();
+    return { granted, removed };
+  }
+
   function rarityCount(rarity) {
-    const skins = window.skinCatalog.filter((skin) => skin.rarity === rarity);
+    const skins = window.skinCatalog.filter((skin) => skin.rarity === rarity && isVisible(skin));
     const owned = skins.filter((skin) => isOwned(skin.id)).length;
     return `${owned}/${skins.length}`;
   }
@@ -76,7 +165,9 @@
   function skinBadgeText(skin) {
     const attributes = skin.id === "default"
       ? "Basic | Darmowy"
-      : `${skin.rarity} | ${skin.cost} SP`;
+      : skin.rarity === "secret"
+        ? "Secret | Nie do kupienia"
+        : `${skin.rarity} | ${skin.cost} SP`;
     return skin.collection && skin.collection !== "no"
       ? `Kolekcja: ${skin.collection} | ${attributes}`
       : attributes;
@@ -104,9 +195,11 @@
     window.player.skinPoints -= skin.cost;
     window.player.skinInventory.push(skin.id);
     window.player.skinName = skin.id;
+    const { granted } = applySecretChanges();
     refresh();
     window.refreshMainMenu();
     showMessage(`Kupiono i wyposażono skina: ${skin.name}!`, "success");
+    showSecretUnlock(granted);
   }
 
   function sellSkin(skin) {
@@ -122,8 +215,14 @@
     const salePrice = Math.round(skin.cost * 0.5);
     window.player.skinPoints += salePrice;
     window.player.skinInventory = window.player.skinInventory.filter((id) => id !== skin.id);
+    const { removed } = applySecretChanges();
     refresh();
+    if (removed.length > 0) window.refreshMainMenu();
     showMessage(`Sprzedano skina ${skin.name} za ${salePrice} SP.`, "success");
+    // Utrata sekretu po sprzedaży skina z jego kolekcji.
+    removed.forEach((secret) => {
+      if (window.showToast) window.showToast(`Sekretny skin ${secret.name} zniknął z Twojego konta.`, "warning", 4000);
+    });
   }
 
   function createActionButton(text, disabled, onClick) {
@@ -199,6 +298,7 @@
         selectSkin(skin);
       }
     });
+    if (skin.rarity === "secret") card.classList.add("skin-card-secret");
     if (skin.id === window.player.skinName) card.classList.add("skin-card-equipped");
     if (skin.id === selectedSkinId) card.classList.add("skin-card-selected");
     if (!isOwned(skin.id)) card.classList.add("skin-card-locked");
@@ -249,10 +349,16 @@
     const searchTerm = search.value.trim().toLowerCase();
     points.textContent = `🎨 SP: ${window.player.skinPoints}`;
     filters.forEach((filter) => {
-      filter.querySelector(".skin-filter-count").textContent = rarityCount(filter.dataset.rarity);
+      const rarity = filter.dataset.rarity;
+      // Filtr Secret pojawia się dopiero, gdy gracz posiada jakiegoś sekretnego skina.
+      const hidden = rarity === "secret" && !window.skinCatalog.some((skin) => skin.rarity === "secret" && isOwned(skin.id));
+      filter.classList.toggle("hidden", hidden);
+      filter.querySelector(".skin-filter-count").textContent = rarityCount(rarity);
+      if (hidden && selectedRarity === rarity) setSelectedRarity(null);
     });
 
     const visibleSkins = window.skinCatalog.filter((skin) => {
+      if (!isVisible(skin)) return false;
       const matchesRarity = !selectedRarity || skin.rarity === selectedRarity;
       const matchesSearch = skin.name.toLowerCase().includes(searchTerm);
       return matchesRarity && matchesSearch;
@@ -286,12 +392,24 @@
     }
   }
 
+  function setSelectedRarity(rarity) {
+    selectedRarity = rarity;
+    filters.forEach((item) => {
+      const active = item.dataset.rarity === selectedRarity;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-pressed", String(active));
+    });
+  }
+
   function openSkins() {
     closeModal();
+    // Porządkuje sekrety także dla wczytanych zapisów (np. kolekcja skompletowana wcześniej).
+    const { granted } = applySecretChanges();
     refresh();
     mainMenu.classList.add("hidden");
     skinScreen.classList.remove("hidden");
     showMessage("Wybierz skina.");
+    showSecretUnlock(granted);
   }
 
   function closeSkins() {
@@ -304,12 +422,7 @@
   filters.forEach((filter) => {
     filter.addEventListener("click", () => {
       // Ponowne kliknięcie aktywnego filtra wraca do widoku ogólnego.
-      selectedRarity = selectedRarity === filter.dataset.rarity ? null : filter.dataset.rarity;
-      filters.forEach((item) => {
-        const active = item.dataset.rarity === selectedRarity;
-        item.classList.toggle("active", active);
-        item.setAttribute("aria-pressed", String(active));
-      });
+      setSelectedRarity(selectedRarity === filter.dataset.rarity ? null : filter.dataset.rarity);
       refresh();
       list.scrollTop = 0;
     });

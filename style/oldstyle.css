@@ -782,6 +782,7 @@ button:disabled {
     filter: brightness(1.2);
 }
 
+.skin-filter[data-rarity="secret"] { color: #ff8fb0; }
 .skin-filter[data-rarity="basic"] { color: #d7eeee; }
 .skin-filter[data-rarity="rare"] { color: #72b7ff; }
 .skin-filter[data-rarity="epic"] { color: #d39cff; }
@@ -892,6 +893,7 @@ button:disabled {
     text-transform: capitalize;
 }
 
+.skin-rarity-secret { color: #ff8fb0; }
 .skin-rarity-basic { color: #d7eeee; }
 .skin-rarity-rare { color: #72b7ff; }
 .skin-rarity-epic { color: #d39cff; }

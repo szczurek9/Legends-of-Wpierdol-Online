@@ -198,6 +198,16 @@
     "modelAlive": "res/skins/sa20.png",
     "modelDead": "res/skins/sd20.png",
     "sellable": true
+  },
+  {
+    "id": "skin20",
+    "name": "Monika",
+    "rarity": "secret",
+    "cost": 0,
+    "collection": "Doki Doki Literature Club",
+    "modelAlive": "res/skins/sa21.png",
+    "modelDead": "res/skins/sd21.png",
+    "sellable": false
   }
 
 ]

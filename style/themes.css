@@ -53,6 +53,7 @@ body[data-theme="noc"] {
     --rar-mythic: #ff94dc;
     --rar-legendary: #ffd45c;
     --rar-ultimate: #ff9a6b;
+    --rar-secret: #ff6f91;
 }
 
 /* Dzień: jasny, papierowy, ciemny tekst. */
@@ -89,6 +90,7 @@ body[data-theme="dzien"] {
     --rar-mythic: #a3237f;
     --rar-legendary: #7d5700;
     --rar-ultimate: #b03a08;
+    --rar-secret: #c2185b;
 }
 
 /* Wysoki kontrast: czerń, biel i żółć. */
@@ -125,6 +127,7 @@ body[data-theme="kontrast"] {
     --rar-mythic: #ff90e2;
     --rar-legendary: #ffe14d;
     --rar-ultimate: #ff9d60;
+    --rar-secret: #ff7fa8;
 }
 
 /* Las (motyw domyślny): ciemna zieleń, ciepły akcent. */
@@ -162,4 +165,5 @@ body[data-theme="las"] {
     --rar-mythic: #ff98df;
     --rar-legendary: #ffd75e;
     --rar-ultimate: #ff9f70;
+    --rar-secret: #ff7aa0;
 }

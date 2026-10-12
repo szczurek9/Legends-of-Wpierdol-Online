@@ -63,6 +63,7 @@
     font-weight: 700;
 }
 
+.skin-filter[data-rarity="secret"] { border-left: 0.35rem solid var(--rar-secret); }
 .skin-filter[data-rarity="basic"] { border-left: 0.35rem solid var(--rar-basic); }
 .skin-filter[data-rarity="rare"] { border-left: 0.35rem solid var(--rar-rare); }
 .skin-filter[data-rarity="epic"] { border-left: 0.35rem solid var(--rar-epic); }
@@ -231,6 +232,7 @@
     text-transform: capitalize;
 }
 
+.skin-rarity-secret { color: var(--rar-secret); }
 .skin-rarity-basic { color: var(--rar-basic); }
 .skin-rarity-rare { color: var(--rar-rare); }
 .skin-rarity-epic { color: var(--rar-epic); }
@@ -261,4 +263,30 @@
 
 .skin-details-actions:empty {
     display: none;
+}
+
+.skin-card-secret {
+    box-shadow: 0 0 0.75rem var(--rar-secret);
+}
+
+.secret-unlock-content {
+    text-align: center;
+}
+
+.secret-unlock-content h2 {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-title);
+    font-weight: 400;
+    color: var(--rar-secret);
+}
+
+.secret-unlock-content img {
+    width: 8rem;
+    max-width: 60%;
+    height: auto;
+    image-rendering: pixelated;
+}
+
+.secret-unlock-content p {
+    margin: 0.5rem 0;
 }
