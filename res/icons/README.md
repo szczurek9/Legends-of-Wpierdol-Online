@@ -42,8 +42,8 @@ Brak pliku = emotka ℹ️. Nazwa pliku = `id` przedmiotu z plików w `data/`.
 - `res/icons/ad-items/<id>.png` — przedmioty AD (`data/ad-items.json`)
 - `res/icons/magic-items/<id>.png` — przedmioty AP (`data/magic-items.json`)
 - `res/icons/skills/<id>.png` — wzmocnienia (`data/skills.json`)
-- `res/icons/potions/<id>.png` — mikstury (już opisane wyżej)
-- `res/icons/passives/<klasa>.png` — pasywki klas (`assassin`, `mage`, `tank`, `samurai`, `archer`)
+- zrobione `res/icons/potions/<id>.png` — mikstury (już opisane wyżej)
+- zrobione `res/icons/passives/<klasa>.png` — pasywki klas (`assassin`, `mage`, `tank`, `samurai`, `archer`)
 
 ## Aktywne efekty w walce — `res/icons/effects/` (64×64 px)
 
@@ -53,7 +53,7 @@ Brak pliku = emotka ℹ️.
 `mirror.png`, `mushin.png`, `ironTaunt.png`, `bastion.png`, `rageArmor.png`,
 `focusMark.png`, `evadeNext.png`
 
-## Umiejętności łucznika
+## ZROBIONE Umiejętności łucznika
 
 Łucznik nie ma jeszcze folderu `res/abilities/archer/`. Pliki `ability1.png`,
 `ability2.png`, `ability3.png` (96×96) po dodaniu pojawią się automatycznie
