@@ -14,11 +14,13 @@
       const enemy = window.enemies[enemyIndex];
       if (!enemy) return { finished: true, message: "Ukończyłeś wszystkie dostępne poziomy gry!" };
       const state = S.startState(enemy, enemyIndex);
+      window.clearShopPurchaseLog?.();
       return state;
     },
 
     // Arena: bot z Arena.buildBot(), enemyIndex = -1.
     startArena(bot) {
+      window.clearShopPurchaseLog?.();
       return { ...S.startState(bot, -1), arena: true, arenaTurns: 0, arenaDamageTaken: 0 };
     },
 

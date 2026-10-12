@@ -979,4 +979,8 @@
   window.adjustMagicEffects = adjustMagicEffects;
   window.adjustAdEffects = adjustAdEffects;
   window.refreshShop = refresh;
+  // Wejście do walki zamyka okno na cofanie zakupów — historia jest czyszczona.
+  window.clearShopPurchaseLog = () => {
+    purchaseLog.length = 0;
+  };
 })();

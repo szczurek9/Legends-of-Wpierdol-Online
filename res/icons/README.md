@@ -25,7 +25,7 @@ Brak pliku = wyświetla się emotka zastępcza, więc ikony można dorysowywać 
 Ikony wyświetlają się w małych rozmiarach (18–26 px), więc prosty, wyrazisty
 kształt wygląda lepiej niż szczegóły.
 
-## Klasy — `res/icons/classes/` (96×96 px, jak ikony umiejętności)
+## ZROBIONE Klasy — `res/icons/classes/` (96×96 px, jak ikony umiejętności)
 
 `assassin.png`, `mage.png`, `tank.png`, `samurai.png`, `archer.png`
 (emotki zastępcze: 🥷 🧙 🛡️ ⚔️ 🏹)
@@ -38,14 +38,14 @@ kształt wygląda lepiej niż szczegóły.
 
 Brak pliku = emotka ℹ️. Nazwa pliku = `id` przedmiotu z plików w `data/`.
 
-- `res/icons/weapons/<id>.png` — bronie (`data/weapons.json`)
+- 3 left `res/icons/weapons/<id>.png` — bronie (`data/weapons.json`)
 - `res/icons/ad-items/<id>.png` — przedmioty AD (`data/ad-items.json`)
 - `res/icons/magic-items/<id>.png` — przedmioty AP (`data/magic-items.json`)
-- `res/icons/skills/<id>.png` — wzmocnienia (`data/skills.json`)
+- zrobione `res/icons/skills/<id>.png` — wzmocnienia (`data/skills.json`)
 - zrobione `res/icons/potions/<id>.png` — mikstury (już opisane wyżej)
 - zrobione `res/icons/passives/<klasa>.png` — pasywki klas (`assassin`, `mage`, `tank`, `samurai`, `archer`)
 
-## Aktywne efekty w walce — `res/icons/effects/` (64×64 px)
+## ZROBIONE Aktywne efekty w walce — `res/icons/effects/` (64×64 px)
 
 Brak pliku = emotka ℹ️.
 
