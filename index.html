@@ -386,42 +386,70 @@
                     <h2 id="options-title">Opcje</h2>
                     <button id="close-options-btn" class="modal-close" type="button" aria-label="Zamknij">✕</button>
                 </div>
-                <label for="cloud-login-btn">Chmura (Discord)</label>
-                <p id="cloud-status" class="screen-message">Chmura: sprawdzam…</p>
-                <div class="modal-actions cloud-actions">
-                    <button id="cloud-login-btn" type="button">🔑 Zaloguj</button>
-                    <button id="cloud-save-btn" type="button" disabled>☁️ Zapisz</button>
-                    <button id="cloud-load-btn" type="button" disabled>☁️ Wczytaj</button>
-                    <button id="cloud-delete-btn" type="button" disabled>🗑️ Usuń dane</button>
+                <div class="opt-tabs" role="tablist" aria-label="Sekcje opcji">
+                    <button id="opt-tab-save" class="opt-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="opt-panel-save" data-opt-tab="save">💾 Zapis</button>
+                    <button id="opt-tab-look" class="opt-tab" type="button" role="tab" aria-selected="false" aria-controls="opt-panel-look" data-opt-tab="look" tabindex="-1">🎨 Wygląd</button>
                 </div>
-                <label for="save-code">Kod zapisu</label>
-                <textarea id="save-code" rows="5" spellcheck="false" placeholder="Tutaj pojawi się kod zapisu..."></textarea>
-                <div class="modal-actions">
-                    <button id="save-game-btn" type="button">💾 Zapisz grę</button>
-                    <button id="copy-save-btn" type="button">📋 Kopiuj zapis</button>
-                    <button id="load-save-btn" type="button">📥 Wczytaj zapis</button>
+
+                <div id="opt-panel-save" class="opt-panel" role="tabpanel" aria-labelledby="opt-tab-save">
+                    <section class="opt-card" aria-labelledby="opt-cloud-title">
+                        <h3 id="opt-cloud-title" class="opt-card-title">☁️ Chmura (Discord)</h3>
+                        <p id="cloud-status" class="screen-message opt-status">Chmura: sprawdzam…</p>
+                        <div class="modal-actions cloud-actions">
+                            <button id="cloud-login-btn" type="button">🔑 Zaloguj</button>
+                            <button id="cloud-save-btn" type="button" disabled>☁️ Zapisz</button>
+                            <button id="cloud-load-btn" type="button" disabled>☁️ Wczytaj</button>
+                            <button id="cloud-delete-btn" type="button" disabled>🗑️ Usuń dane</button>
+                        </div>
+                    </section>
+                    <section class="opt-card" aria-labelledby="opt-code-title">
+                        <h3 id="opt-code-title" class="opt-card-title"><label for="save-code">📋 Kod zapisu</label></h3>
+                        <textarea id="save-code" rows="4" spellcheck="false" placeholder="Tutaj pojawi się kod zapisu..."></textarea>
+                        <div class="modal-actions">
+                            <button id="save-game-btn" type="button">💾 Zapisz grę</button>
+                            <button id="copy-save-btn" type="button">📋 Kopiuj zapis</button>
+                            <button id="load-save-btn" type="button">📥 Wczytaj zapis</button>
+                        </div>
+                    </section>
                 </div>
-                <div class="theme-picker">
-                    <label for="theme-select">Motyw interfejsu</label>
-                    <select id="theme-select">
-                        <option value="noc">Noc (ciemny)</option>
-                        <option value="dzien">Dzień (jasny)</option>
-                        <option value="kontrast">Wysoki kontrast</option>
-                        <option value="las">Las (ciemna zieleń)</option>
-                    </select>
+
+                <div id="opt-panel-look" class="opt-panel hidden" role="tabpanel" aria-labelledby="opt-tab-look">
+                    <section class="opt-card" aria-labelledby="opt-theme-title">
+                        <h3 id="opt-theme-title" class="opt-card-title">Motyw interfejsu</h3>
+                        <div class="opt-swatches" role="radiogroup" aria-labelledby="opt-theme-title">
+                            <button type="button" class="opt-swatch" role="radio" aria-checked="false" data-theme-id="noc"><span class="opt-swatch-preview" aria-hidden="true"><i></i><i></i><i></i></span><span class="opt-swatch-name">Noc</span><span class="opt-swatch-sub">ciemny</span></button>
+                            <button type="button" class="opt-swatch" role="radio" aria-checked="false" data-theme-id="dzien"><span class="opt-swatch-preview" aria-hidden="true"><i></i><i></i><i></i></span><span class="opt-swatch-name">Dzień</span><span class="opt-swatch-sub">jasny</span></button>
+                            <button type="button" class="opt-swatch" role="radio" aria-checked="false" data-theme-id="kontrast"><span class="opt-swatch-preview" aria-hidden="true"><i></i><i></i><i></i></span><span class="opt-swatch-name">Kontrast</span><span class="opt-swatch-sub">wysoki</span></button>
+                            <button type="button" class="opt-swatch" role="radio" aria-checked="false" data-theme-id="las"><span class="opt-swatch-preview" aria-hidden="true"><i></i><i></i><i></i></span><span class="opt-swatch-name">Las</span><span class="opt-swatch-sub">ciemna zieleń</span></button>
+                        </div>
+                    </section>
+                    <section class="opt-card" aria-labelledby="opt-size-title">
+                        <h3 id="opt-size-title" class="opt-card-title">Rozmiar interfejsu</h3>
+                        <div class="opt-segmented" role="radiogroup" aria-labelledby="opt-size-title">
+                            <button type="button" class="opt-seg" role="radio" aria-checked="false" data-size="16">Mały</button>
+                            <button type="button" class="opt-seg" role="radio" aria-checked="false" data-size="">Domyślny</button>
+                            <button type="button" class="opt-seg" role="radio" aria-checked="false" data-size="20">Duży</button>
+                            <button type="button" class="opt-seg" role="radio" aria-checked="false" data-size="22">Bardzo duży</button>
+                        </div>
+                    </section>
+                    <!-- Selecty pozostają źródłem prawdy dla themes.js; przyciski powyżej tylko nimi sterują. -->
+                    <div class="hidden">
+                        <select id="theme-select" tabindex="-1" aria-hidden="true">
+                            <option value="noc">Noc (ciemny)</option>
+                            <option value="dzien">Dzień (jasny)</option>
+                            <option value="kontrast">Wysoki kontrast</option>
+                            <option value="las">Las (ciemna zieleń)</option>
+                        </select>
+                        <select id="ui-size-select" tabindex="-1" aria-hidden="true">
+                            <option value="">Domyślny</option>
+                            <option value="16">Mały</option>
+                            <option value="20">Duży</option>
+                            <option value="22">Bardzo duży</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="theme-picker">
-                    <label for="ui-size-select">Rozmiar interfejsu</label>
-                    <select id="ui-size-select">
-                        <option value="">Domyślny</option>
-                        <option value="16">Mały</option>
-                        <option value="20">Duży</option>
-                        <option value="22">Bardzo duży</option>
-                    </select>
-                </div>
-                <div class="modal-actions donate-section">
-                    <a id="donate-btn" class="button-link" href="https://tipply.pl/@szczurek9" target="_blank" rel="noopener noreferrer">💸 Podoba ci się gra? Wesprzyj dalszy rozwój!</a>
-                </div>
+
+                <a id="donate-btn" class="opt-donate" href="https://tipply.pl/@szczurek9" target="_blank" rel="noopener noreferrer">💸 Podoba ci się gra? Wesprzyj dalszy rozwój!</a>
                 <p id="options-message" class="screen-message" aria-live="polite"></p>
             </div>
         </section>
@@ -462,6 +490,7 @@
     <script src="script/battleUIRender.js"></script>
     <script src="script/autoBattle.js"></script>
     <script src="script/battleUI.js"></script>
+    <script src="script/optionsUI.js"></script>
     <script src="script/mobileCards.js"></script>
     <script src="script/nickGenerator.js"></script>
     <script src="script/navGuard.js"></script>

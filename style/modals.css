@@ -169,3 +169,173 @@
     margin: 0;
 }
 
+
+/* ==========================================================================
+   Opcje: zakładki, karty sekcji, kafelki motywów, przełącznik rozmiaru.
+   ========================================================================== */
+.opt-tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+    padding: 0.1875rem;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    background: var(--shop-info-background);
+}
+
+.opt-tab {
+    flex: 1;
+    margin: 0;
+    border-color: transparent;
+    background: transparent;
+    color: var(--text-color);
+}
+
+.opt-tab.is-active {
+    background: var(--accent);
+    color: var(--accent-text);
+    font-weight: 700;
+}
+
+.opt-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+}
+
+.opt-panel.hidden {
+    display: none;
+}
+
+.opt-card {
+    padding: 0.75rem;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    background: var(--shop-card-background);
+}
+
+.opt-card-title {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    font-family: var(--font-title);
+    font-weight: 400;
+}
+
+.opt-card-title label {
+    cursor: pointer;
+}
+
+.opt-card .modal-actions {
+    margin-top: 0.5rem;
+}
+
+.opt-status {
+    margin: 0;
+    padding: 0.375rem 0.625rem;
+    border-radius: var(--radius);
+    background: var(--shop-info-background);
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+#save-code {
+    margin-top: 0;
+}
+
+.opt-swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+    gap: 0.5rem;
+}
+
+.opt-swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.125rem;
+    margin: 0;
+    padding: 0.5rem;
+    text-align: left;
+    background: var(--shop-info-background);
+    color: var(--text-color);
+}
+
+.opt-swatch.is-selected,
+.opt-seg.is-selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+.opt-swatch-preview {
+    display: flex;
+    height: 2.25rem;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    border-radius: 0.25rem;
+    background: var(--sw-page);
+}
+
+.opt-swatch-preview i {
+    flex: 1;
+    margin: 0.3125rem 0.1875rem;
+    border-radius: 0.1875rem;
+}
+
+.opt-swatch-preview i:nth-child(1) { background: var(--sw-card); margin-left: 0.3125rem; }
+.opt-swatch-preview i:nth-child(2) { background: var(--sw-control); }
+.opt-swatch-preview i:nth-child(3) { background: var(--sw-accent); margin-right: 0.3125rem; }
+
+.opt-swatch-name {
+    font-weight: 700;
+}
+
+.opt-swatch-sub {
+    font-size: 0.8125rem;
+    opacity: 0.8;
+}
+
+/* Kolory podglądów skopiowane z themes.css (podgląd nie zależy od aktywnego motywu). */
+.opt-swatch[data-theme-id="noc"]      { --sw-page: #232b3d; --sw-card: #2c3650; --sw-control: #3a62a8; --sw-accent: #4dbeff; }
+.opt-swatch[data-theme-id="dzien"]    { --sw-page: #fbf8f0; --sw-card: #ffffff; --sw-control: #2b5d8f; --sw-accent: #b34700; }
+.opt-swatch[data-theme-id="kontrast"] { --sw-page: #0a0a0a; --sw-card: #151515; --sw-control: #ffd400; --sw-accent: #00e5ff; }
+.opt-swatch[data-theme-id="las"]      { --sw-page: #1d3125; --sw-card: #27422f; --sw-control: #3c7a50; --sw-accent: #e8c65c; }
+
+.opt-segmented {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.375rem;
+}
+
+.opt-seg {
+    margin: 0;
+    padding: 0.5rem 0.25rem;
+    background: var(--shop-info-background);
+    color: var(--text-color);
+}
+
+.opt-seg[data-size="16"] { font-size: 0.85rem; }
+.opt-seg[data-size=""]   { font-size: 1rem; }
+.opt-seg[data-size="20"] { font-size: 1.15rem; }
+.opt-seg[data-size="22"] { font-size: 1.3rem; }
+
+.opt-donate {
+    display: block;
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    text-align: center;
+    font-size: 0.875rem;
+    text-decoration: underline;
+}
+
+.opt-donate:hover {
+    color: var(--text-color);
+}
+
+@media (max-width: 520px) {
+    .opt-segmented {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
