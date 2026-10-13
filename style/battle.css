@@ -55,8 +55,20 @@
 
 .battle-header-actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
+}
+
+/* Auto-walka: przełącznik i prędkość w nagłówku walki. */
+.battle-auto-btn,
+.battle-auto-speed {
+    white-space: nowrap;
+}
+
+.battle-auto-btn.is-active {
+    background: var(--accent);
+    color: var(--accent-text);
 }
 
 .battle-escape-top {

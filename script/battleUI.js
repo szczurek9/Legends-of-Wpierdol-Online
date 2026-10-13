@@ -133,6 +133,7 @@
     UI.render(refs, state);
     UI.renderAbilities(refs, state, useAbility);
     UI.renderPotions(refs, state, usePotion);
+    updateAutoButtons();
     if (pendingFx) {
       const snapshot = pendingFx;
       pendingFx = null;
@@ -141,12 +142,15 @@
   }
 
   function finish(message, type) {
+    stopAuto();
     refs.actions.classList.add("hidden");
     refs.escapeButton.classList.add("hidden");
     refs.abilitiesPanel.classList.add("hidden");
     refs.potionsPanel.classList.add("hidden");
     refs.effectsPanel.classList.add("hidden");
     refs.backButton.classList.remove("hidden");
+    stopBonusMana();
+    updateAutoButtons();
     showMessage(message, type);
   }
 
@@ -157,6 +161,7 @@
       finish("Przegrywasz w arenie. Brak nagrody, cooldown areny uruchomiony.", "danger");
       return;
     }
+    stopAuto();
     refs.actions.classList.add("hidden");
     refs.escapeButton.classList.add("hidden");
     refs.abilitiesPanel.classList.add("hidden");
@@ -164,6 +169,8 @@
     refs.effectsPanel.classList.add("hidden");
     refs.backButton.classList.add("hidden");
     refs.deathPanel.classList.remove("hidden");
+    stopBonusMana();
+    updateAutoButtons();
     UI.renderPlayerModel(refs, true);
     showMessage("Przegrywasz walkę.", "danger");
   }
@@ -176,8 +183,32 @@
       && refs.deathPanel.classList.contains("hidden"));
   }
 
+  // Bonusowy regen many w czasie rzeczywistym: +5 many co 5 sekund walki.
+  // Wartość stała — nie zależy od manaRegenPercent ani od regeneracji na turę.
+  const BONUS_MANA_INTERVAL_MS = 5000;
+  const BONUS_MANA_AMOUNT = 5;
+  let bonusManaTimer = null;
+
+  function stopBonusMana() {
+    window.clearInterval(bonusManaTimer);
+    bonusManaTimer = null;
+  }
+
+  function startBonusMana() {
+    stopBonusMana();
+    bonusManaTimer = window.setInterval(() => {
+      const player = window.player;
+      if (!state || state.finished || player.healthPoints <= 0 || !refs.deathPanel.classList.contains("hidden")) return;
+      if (player.manaPoints >= player.maxManaPoints) return;
+      player.manaPoints = window.BattleMath.clamp(player.manaPoints + BONUS_MANA_AMOUNT, 0, player.maxManaPoints);
+      renderAll();
+    }, BONUS_MANA_INTERVAL_MS);
+  }
+
   // Wspólne przygotowanie ekranu walki (kampania i arena).
   function showBattleScreen() {
+    stopAuto();
+    startBonusMana();
     logHistoryList.replaceChildren();
     pendingFx = null;
     refs.mainMenu.classList.add("hidden");
@@ -207,6 +238,122 @@
     renderAll();
     showMessage("Wybierz akcje.");
   }
+
+  // --- Auto-walka ---
+  // Decyzje podejmuje window.AutoBattle (autoBattle.js); tutaj tylko pętla czasowa,
+  // przyciski i wykonywanie akcji tymi samymi funkcjami co ręczna gra.
+  const AUTO_SPEEDS = [1, 2, 3];
+  const AUTO_BASE_DELAY_MS = 1000;
+  const AUTO_SPEED_KEY = "autoBattleSpeed";
+  let autoOn = false;
+  let autoTimer = null;
+  let autoSpeedIndex = readAutoSpeedIndex();
+
+  function readAutoSpeedIndex() {
+    try {
+      const index = AUTO_SPEEDS.indexOf(Number(window.localStorage.getItem(AUTO_SPEED_KEY)));
+      return index >= 0 ? index : 0;
+    } catch (error) { return 0; }   // brak dostępu do storage
+  }
+
+  const autoButton = document.createElement("button");
+  autoButton.type = "button";
+  autoButton.id = "auto-btn";
+  autoButton.className = "battle-auto-btn";
+  autoButton.title = "Auto-walka (A): gra za Ciebie — używa umiejętności, mikstur zdrowia i ataku";
+  const autoSpeedButton = document.createElement("button");
+  autoSpeedButton.type = "button";
+  autoSpeedButton.id = "auto-speed-btn";
+  autoSpeedButton.className = "battle-auto-speed";
+  autoSpeedButton.title = "Prędkość auto-walki";
+  battleHeaderActions.prepend(autoButton, autoSpeedButton);
+
+  function autoAllowed() {
+    return Boolean(state) && (!state.arena || window.AutoBattle.allowInArena);
+  }
+
+  function updateAutoButtons() {
+    const visible = autoAllowed() && !state.finished && refs.deathPanel.classList.contains("hidden");
+    autoButton.classList.toggle("hidden", !visible);
+    autoSpeedButton.classList.toggle("hidden", !visible);
+    autoButton.classList.toggle("is-active", autoOn);
+    autoButton.setAttribute("aria-pressed", String(autoOn));
+    autoButton.textContent = autoOn ? "⏸ Auto: WŁ." : "▶ Auto";
+    autoSpeedButton.textContent = `${AUTO_SPEEDS[autoSpeedIndex]}×`;
+    autoSpeedButton.setAttribute("aria-label", `Prędkość auto-walki: ${AUTO_SPEEDS[autoSpeedIndex]}×`);
+  }
+
+  function scheduleAuto(delay = AUTO_BASE_DELAY_MS / AUTO_SPEEDS[autoSpeedIndex]) {
+    window.clearTimeout(autoTimer);
+    autoTimer = autoOn ? window.setTimeout(autoStep, delay) : null;
+  }
+
+  function stopAuto(message, type) {
+    window.clearTimeout(autoTimer);
+    autoTimer = null;
+    if (!autoOn) return;
+    autoOn = false;
+    updateAutoButtons();
+    if (message) showMessage(message, type || "warning");
+  }
+
+  function toggleAuto() {
+    if (!autoAllowed() || state.finished) return;
+    if (autoOn) {
+      stopAuto("Auto-walka wyłączona.");
+      return;
+    }
+    if (!canAct() && !isTransitioning) return;
+    autoOn = true;
+    updateAutoButtons();
+    showMessage("Auto-walka włączona.");
+    scheduleAuto(250);
+  }
+
+  function runAutoAction(action) {
+    if (action.kind === "potion") usePotion(action.id);
+    else if (action.kind === "weapon") useWeaponAbility();
+    else if (action.kind === "ability") useAbility(action.id);
+    else attack();
+  }
+
+  function autoStep() {
+    autoTimer = null;
+    if (!autoOn) return;
+    if (!state || state.finished || refs.battleScreen.classList.contains("hidden")) {
+      stopAuto();
+      return;
+    }
+    // Pauza po zabiciu wroga / przejście do następnej fali — poczekaj.
+    if (isTransitioning) {
+      scheduleAuto(300);
+      return;
+    }
+    if (!canAct()) {   // gracz poległ albo walka się skończyła
+      stopAuto();
+      return;
+    }
+    // Akcje, które nie zajmują tury (mikstury, Spacja, znacznik Skupienia),
+    // są wykonywane od razu, a dopiero akcja kończąca turę zamyka krok.
+    for (let step = 0; step < 5 && autoOn && canAct(); step += 1) {
+      const action = window.AutoBattle.decide(state);
+      if (action.kind === "pause") {
+        stopAuto(action.reason);
+        return;
+      }
+      runAutoAction(action);
+      if (!action.free) break;
+    }
+    scheduleAuto();
+  }
+
+  autoButton.addEventListener("click", toggleAuto);
+  autoSpeedButton.addEventListener("click", () => {
+    autoSpeedIndex = (autoSpeedIndex + 1) % AUTO_SPEEDS.length;
+    try { window.localStorage.setItem(AUTO_SPEED_KEY, String(AUTO_SPEEDS[autoSpeedIndex])); } catch (error) { /* brak dostępu do storage */ }
+    updateAutoButtons();
+    if (autoOn) scheduleAuto();
+  });
 
   // --- Arena ---
   let arenaTimer = null;
@@ -338,6 +485,22 @@
     showMessage(result.message, "success");
   }
 
+  // Umiejętność broni unikalnej (Spacja). Nie zajmuje tury, ale jeśli zabija
+  // przeciwnika (Judgement Cut Yamato, pula Jhina), walka musi to rozliczyć
+  // tak samo jak zwykłe zabójstwo: nagroda, pauza i następna fala.
+  function useWeaponAbility() {
+    if (!canAct()) return;
+    beginAction();
+    const result = window.BattleSystem.useWeaponAbility(state);
+    state = result;
+    if (result.enemyDefeated) {
+      resolveEnemyDefeated(result.message, true);
+      return;
+    }
+    renderAll();
+    showMessage(result.message);
+  }
+
   function handleBattleShortcut(event) {
     if (refs.battleScreen.classList.contains("hidden") || event.repeat) return;
     if (["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
@@ -345,13 +508,12 @@
     const key = event.key.toLowerCase();
     if (event.code === "Space") {
       event.preventDefault();
-      if (!canAct()) return;
-      beginAction();
-      const result = window.BattleSystem.useWeaponAbility(state);
-      state = result;
-      renderAll();
-      if (result.enemyDefeated) showMessage(`${result.message} Pokonano przeciwnika!`, "success");
-      else showMessage(result.message);
+      useWeaponAbility();
+      return;
+    }
+    if (key === "a") {
+      event.preventDefault();
+      toggleAuto();
       return;
     }
     const classAbilities = window.classAbilities?.[window.player.classId]?.active || [];
@@ -398,6 +560,8 @@
   }
 
   function closeBattle() {
+    stopAuto();
+    stopBonusMana();
     if (window.SaveSystem.isArenaActive()) window.SaveSystem.endArena({ cooldownMs: window.Arena.COOLDOWN_MS });
     isTransitioning = false;
     refs.battleScreen.classList.add("hidden");

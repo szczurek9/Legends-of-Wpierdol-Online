@@ -127,7 +127,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <li>Automatyczne uwolnienie puli Jhina po 16 atakach, jeśli gracz nie zrobi tego ręcznie</li>
 <li>Lifesteal: heal = floor(obrażenia * (lifesteal(+bonus Zabójcy)) / 100)</li>
 <li>Leczenie z puli Overkill: floor(pula * (5 + floor(penPancerza/0,7) + floor(pancerz/0,8)) / 100)</li>
-<li>Regeneracja many na turę: floor(bazowa_mana_klasy * 0,03 * (1 + 3,25 * R / (R + 200))), gdzie R = suma % regeneracji many z klasy i przedmiotów, a bazowa mana klasy to 320 (Mag), 200 (Łucznik) lub 100 (reszta). Mana z przedmiotów powiększa tylko pulę, nie regenerację. Skuteczność maleje z każdym kolejnym punktem R, a maksymalny bonus to +325%.</li>
+<li>Regeneracja many na turę: floor(bazowa_mana_klasy * 0,03 * (1 + 3,25 * R / (R + 200))), gdzie R = suma % regeneracji many z klasy i przedmiotów, a bazowa mana klasy to 320 (Mag), 200 (Łucznik) lub 100 (reszta). Mana z przedmiotów powiększa tylko pulę, nie regenerację. Dodatkowo w trakcie walki gracz dostaje stałe +5 many co 5 sekund czasu rzeczywistego — ten bonus nie skaluje się z regeneracją many i nie zależy od tur. Skuteczność maleje z każdym kolejnym punktem R, a maksymalny bonus to +325%.</li>
 </ol></div></details>
 </section>
 
@@ -444,8 +444,12 @@ Kupowane za Skin Pointy, część należy do tematycznych kolekcji (np. Cyberpun
 <tr><td>Q</td><td>Zwykły atak (dla Maga — 1. umiejętność)</td></tr>
 <tr><td>Q/W/E/R (Mag)</td><td>4 umiejętności Maga</td></tr>
 <tr><td>W/E/R</td><td>3 umiejętności pozostałych klas</td></tr>
+<tr><td>A</td><td>Włącz / wyłącz auto-walkę</td></tr>
 </table></div>
 <p class="note">Mikstury i ucieczka dostępne wyłącznie przez kliknięcie odpowiednich przycisków.</p>
+<h3>Auto-walka</h3>
+<p>Przycisk <strong>▶ Auto</strong> w nagłówku walki (lub klawisz A) gra za Ciebie: używa gotowych umiejętności klasy, umiejętności broni unikalnej (Spacja) i zwykłego ataku. Mikstura Zdrowia jest pita przy HP poniżej 40% albo gdy jeden krytyczny cios wroga mógłby Cię zabić; Eliksir Precyzji i Koktajl Wampira tylko na bossach. Postawa Sen no Kata pozostaje taka, jaką ustawisz. Obok przycisku możesz przełączać prędkość (1×/2×/3×).</p>
+<p>Auto-walka wyłącza się po ukończeniu poziomu, porażce i wyjściu z walki, a wstrzymuje się przy niskim HP bez mikstur (gdy ucieczka jest jeszcze dostępna) oraz gdy Magowi zabraknie many. Nie działa w Arenie, bo tam liczą się tury i otrzymane obrażenia.</p>
 </section>
 
 </div>

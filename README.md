@@ -25,6 +25,7 @@ Przeglądarkowa gra RPG z turowym systemem walki, napisana w całości w czystym
 * **Q** — Zwykły atak bronią (lub pierwsza umiejętność dla klasy Maga)
 * **W, E, R** — Aktywne umiejętności klasowe
 * **Spacja** — Uwolnienie specjalnej mechaniki dla unikalnych broni (dostępne tylko po wylosowaniu odpowiedniego oręża)
+* **A** — Auto-walka (przycisk ▶ Auto w nagłówku walki; prędkość 1×/2×/3×). Gra za Ciebie umiejętnościami, miksturami zdrowia i atakiem; wyłącza się po ukończeniu poziomu i nie działa w Arenie.
 * *Mikstury oraz opcja jednorazowej ucieczki z walki obsługiwane są bezpośrednio z poziomu interfejsu (UI).*
 
 ## Licencja
