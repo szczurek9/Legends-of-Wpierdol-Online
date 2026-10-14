@@ -44,7 +44,7 @@
   const LOG_LIMIT = 100;
 
   let category = "all";
-  let sortMode = "default";
+  let sortMode = "price-asc"; // domyślnie od najtańszych
   let selectedKey = null;
 
   // Historia zakupów z tej sesji — z niej działa „Cofnij zakup”. Nie trafia do zapisu gry.
@@ -963,6 +963,7 @@
 
   filters.forEach((filter) => filter.addEventListener("click", () => selectCategory(filter.dataset.category)));
   search.addEventListener("input", refresh);
+  sortSelect.value = sortMode; // przeglądarka potrafi przywrócić starą wartość listy po odświeżeniu strony
   sortSelect.addEventListener("change", () => { sortMode = sortSelect.value; refresh(); });
   detailsClose.addEventListener("click", closeModal);
   backdrop.addEventListener("click", closeModal);

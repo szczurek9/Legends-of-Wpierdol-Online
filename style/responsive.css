@@ -41,8 +41,7 @@
     .inventory-current,
     .inventory-owned,
     .inventory-magic,
-    .inventory-ad,
-    .inventory-abilities {
+    .inventory-ad {
         grid-column: 1;
         grid-row: auto;
     }

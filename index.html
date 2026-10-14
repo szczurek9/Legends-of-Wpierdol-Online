@@ -164,7 +164,7 @@
                     <input id="shop-search" type="search" placeholder="Szukaj w sklepie..." aria-label="Szukaj w sklepie" autocomplete="off">
                     <select id="shop-sort" aria-label="Sortuj">
                         <option value="default">Domyślnie</option>
-                        <option value="price-asc">Cena: rosnąco</option>
+                        <option value="price-asc" selected>Cena: rosnąco</option>
                         <option value="price-desc">Cena: malejąco</option>
                         <option value="name">Nazwa A–Z</option>
                     </select>
@@ -251,36 +251,36 @@
                 <div id="inventory-money">💸 Hajs: 0 $</div>
             </div>
 
-            <div class="inventory-layout swipe-cards" data-swipe-key="inventory" data-swipe-titles="Bronie|Przedmioty|Umiejętności" data-swipe-default="1">
+            <div class="inventory-layout swipe-cards" data-swipe-key="inventory" data-swipe-titles="Bronie|Przedmioty" data-swipe-default="1">
                 <div class="swipe-wrap swipe-pane">
                 <article class="inventory-current">
                     <h3>Aktualna broń</h3>
                     <div class="inventory-current-card">
-                        <h4 id="inventory-current-name">Pięści</h4>
-                        <p id="inventory-current-stats">3 DMG</p>
-                        <span id="inventory-current-note">Broń domyślna — niezbywalna</span>
+                        <span id="inventory-current-icon" class="inv-current-icon"></span>
+                        <div class="inventory-current-body">
+                            <h4 id="inventory-current-name">Pięści</h4>
+                            <div id="inventory-current-chips" class="stat-chips"></div>
+                            <span id="inventory-current-note">Broń domyślna — niezbywalna</span>
+                        </div>
                     </div>
                 </article>
 
                 <article class="inventory-owned">
-                    <h3>Zakupione bronie</h3>
+                    <h3>Zakupione bronie <span id="inventory-weapon-count" class="slot-counter"></span></h3>
                     <div id="inventory-weapons" class="shop-items"></div>
                 </article>
                 </div>
                 <article class="inventory-magic swipe-pane">
-                    <h3>Przedmioty <span id="inventory-magic-slots" class="slot-counter"></span></h3>
+                    <h3>Przedmioty</h3>
+                    <div id="inventory-slot-meter" class="slot-meter"></div>
+                    <div id="inventory-filter" class="inv-filter" role="group" aria-label="Filtr przedmiotów"></div>
                     <div id="inventory-magic-items" class="shop-items"></div>
-                </article>
-                <article class="inventory-abilities swipe-pane">
-                    <h3>Umiejętności klasowe</h3>
-                    <div id="inventory-abilities" class="shop-items"></div>
                 </article>
             </div>
 
-            <div id="inventory-message" class="shop-message" aria-live="polite">Wybierz broń.</div>
+            <div id="inventory-message" class="shop-message" aria-live="polite">Wybierz broń lub przedmiot.</div>
             <div class="inventory-actions">
                 <button id="inventory-back-btn" class="secondary-button" type="button">Wróć do menu</button>
-                <button id="inventory-sell-btn" type="button">💰 Sprzedaj broń</button>
             </div>
         </section>
 

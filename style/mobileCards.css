@@ -111,8 +111,7 @@
     }
 
     /* --- Ekwipunek: Bronie | Przedmioty | Umiejętności ------------------------ */
-    .inventory-layout .inventory-magic.swipe-pane,
-    .inventory-layout .inventory-abilities.swipe-pane {
+    .inventory-layout .inventory-magic.swipe-pane {
         margin-top: 0;
     }
 
