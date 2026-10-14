@@ -1,24 +1,13 @@
 [
   {
-    "id": "enchantedBook",
-    "name": "Zaklęta Księga",
-    "price": 500,
-    "description": "+60 many, +60 mocy umiejętności.",
+    "id": "adeptsBook",
+    "name": "Księga Adeptów",
+    "price": 300,
+    "description": "Po rzuceniu czaru: +5 AP. Limit 30 AP. Mag otrzymuje zniżkę klasową.",
     "effects": {
-      "mana": 60,
-      "abilityPower": 60
-    }
-  },
-  {
-    "id": "wandOfDestruction",
-    "name": "Różdżka Zniszczenia",
-    "price": 900,
-    "description": "+100 mocy umiejętności, +70 many, +15 magicznej penetracji.",
-    "effects": {
-      "abilityPower": 100,
-      "mana": 70,
-      "magicPenetration": 15
-    }
+      "adeptBook": true
+    },
+    "unique": true
   },
   {
     "id": "healerNecklace",
@@ -28,6 +17,26 @@
     "effects": {
       "mana": 100,
       "manaRegenPercent": 80
+    }
+  },
+  {
+    "id": "astrologerRobe",
+    "name": "Szata Astrologa",
+    "price": 450,
+    "description": "+25 odporności magicznej, +50 many.",
+    "effects": {
+      "magicResistance": 25,
+      "mana": 50
+    }
+  },
+  {
+    "id": "enchantedBook",
+    "name": "Zaklęta Księga",
+    "price": 500,
+    "description": "+60 many, +60 mocy umiejętności.",
+    "effects": {
+      "mana": 60,
+      "abilityPower": 60
     }
   },
   {
@@ -41,6 +50,16 @@
     }
   },
   {
+    "id": "etherCrystal",
+    "name": "Kryształ Eteru",
+    "price": 700,
+    "description": "+75 mocy umiejętności, +8 magicznej penetracji.",
+    "effects": {
+      "abilityPower": 75,
+      "magicPenetration": 8
+    }
+  },
+  {
     "id": "vampireHands",
     "name": "Dłonie Wampira",
     "price": 800,
@@ -51,16 +70,6 @@
     "maxMagicLifesteal": 30
   },
   {
-    "id": "adeptsBook",
-    "name": "Księga Adeptów",
-    "price": 300,
-    "description": "Po rzuceniu czaru: +5 AP. Limit 30 AP. Mag otrzymuje zniżkę klasową.",
-    "effects": {
-      "adeptBook": true
-    },
-    "unique": true
-  },
-  {
     "id": "adeptsBookUpgrade",
     "name": "Ulepszenie Księgi Adeptów",
     "price": 800,
@@ -69,6 +78,50 @@
       "adeptBookUpgrade": true
     },
     "unique": true
+  },
+  {
+    "id": "wandOfDestruction",
+    "name": "Różdżka Zniszczenia",
+    "price": 900,
+    "description": "+100 mocy umiejętności, +70 many, +15 magicznej penetracji.",
+    "effects": {
+      "abilityPower": 100,
+      "mana": 70,
+      "magicPenetration": 15
+    }
+  },
+  {
+    "id": "shadowMask",
+    "name": "Maska Cienia",
+    "price": 1600,
+    "description": "+140 mocy umiejętności, +20 odporności magicznej, +15 magicznej penetracji.",
+    "effects": {
+      "abilityPower": 140,
+      "magicResistance": 20,
+      "magicPenetration": 15
+    }
+  },
+  {
+    "id": "ringOfFate",
+    "name": "Pierścień Przeznaczenia",
+    "price": 2200,
+    "description": "+180 mocy umiejętności, +120 many, +100% bazowej regeneracji many (z malejącą skutecznością).",
+    "effects": {
+      "abilityPower": 180,
+      "mana": 120,
+      "manaRegenPercent": 100
+    }
+  },
+  {
+    "id": "manaFountain",
+    "name": "Fontanna Many",
+    "price": 3000,
+    "description": "+200 many, +50 mocy umiejętności, +250% bazowej regeneracji many (z malejącą skutecznością).",
+    "effects": {
+      "mana": 200,
+      "abilityPower": 50,
+      "manaRegenPercent": 250
+    }
   },
   {
     "id": "staffOfDoom",
@@ -90,17 +143,6 @@
       "abilityPower": 300,
       "mana": 100,
       "magicPenetration": 20
-    }
-  },
-  {
-    "id": "manaFountain",
-    "name": "Fontanna Many",
-    "price": 3000,
-    "description": "+200 many, +50 mocy umiejętności, +250% bazowej regeneracji many (z malejącą skutecznością).",
-    "effects": {
-      "mana": 200,
-      "abilityPower": 50,
-      "manaRegenPercent": 250
     }
   },
   {
