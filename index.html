@@ -273,7 +273,17 @@
                 <article class="inventory-magic swipe-pane">
                     <h3>Przedmioty</h3>
                     <div id="inventory-slot-meter" class="slot-meter"></div>
+                    <div class="inv-toolbar">
+                        <input id="inventory-search" type="search" placeholder="Szukaj…" aria-label="Szukaj przedmiotu" autocomplete="off">
+                        <select id="inventory-sort" aria-label="Sortuj przedmioty">
+                            <option value="default">Domyślnie</option>
+                            <option value="price-asc">Wartość: rosnąco</option>
+                            <option value="price-desc">Wartość: malejąco</option>
+                            <option value="name">Nazwa A–Z</option>
+                        </select>
+                    </div>
                     <div id="inventory-filter" class="inv-filter" role="group" aria-label="Filtr przedmiotów"></div>
+                    <div id="inventory-bulk" class="inv-bulk"></div>
                     <div id="inventory-magic-items" class="shop-items"></div>
                 </article>
             </div>

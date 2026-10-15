@@ -11,7 +11,8 @@
 //   res/icons/weapons|ad-items|magic-items|skills/<id>.png   ikony przedmiotów sklepu (64x64)
 //   res/icons/passives/<klasa>.png                           ikony pasywek klas
 //   res/icons/effects/<id>.png                               ikony aktywnych efektów w walce (64x64)
-// Brakujący plik przedmiotu lub efektu = emotka ℹ️.
+// Brakujący plik przedmiotu = emotka kategorii (🗡️ broń, ⚔️ AD, 🔮 AP, ✨ wzmocnienia i pasywki),
+// a brakujący plik efektu = emotka ℹ️.
 (function () {
   const STATS = {
     hp:        { file: "hp",         glyph: "❤️", label: "Zdrowie (HP)" },
@@ -33,6 +34,8 @@
   const ABILITY_GLYPHS = { physical: "⚔️", magic: "🔮", utility: "✨", hybrid: "⚡", toggle: "🔄" };
   const POTION_GLYPH = "🧪";
   const INFO_GLYPH = "ℹ️";
+  // Zastępcza emotka przedmiotu zależy od kategorii, żeby brak pliku nie wyglądał jak błąd.
+  const GROUP_GLYPHS = { weapons: "🗡️", "ad-items": "⚔️", "magic-items": "🔮", skills: "✨", passives: "✨" };
 
   // Efekty, które mogą pojawić się w walce (id pliku = nazwa pliku PNG).
   const EFFECTS = {
@@ -133,7 +136,7 @@
 
   // Ikona przedmiotu sklepu: group = weapons | ad-items | magic-items | skills | passives.
   function itemIcon(group, id, className) {
-    return make(itemUrl(group, id), INFO_GLYPH, className);
+    return make(itemUrl(group, id), GROUP_GLYPHS[group] || INFO_GLYPH, className);
   }
 
   // Chip aktywnego efektu w walce: ta sama ramka i rozmiar co chipy statystyk.

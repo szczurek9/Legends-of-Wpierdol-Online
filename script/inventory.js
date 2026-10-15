@@ -14,6 +14,9 @@
   const magicItems = document.getElementById("inventory-magic-items");
   const slotMeter = document.getElementById("inventory-slot-meter");
   const filterBar = document.getElementById("inventory-filter");
+  const bulkBar = document.getElementById("inventory-bulk");
+  const searchInput = document.getElementById("inventory-search");
+  const sortSelect = document.getElementById("inventory-sort");
 
   const SELL_RATE = 0.4;
   const CONFIRM_MS = 3500;
@@ -25,6 +28,8 @@
   ];
 
   let filter = "all";
+  let searchTerm = "";
+  let sortMode = "default";
   let pendingSell = null;      // klucz przedmiotu czekającego na potwierdzenie sprzedaży
   let pendingTimer = 0;
   const openDescriptions = new Set(); // rozwinięte opisy przetrwają odświeżenie listy
@@ -86,10 +91,10 @@
   }
 
   // Sprzedaż w dwóch krokach: pierwsze kliknięcie uzbraja przycisk, drugie sprzedaje.
-  function sellButton(key, name, price, onConfirm) {
+  function sellButton(key, name, price, onConfirm, label = "Sprzedaj") {
     const armed = pendingSell === key;
     const button = actionButton(
-      armed ? `Potwierdź (${price} $)` : `Sprzedaj (${price} $)`,
+      armed ? `Potwierdź (${price} $)` : `${label} (${price} $)`,
       `inv-sell${armed ? " is-confirm" : ""}`,
       `sell:${key}`,
       () => {
@@ -104,11 +109,78 @@
     return button;
   }
 
-  function createDescription(key, text) {
+  const formatValue = (value) => String(Math.round(value * 10) / 10);
+
+  // Wiersz podglądu: ikona, etykieta, "przed → po" i różnica (te same klasy co w sklepie).
+  function buildStatRow(row) {
+    const element = el("div", "shop-stat-row");
+    element.appendChild(window.GameIcons.stat(row.stat, "shop-stat-row-icon"));
+    element.appendChild(el("span", "shop-stat-label", row.label));
+    element.appendChild(el("span", "shop-stat-value", `${formatValue(row.from)}${row.suffix} → ${formatValue(row.to)}${row.suffix}`));
+    const difference = Math.round((row.to - row.from) * 10) / 10;
+    const tagClass = difference > 0 ? "up" : difference < 0 ? "down" : "same";
+    const text = difference > 0 ? `+${formatValue(difference)}${row.suffix}` : difference < 0 ? `${formatValue(difference)}${row.suffix}` : "bez zmian";
+    element.appendChild(el("span", `delta ${tagClass}`, text));
+    return element;
+  }
+
+  // Jak zmienią się statystyki po wyposażeniu (direction 1) albo zdjęciu (direction -1) przedmiotu.
+  function itemPreviewRows(kind, item, direction) {
+    const p = window.player;
+    const rows = [];
+    const add = (stat, label, current, value, suffix, cap) => {
+      if (!value) return;
+      let next = current + direction * value;
+      if (cap !== undefined) next = Math.max(0, Math.min(cap, next));
+      rows.push({ stat, label, from: current, to: next, suffix: suffix || "" });
+    };
+
+    if (kind === "ad") {
+      add("ad", "Siła ataku (AD)", p.ad || 0, item.ad);
+      if (item.ad) {
+        const base = p.weaponBaseDamage || p.weaponDmg;
+        const next = Math.floor(base + ((p.ad || 0) + direction * item.ad) * (p.weaponAdScaling || 0));
+        rows.push({ stat: "damage", label: "Obrażenia bronią", from: equippedWeaponDamage(), to: next, suffix: "" });
+      }
+      // Krytyk z przedmiotu nie przekracza 100%; przy zdejmowaniu odejmujemy tyle, ile naprawdę dodano.
+      const crit = direction > 0 ? item.critChance : Number(item.critApplied ?? item.critChance ?? 0);
+      add("crit", "Szansa na krytyka", p.critChance || 0, crit, "%", 100);
+      add("accuracy", "Celność", p.bonusAccuracy || 0, item.accuracy, "%");
+      add("lifesteal", "Lifesteal", p.lifesteal || 0, item.lifesteal, "%");
+      add("armorPen", "Penetracja pancerza", p.armorPenetration || 0, item.armorPenetration);
+      add("armorPen", "Penetracja pancerza (%)", p.armorPenetrationPercent || 0, item.armorPenetrationPercent, "%");
+    } else {
+      const fx = item.effects || {};
+      add("mana", "Maksymalna mana", p.maxManaPoints || 0, fx.mana);
+      add("ap", "Moc umiejętności (AP)", p.abilityPower || 0, fx.abilityPower);
+      add("magicPen", "Penetracja magii", p.magicPenetration || 0, fx.magicPenetration);
+      add("mr", "Odporność magiczna", p.magicResistance || 0, fx.magicResistance);
+      add("manaRegen", "Regeneracja many (bazowa)", p.manaRegenPercent || 0, fx.manaRegenPercent, "%");
+      if (fx.magicLifesteal) {
+        rows.push({ stat: "lifesteal", label: "Magiczny lifesteal", from: p.magicLifesteal || 0, to: window.SaveCodec.magicLifestealWith(p, item, direction), suffix: "%" });
+      }
+    }
+    return rows;
+  }
+
+  function weaponPreviewRows(weapon) {
+    if (isEquippedWeapon(weapon)) return [];
+    return [{ stat: "damage", label: "Obrażenia bronią", from: equippedWeaponDamage(), to: weaponDamageFor(weapon), suffix: "" }];
+  }
+
+  // Rozwijane "Szczegóły": podgląd zmiany statystyk, uwaga o slotach i opis. Stan rozwinięcia zapamiętujemy.
+  function createDetails(key, { title, rows, note, text }) {
     const details = el("details", "inv-desc");
     details.open = openDescriptions.has(key);
-    details.appendChild(el("summary", "", "Opis"));
-    details.appendChild(el("p", "", text));
+    details.appendChild(el("summary", "", "Szczegóły"));
+    if (rows && rows.length) {
+      details.appendChild(el("p", "inv-details-title", title));
+      const list = el("div", "shop-stat-rows");
+      rows.forEach((row) => list.appendChild(buildStatRow(row)));
+      details.appendChild(list);
+    }
+    if (note) details.appendChild(el("p", "inv-details-note", note));
+    if (text) details.appendChild(el("p", "", text));
     details.addEventListener("toggle", () => {
       if (details.open) openDescriptions.add(key);
       else openDescriptions.delete(key);
@@ -249,7 +321,7 @@
       badge: equipped ? "Wyposażona" : "",
       tags,
       chips: weaponChips(weapon, { withDelta: !equipped }),
-      description: weapon.description ? createDescription(`w:${weapon.id}`, weapon.description) : null,
+      description: createDetails(`w:${weapon.id}`, { title: "Po wyposażeniu:", rows: weaponPreviewRows(weapon), text: weapon.description }),
       actions,
       equipped,
     });
@@ -329,6 +401,56 @@
     showMessage(`Sprzedano ${item.name} za ${salePrice} $.`, "success");
   }
 
+  function unequipAll() {
+    clearPending();
+    const p = window.player;
+    let count = 0;
+    (p.adItemInventory || []).forEach((item) => {
+      if (!item.equipped) return;
+      item.equipped = false;
+      p.equippedAdItems = p.equippedAdItems.filter((uid) => uid !== item.uid);
+      window.adjustAdEffects(item, -1);
+      count += 1;
+    });
+    // Po kolei: magiczny lifesteal liczy sumę względem pozostałych wyposażonych przedmiotów.
+    (p.magicInventory || []).forEach((item) => {
+      if (!item.equipped) return;
+      item.equipped = false;
+      p.equippedMagicItems = p.equippedMagicItems.filter((uid) => uid !== item.uid);
+      window.adjustMagicEffects(item, -1);
+      count += 1;
+    });
+    refresh();
+    showMessage(count ? `Zdjęto przedmioty: ${count}.` : "Nic nie jest wyposażone.", count ? "success" : "warning");
+  }
+
+  function sellUnequipped() {
+    const p = window.player;
+    const adSold = (p.adItemInventory || []).filter((item) => !item.equipped);
+    const magicSold = (p.magicInventory || []).filter((item) => !item.equipped);
+    const total = [...adSold, ...magicSold].reduce((sum, item) => sum + itemSalePrice(item), 0);
+    const count = adSold.length + magicSold.length;
+    if (!count) return;
+    p.adItemInventory = p.adItemInventory.filter((item) => item.equipped);
+    p.magicInventory = p.magicInventory.filter((item) => item.equipped);
+    p.money += total;
+    refresh();
+    showMessage(`Sprzedano przedmioty: ${count} za ${total} $.`, "success");
+  }
+
+  function renderBulk(all) {
+    const bag = all.filter((entry) => !entry.item.equipped);
+    const bagValue = bag.reduce((sum, entry) => sum + itemSalePrice(entry.item), 0);
+
+    const unequip = actionButton("Zdejmij wszystko", "inv-bulk-btn", "bulk:unequip", unequipAll);
+    unequip.disabled = all.length === bag.length;
+
+    const sell = sellButton("bulk:sell", `wszystkie niewyposażone (${bag.length})`, bagValue, sellUnequipped, "Sprzedaj z torby");
+    sell.classList.add("inv-bulk-btn");
+    sell.disabled = !bag.length;
+    bulkBar.replaceChildren(unequip, sell);
+  }
+
   function itemChips(kind, item) {
     const icons = window.GameIcons;
     if (kind === "ad") {
@@ -368,7 +490,12 @@
       badge: item.equipped ? "Wyposażony" : "",
       tags,
       chips: itemChips(kind, item),
-      description: item.description ? createDescription(key, item.description) : null,
+      description: createDetails(key, {
+        title: item.equipped ? "Po zdjęciu:" : "Po wyposażeniu:",
+        rows: itemPreviewRows(kind, item, item.equipped ? -1 : 1),
+        note: !item.equipped && !window.hasFreeItemSlot(kind) ? `Brak wolnego slotu ${isAd ? "AD" : "AP"} — najpierw zdejmij inny przedmiot.` : "",
+        text: item.description,
+      }),
       actions: [equip, sell],
       equipped: item.equipped,
     });
@@ -406,13 +533,21 @@
   function renderItems() {
     const all = collectItems();
     renderFilter(all);
+    renderBulk(all);
 
-    // Stała kolejność (AD, potem AP), żeby karty nie skakały po wyposażeniu — od tego jest filtr.
-    const visible = all.filter((entry) => filter === "all" || (filter === "equipped") === Boolean(entry.item.equipped));
+    const term = searchTerm.trim().toLowerCase();
+    const visible = all
+      .filter((entry) => filter === "all" || (filter === "equipped") === Boolean(entry.item.equipped))
+      .filter((entry) => !term || entry.item.name.toLowerCase().includes(term));
+
+    // Domyślnie stała kolejność (AD, potem AP), żeby karty nie skakały po wyposażeniu.
+    if (sortMode === "price-asc") visible.sort((x, y) => itemSalePrice(x.item) - itemSalePrice(y.item));
+    else if (sortMode === "price-desc") visible.sort((x, y) => itemSalePrice(y.item) - itemSalePrice(x.item));
+    else if (sortMode === "name") visible.sort((x, y) => x.item.name.localeCompare(y.item.name, "pl"));
 
     if (!visible.length) {
       const empty = el("p", "inv-empty", all.length
-        ? "Brak przedmiotów w tym filtrze."
+        ? "Brak przedmiotów pasujących do filtrów."
         : "Nie masz jeszcze przedmiotów. Kup je w sklepie.");
       magicItems.replaceChildren(empty);
       return;
@@ -482,10 +617,14 @@
   function openInventory() {
     clearPending();
     filter = "all";
+    searchTerm = "";
+    searchInput.value = "";
     refresh();
     mainMenu.classList.add("hidden");
     inventoryScreen.classList.remove("hidden");
-    showMessage("Wybierz broń lub przedmiot.");
+    // Na ekranie dotykowym nie ma najechania, więc podpowiadamy, jak zobaczyć nazwę statystyki.
+    const touch = window.matchMedia("(hover: none)").matches;
+    showMessage(touch ? "Dotknij ikony statystyki, aby zobaczyć jej nazwę. Pełny podgląd zmian jest w „Szczegóły”." : "Wybierz broń lub przedmiot.");
   }
 
   function closeInventory() {
@@ -498,4 +637,14 @@
   window.refreshInventory = refresh;
   inventoryButton.addEventListener("click", openInventory);
   backButton.addEventListener("click", closeInventory);
+  searchInput.addEventListener("input", () => {
+    searchTerm = searchInput.value;
+    clearPending();
+    renderItems();
+  });
+  sortSelect.addEventListener("change", () => {
+    sortMode = sortSelect.value;
+    clearPending();
+    renderItems();
+  });
 })();

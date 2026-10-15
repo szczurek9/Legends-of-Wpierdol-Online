@@ -46,6 +46,11 @@
   let category = "all";
   let sortMode = "price-asc"; // domyślnie od najtańszych
   let selectedKey = null;
+  // Drogie i unikalne przedmioty kupuje się w dwóch krokach (drugi klik potwierdza).
+  const CONFIRM_PRICE = 1000;
+  const CONFIRM_MS = 3500;
+  let pendingBuyKey = null;
+  let pendingBuyTimer = 0;
 
   // Historia zakupów z tej sesji — z niej działa „Cofnij zakup”. Nie trafia do zapisu gry.
   const purchaseLog = [];
@@ -708,8 +713,19 @@
 
     if (state.action === "buy") {
       const affordable = player.money >= state.price;
-      const text = state.blocked || (affordable ? `Kup za ${state.price} $` : `Brakuje ${state.price - player.money} $`);
-      buttons.push(createActionButton(text, Boolean(state.blocked) || !affordable, () => buy(entry)));
+      const needsConfirm = affordable && !state.blocked && (state.price >= CONFIRM_PRICE || Boolean(entry.item.unique));
+      const armed = needsConfirm && pendingBuyKey === entry.key;
+      const text = state.blocked || (affordable ? (armed ? `Potwierdź zakup za ${state.price} $` : `Kup za ${state.price} $`) : `Brakuje ${state.price - player.money} $`);
+      const buyButton = createActionButton(text, Boolean(state.blocked) || !affordable, () => {
+        if (!needsConfirm || pendingBuyKey === entry.key) {
+          clearPendingBuy();
+          buy(entry);
+        } else {
+          armBuy(entry);
+        }
+      });
+      if (armed) buyButton.classList.add("is-confirm");
+      buttons.push(buyButton);
     } else if (state.action === "equip") {
       buttons.push(createActionButton("Wyposaż", false, () => buy(entry)));
     } else if (entry.kind !== "ability") {
@@ -762,7 +778,23 @@
     });
   }
 
+  function clearPendingBuy() {
+    pendingBuyKey = null;
+    window.clearTimeout(pendingBuyTimer);
+  }
+
+  function armBuy(entry) {
+    clearPendingBuy();
+    pendingBuyKey = entry.key;
+    pendingBuyTimer = window.setTimeout(() => {
+      pendingBuyKey = null;
+      refresh();
+    }, CONFIRM_MS);
+    refresh();
+  }
+
   function clearDetails() {
+    clearPendingBuy();
     selectedKey = null;
     detailsName.textContent = "Kliknij przedmiot, aby zobaczyć podgląd.";
     detailsKind.textContent = "";
@@ -772,6 +804,7 @@
   }
 
   function selectEntry(entry) {
+    if (entry.key !== selectedKey) clearPendingBuy();
     selectedKey = entry.key;
     renderDetails(entry);
     openModal();

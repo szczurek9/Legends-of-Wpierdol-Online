@@ -427,3 +427,11 @@
 .shop-message {
     margin: 0.75rem 0 0.5rem;
 }
+
+/* Zakup drogiego przedmiotu: drugi klik potwierdza. */
+.shop-details-actions button.is-confirm {
+    border-color: var(--bad);
+    background: rgba(179, 48, 58, 0.9);
+    color: #ffffff;
+    font-weight: 700;
+}
