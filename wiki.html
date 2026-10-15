@@ -91,6 +91,7 @@
     <li>+30% celności, +5% lifestealu, start: 200 many</li>
     <li>8 dynamicznych slotów — każdy slot to przedmiot AD albo AP, w dowolnych proporcjach</li>
     <li>Pasywka <b>Eagle Sight</b> — +10% obrażeń zwykłego ataku z broni dystansowej (Ranged)</li>
+    <li>15% zniżki na przedmioty magiczne</li>
   </ul></div>
 </div>
 </section>
@@ -244,6 +245,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <div class="tablewrap"><table>
 <tr><th>Przedmiot</th><th>Cena</th><th>Bonusy</th><th>Efekt specjalny</th></tr>
 <tr><td>Pierścień Zabójcy</td><td>750 $</td><td>+65 AD, +10 pen. płaskiej, +10% crit</td><td>—</td></tr>
+<tr><td>Sztylet Łowcy</td><td>850 $</td><td>+45 AD, +5% lifestealu, +5 celności</td><td>—</td></tr>
 <tr><td>Ostrze Płomieni</td><td>1400 $</td><td>+80 AD, +30% pen. procentowej, +10 celności</td><td>unikalne</td></tr>
 <tr><td>Kieł Węża</td><td>2100 $</td><td>+100 AD, +20% lifestealu</td><td>co 5. atak zatrucie; unikalne</td></tr>
 <tr><td>Strzały Cieni</td><td>3000 $</td><td>+150 AD, +20% crit</td><td>co 2. trafiony atak (2., 4., 6. w fali), jeśli jest krytykiem: dodatkowo x1,8 dmg (nie dla Samuraja); unikalne</td></tr>
@@ -256,20 +258,24 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 
 <section id="magiczne">
 <h2>Przedmioty magiczne</h2>
-<p>2 sloty (8 dla Maga). Mag ma 25% zniżki poza pozycjami z adnotacją „brak zniżki Maga".</p>
+<p>2 sloty (8 dla Maga). Mag ma 25% zniżki, a Łucznik 15% — poza pozycjami z adnotacją „brak zniżek klasowych".</p>
 <div class="tablewrap"><table>
 <tr><th>Przedmiot</th><th>Cena</th><th>Efekty</th></tr>
 <tr><td>Zaklęta Księga</td><td>500 $</td><td>+60 many, +60 AP</td></tr>
-<tr><td>Różdżka Zniszczenia</td><td>900 $</td><td>+100 AP, +70 many, +15 pen. magicznej</td></tr>
+<tr><td>Różdżka Zniszczenia</td><td>1200 $</td><td>+100 AP, +70 many, +15 pen. magicznej</td></tr>
+<tr><td>Kryształ Eteru</td><td>850 $</td><td>+75 AP, +8 pen. magicznej</td></tr>
 <tr><td>Naszyjnik Uzdrowicielki</td><td>350 $</td><td>+100 many, +5 AP, +80% regen. many</td></tr>
-<tr><td>Tarcza Anioła</td><td>600 $</td><td>+30 odp. magicznej, +50% regen. many</td></tr>
-<tr><td>Dłonie Wampira</td><td>800 $</td><td>lifesteal magiczny 15% (limit 30% dla tego przedmiotu)</td></tr>
-<tr><td>Księga Adeptów</td><td>300 $</td><td>+5 AP po rzucie czaru (+5 dla Maga te 3 dla reszty klas), limit 30 AP; unikalna</td></tr>
-<tr><td>Ulepszenie Księgi Adeptów</td><td>800 $</td><td>podnosi limit Księgi Adeptów do 150; unikalne, wymaga Księgi</td></tr>
-<tr><td>Kostur Zagłady</td><td>3500 $</td><td>+25% do całkowitej mocy umiejętności (mnożnik); brak zniżki Maga; unikalny</td></tr>
-<tr><td>Kostur Martwej Gwiazdy</td><td>4500 $</td><td>+300 AP, +100 many, +20 pen. magicznej</td></tr>
-<tr><td>Fontanna Many</td><td>3000 $</td><td>+200 many, +50 AP, +250% regen. many</td></tr>
-<tr><td>Niszczyciel Światów</td><td>5000 $</td><td>lifesteal magiczny 25% (limit 50% dla tego przedmiotu), +400 AP, +150 many, +30 pen. magicznej; max 2 sztuki</td></tr>
+<tr><td>Szata Astrologa</td><td>400 $</td><td>+25 odp. magicznej, +50 many</td></tr>
+<tr><td>Tarcza Anioła</td><td>550 $</td><td>+30 odp. magicznej, +50% regen. many</td></tr>
+<tr><td>Dłonie Wampira</td><td>600 $</td><td>lifesteal magiczny 15% (limit 30% dla tego przedmiotu)</td></tr>
+<tr><td>Księga Adeptów</td><td>280 $</td><td>+5 AP po rzucie czaru (+5 dla Maga te 3 dla reszty klas), limit 30 AP; unikalna</td></tr>
+<tr><td>Ulepszenie Księgi Adeptów</td><td>850 $</td><td>podnosi limit Księgi Adeptów do 150; unikalne, wymaga Księgi</td></tr>
+<tr><td>Pierścień Przeznaczenia</td><td>1800 $</td><td>+180 AP, +120 many, +100% regen. many (z malejącą skutecznością)</td></tr>
+<tr><td>Maska Cienia</td><td>1900 $</td><td>+140 AP, +20 odp. magicznej, +15 pen. magicznej</td></tr>
+<tr><td>Kostur Zagłady</td><td>2800 $</td><td>+25% do całkowitej mocy umiejętności (mnożnik); brak zniżek klasowych; unikalny</td></tr>
+<tr><td>Kostur Martwej Gwiazdy</td><td>3400 $</td><td>+300 AP, +100 many, +20 pen. magicznej</td></tr>
+<tr><td>Fontanna Many</td><td>2500 $</td><td>+200 many, +50 AP, +250% regen. many</td></tr>
+<tr><td>Niszczyciel Światów</td><td>5500 $</td><td>lifesteal magiczny 25% (limit 50% dla tego przedmiotu), +400 AP, +150 many, +30 pen. magicznej; max 2 sztuki</td></tr>
 </table></div>
 </section>
 

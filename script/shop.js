@@ -92,8 +92,12 @@
     return skill.maxValue;
   }
 
+  // Zniżka klasowa na przedmioty magiczne (w %). Pomijana, gdy item.noClassDiscount === true.
+  const MAGIC_DISCOUNT_PCT = { mage: 25, archer: 15 };
+
   function magicPrice(item) {
-    return currentClass() === "mage" && !item.noMageDiscount ? Math.round(item.price * 0.75) : item.price;
+    const pct = item.noClassDiscount ? 0 : (MAGIC_DISCOUNT_PCT[currentClass()] || 0);
+    return Math.round(item.price * (100 - pct) / 100);
   }
 
   function isMagicEquipped(item) {

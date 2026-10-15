@@ -2,8 +2,8 @@
   {
     "id": "adeptsBook",
     "name": "Księga Adeptów",
-    "price": 300,
-    "description": "Po rzuceniu czaru: +5 AP. Limit 30 AP. Mag otrzymuje zniżkę klasową.",
+    "price": 280,
+    "description": "Po rzuceniu czaru: +5 AP. Limit 30 AP. Mag i Łucznik AP otrzymują zniżkę klasową.",
     "effects": {
       "adeptBook": true
     },
@@ -22,7 +22,7 @@
   {
     "id": "astrologerRobe",
     "name": "Szata Astrologa",
-    "price": 450,
+    "price": 400,
     "description": "+25 odporności magicznej, +50 many.",
     "effects": {
       "magicResistance": 25,
@@ -42,7 +42,7 @@
   {
     "id": "angelShield",
     "name": "Tarcza Anioła",
-    "price": 600,
+    "price": 550,
     "description": "+30 odporności magicznej, +50% bazowej regeneracji many (z malejącą skutecznością).",
     "effects": {
       "magicResistance": 30,
@@ -50,19 +50,9 @@
     }
   },
   {
-    "id": "etherCrystal",
-    "name": "Kryształ Eteru",
-    "price": 700,
-    "description": "+75 mocy umiejętności, +8 magicznej penetracji.",
-    "effects": {
-      "abilityPower": 75,
-      "magicPenetration": 8
-    }
-  },
-  {
     "id": "vampireHands",
     "name": "Dłonie Wampira",
-    "price": 800,
+    "price": 600,
     "description": "Leczy za 15% obrażeń magicznych, maksymalnie 30%.",
     "effects": {
       "magicLifesteal": 15
@@ -70,9 +60,19 @@
     "maxMagicLifesteal": 30
   },
   {
+    "id": "etherCrystal",
+    "name": "Kryształ Eteru",
+    "price": 850,
+    "description": "+75 mocy umiejętności, +8 magicznej penetracji.",
+    "effects": {
+      "abilityPower": 75,
+      "magicPenetration": 8
+    }
+  },
+  {
     "id": "adeptsBookUpgrade",
     "name": "Ulepszenie Księgi Adeptów",
-    "price": 800,
+    "price": 850,
     "description": "Zwiększa limit AP Księgi Adeptów do 150.",
     "effects": {
       "adeptBookUpgrade": true
@@ -82,7 +82,7 @@
   {
     "id": "wandOfDestruction",
     "name": "Różdżka Zniszczenia",
-    "price": 900,
+    "price": 1200,
     "description": "+100 mocy umiejętności, +70 many, +15 magicznej penetracji.",
     "effects": {
       "abilityPower": 100,
@@ -91,20 +91,9 @@
     }
   },
   {
-    "id": "shadowMask",
-    "name": "Maska Cienia",
-    "price": 1600,
-    "description": "+140 mocy umiejętności, +20 odporności magicznej, +15 magicznej penetracji.",
-    "effects": {
-      "abilityPower": 140,
-      "magicResistance": 20,
-      "magicPenetration": 15
-    }
-  },
-  {
     "id": "ringOfFate",
     "name": "Pierścień Przeznaczenia",
-    "price": 2200,
+    "price": 1800,
     "description": "+180 mocy umiejętności, +120 many, +100% bazowej regeneracji many (z malejącą skutecznością).",
     "effects": {
       "abilityPower": 180,
@@ -113,9 +102,20 @@
     }
   },
   {
+    "id": "shadowMask",
+    "name": "Maska Cienia",
+    "price": 1900,
+    "description": "+140 mocy umiejętności, +20 odporności magicznej, +15 magicznej penetracji.",
+    "effects": {
+      "abilityPower": 140,
+      "magicResistance": 20,
+      "magicPenetration": 15
+    }
+  },
+  {
     "id": "manaFountain",
     "name": "Fontanna Many",
-    "price": 3000,
+    "price": 2500,
     "description": "+200 many, +50 mocy umiejętności, +250% bazowej regeneracji many (z malejącą skutecznością).",
     "effects": {
       "mana": 200,
@@ -126,18 +126,18 @@
   {
     "id": "staffOfDoom",
     "name": "Kostur Zagłady",
-    "price": 3500,
-    "description": "+25% do całkowitej mocy umiejętności. Brak zniżki Maga.",
+    "price": 2800,
+    "description": "+25% do całkowitej mocy umiejętności. Brak jakichkolwiek zniżek klasowych.",
     "effects": {
       "abilityPowerMultiplier": 25
     },
     "unique": true,
-    "noMageDiscount": true
+    "noClassDiscount": true
   },
   {
     "id": "deadStarScepter",
     "name": "Kostur Martwej Gwiazdy",
-    "price": 4500,
+    "price": 3400,
     "description": "+300 mocy umiejętności, +100 many, +20 magicznej penetracji.",
     "effects": {
       "abilityPower": 300,
@@ -148,7 +148,7 @@
   {
     "id": "worldDestroyer",
     "name": "Niszczyciel Światów",
-    "price": 5000,
+    "price": 5500,
     "description": "Leczy za 25% obrażeń magicznych, maksymalnie 50%. Daje +400 mocy umiejętności, +150 many oraz +30 magicznej penetracji.",
     "effects": {
       "magicLifesteal": 25,
