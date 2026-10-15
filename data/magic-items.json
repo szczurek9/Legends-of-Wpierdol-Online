@@ -65,6 +65,7 @@
     "price": 800,
     "description": "Leczy za 15% obrażeń magicznych, maksymalnie 30%.",
     "effects": {
+      "magicLifesteal": 15
     },
     "maxMagicLifesteal": 30
   },
