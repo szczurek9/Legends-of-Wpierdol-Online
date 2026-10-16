@@ -91,6 +91,17 @@
     }
   },
   {
+    "id": "sorcererHourglass",
+    "name": "Klepsydra Czarodzieja",
+    "price": 1500,
+    "description": "+70 mocy umiejętności, +50 many. Odnowienie umiejętności krótsze o 1 turę (łączny limit: 2 tury).",
+    "effects": {
+      "abilityPower": 70,
+      "mana": 50,
+      "cooldownReduction": 1
+    }
+  },
+  {
     "id": "ringOfFate",
     "name": "Pierścień Przeznaczenia",
     "price": 1800,
@@ -110,6 +121,17 @@
       "abilityPower": 140,
       "magicResistance": 20,
       "magicPenetration": 15
+    }
+  },
+  {
+    "id": "flowLoop",
+    "name": "Pętla Przepływu",
+    "price": 2000,
+    "description": "+90 mocy umiejętności, +60 many. Odnowienie umiejętności pod klawiszem R krótsze o 2 tury (limit: 2 tury).",
+    "effects": {
+      "abilityPower": 90,
+      "mana": 60,
+      "rCooldownReduction": 2
     }
   },
   {
@@ -133,6 +155,18 @@
     },
     "unique": true,
     "noClassDiscount": true
+  },
+  {
+    "id": "timeRiftMachine",
+    "name": "Machina Rozdarcia Czasu",
+    "price": 3200,
+    "description": "+130 mocy umiejętności, +100 many, +10 magicznej penetracji. Odnowienie umiejętności krótsze o 2 tury (łączny limit: 2 tury).",
+    "effects": {
+      "abilityPower": 130,
+      "mana": 100,
+      "magicPenetration": 10,
+      "cooldownReduction": 2
+    }
   },
   {
     "id": "deadStarScepter",

@@ -159,6 +159,47 @@
     };
   }
 
+  // Redukcja odnowienia umiejętności z założonych przedmiotów (AD i AP).
+  //  - cooldownReduction  (przedmiot AD: pole, AP: w effects) — wszystkie umiejętności z cdReducible !== false
+  //  - rCooldownReduction — tylko umiejętność pod klawiszem R (ostatnia na liście klasy)
+  // Limity dotyczą SUMY z wszystkich założonych przedmiotów.
+  const MAX_COOLDOWN_REDUCTION = 2;     // limit sumy cooldownReduction
+  const MAX_R_COOLDOWN_REDUCTION = 2;   // limit sumy rCooldownReduction
+  const MIN_COOLDOWN = 1;               // żadna umiejętność nie spada poniżej 1 tury
+
+  // add — przedmiot doliczany „na próbę” (podgląd zakupu/założenia); remove — przedmiot pomijany (podgląd zdjęcia).
+  function cooldownReductions({ add = null, remove = null } = {}) {
+    const player = window.player;
+    const items = [
+      ...(player.adItemInventory || []).filter((item) => item && (item.equipped || (player.equippedAdItems || []).includes(item.uid))),
+      ...(player.magicInventory || []).filter((item) => item && isMagicEquipped(item)),
+    ].filter((item) => !remove || item.uid !== remove.uid);
+    if (add) items.push(add);
+    const sum = items.reduce((total, item) => {
+      const fx = magicEffects(item);
+      return {
+        general: total.general + Number(item.cooldownReduction || fx.cooldownReduction || 0),
+        r: total.r + Number(item.rCooldownReduction || fx.rCooldownReduction || 0),
+      };
+    }, { general: 0, r: 0 });
+    return { general: Math.min(MAX_COOLDOWN_REDUCTION, sum.general), r: Math.min(MAX_R_COOLDOWN_REDUCTION, sum.r) };
+  }
+
+  // Umiejętność pod klawiszem R to zawsze ostatnia na liście klasy (tak samo jak w UI).
+  function isRAbility(ability) {
+    const list = abilitiesForPlayer();
+    return list.length > 0 && list[list.length - 1].id === ability.id;
+  }
+
+  // Odnowienie umiejętności po redukcjach (0 = brak odnowienia).
+  function effectiveCooldown(ability) {
+    const base = Number(ability.cooldown || 0);
+    if (!base || ability.cdReducible === false) return base;
+    const reductions = cooldownReductions();
+    const total = reductions.general + (isRAbility(ability) ? reductions.r : 0);
+    return Math.max(MIN_COOLDOWN, base - total);
+  }
+
   window.BattleMath = {
     clamp,
     roll,
@@ -182,5 +223,8 @@
     recordSpellCast,
     damageHeal,
     applyDamageToEnemy,
+    cooldownReductions,
+    isRAbility,
+    effectiveCooldown,
   };
 })();

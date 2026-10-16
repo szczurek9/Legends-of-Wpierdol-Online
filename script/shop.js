@@ -100,6 +100,11 @@
     return Math.round(item.price * (100 - pct) / 100);
   }
 
+  // Odnowienie umiejętności po redukcjach z przedmiotów (BattleMath ładuje się po shop.js, stąd sprawdzenie).
+  function abilityCooldown(ability) {
+    return window.BattleMath ? window.BattleMath.effectiveCooldown(ability) : Number(ability.cooldown || 0);
+  }
+
   function isMagicEquipped(item) {
     return Boolean(item.equipped
       || window.player.equippedMagicItems.includes(item.uid)
@@ -232,7 +237,7 @@
         : [];
       const active = (classData.active || []).map((ability) => ({
         ...ability,
-        description: `${ability.description} Koszt: ${ability.cost} many${ability.cooldown ? ` | CD: ${ability.cooldown} tur` : ""}.`,
+        description: `${ability.description} Koszt: ${ability.cost} many${abilityCooldown(ability) ? ` | CD: ${abilityCooldown(ability)} tur` : ""}.`,
       }));
       items = [...passive, ...active];
     }
@@ -552,6 +557,20 @@
   const row = (stat, label, from, to, suffix = "") => ({ stat, label, from, to, suffix });
   const info = (stat, label, text) => ({ stat, label, text });
 
+  // Wiersze redukcji odnowienia „przed → po” z uwzględnieniem limitów (item = przedmiot, którego jeszcze nie mamy).
+  function cooldownRows(item) {
+    const fx = item.effects || {};
+    const general = item.cooldownReduction || fx.cooldownReduction;
+    const rOnly = item.rCooldownReduction || fx.rCooldownReduction;
+    if ((!general && !rOnly) || !window.BattleMath) return [];
+    const now = window.BattleMath.cooldownReductions();
+    const next = window.BattleMath.cooldownReductions({ add: item });
+    const rows = [];
+    if (general) rows.push(row("cooldown", "Redukcja odnowienia (tury)", now.general, next.general));
+    if (rOnly) rows.push(row("cooldown", "Redukcja odnowienia R (tury)", now.r, next.r));
+    return rows;
+  }
+
   // Wiersze „przed → po” dla wpisu (liczone dla aktualnego stanu gracza).
   function previewRows(entry) {
     const { kind, item } = entry;
@@ -576,6 +595,7 @@
       if (item.critChance) rows.push(row("crit", "Szansa na krytyka", p.critChance, Math.min(100, p.critChance + item.critChance), "%"));
       if (item.accuracy) rows.push(row("accuracy", "Celność", p.bonusAccuracy, p.bonusAccuracy + item.accuracy, "%"));
       if (item.lifesteal) rows.push(row("lifesteal", "Lifesteal", p.lifesteal, p.lifesteal + item.lifesteal, "%"));
+      rows.push(...cooldownRows(item));
       if (item.bonusDamage) {
         const perHit = Math.floor(item.bonusDamage + (item.bonusDamageAdScaling || 0) * newAd);
         rows.push(info("damage", "Dodatkowe obrażenia na trafienie", `+${perHit}`));
@@ -588,6 +608,7 @@
       if (fx.magicResistance) rows.push(row("mr", "Odporność magiczna", p.magicResistance, p.magicResistance + fx.magicResistance));
       if (fx.manaRegenPercent) rows.push(row("manaRegen", "Regeneracja many (bazowa)", p.manaRegenPercent, p.manaRegenPercent + fx.manaRegenPercent, "%"));
       if (fx.magicLifesteal) rows.push(row("lifesteal", "Magiczny lifesteal", p.magicLifesteal, window.SaveCodec.magicLifestealWith(p, item, 1), "%"));
+      rows.push(...cooldownRows(item));
     } else if (kind === "skill") {
       if (item.effect === "maxHealth") rows.push(row("hp", "Maksymalne zdrowie", p.maxHealthPoints, p.maxHealthPoints + item.value));
       if (item.effect === "armor") rows.push(row("armor", "Pancerz", p.armorPoints, Math.min(p.armorCap, p.armorPoints + item.value)));
@@ -604,7 +625,8 @@
       rows.push(info("hp", "W torbie", `${p.potionInventory.filter((id) => id === item.id).length} szt.`));
     } else if (kind === "ability" && !item.passive) {
       rows.push(info("mana", "Koszt", `${item.cost} many`));
-      if (item.cooldown) rows.push(info("manaRegen", "Odnowienie", `${item.cooldown} tur`));
+      const cooldown = abilityCooldown(item);
+      if (cooldown) rows.push(info("manaRegen", "Odnowienie", `${cooldown} tur`));
     }
     return rows;
   }

@@ -124,6 +124,20 @@
     return element;
   }
 
+  // Redukcja odnowienia po wyposażeniu/zdjęciu przedmiotu, z uwzględnieniem limitów.
+  function cooldownPreviewRows(item, direction) {
+    const fx = item.effects || {};
+    const general = item.cooldownReduction || fx.cooldownReduction;
+    const rOnly = item.rCooldownReduction || fx.rCooldownReduction;
+    if ((!general && !rOnly) || !window.BattleMath) return [];
+    const now = window.BattleMath.cooldownReductions();
+    const next = window.BattleMath.cooldownReductions(direction > 0 ? { add: item } : { remove: item });
+    const rows = [];
+    if (general) rows.push({ stat: "cooldown", label: "Redukcja odnowienia (tury)", from: now.general, to: next.general, suffix: "" });
+    if (rOnly) rows.push({ stat: "cooldown", label: "Redukcja odnowienia R (tury)", from: now.r, to: next.r, suffix: "" });
+    return rows;
+  }
+
   // Jak zmienią się statystyki po wyposażeniu (direction 1) albo zdjęciu (direction -1) przedmiotu.
   function itemPreviewRows(kind, item, direction) {
     const p = window.player;
@@ -160,6 +174,7 @@
         rows.push({ stat: "lifesteal", label: "Magiczny lifesteal", from: p.magicLifesteal || 0, to: window.SaveCodec.magicLifestealWith(p, item, direction), suffix: "%" });
       }
     }
+    rows.push(...cooldownPreviewRows(item, direction));
     return rows;
   }
 
@@ -462,6 +477,8 @@
         item.armorPenetration ? icons.chip("armorPen", `+${item.armorPenetration}`, "Penetracja pancerza") : null,
         item.armorPenetrationPercent ? icons.chip("armorPen", `+${item.armorPenetrationPercent}%`, "Penetracja pancerza (%)") : null,
         item.bonusDamage ? icons.chip("damage", `+${item.bonusDamage}`, "Dodatkowe obrażenia na trafienie") : null,
+        item.cooldownReduction ? icons.chip("cooldown", `-${item.cooldownReduction} CD`, "Redukcja odnowienia (tury)") : null,
+        item.rCooldownReduction ? icons.chip("cooldown", `R -${item.rCooldownReduction} CD`, "Redukcja odnowienia umiejętności R (tury)") : null,
       ]);
     }
     const fx = item.effects || {};
@@ -472,6 +489,8 @@
       fx.magicPenetration ? icons.chip("magicPen", `+${fx.magicPenetration}`, "Penetracja magii") : null,
       fx.magicResistance ? icons.chip("mr", `+${fx.magicResistance}`, "Odporność magiczna") : null,
       fx.magicLifesteal ? icons.chip("lifesteal", `+${fx.magicLifesteal}%`, "Magiczny lifesteal") : null,
+      fx.cooldownReduction ? icons.chip("cooldown", `-${fx.cooldownReduction} CD`, "Redukcja odnowienia (tury)") : null,
+      fx.rCooldownReduction ? icons.chip("cooldown", `R -${fx.rCooldownReduction} CD`, "Redukcja odnowienia umiejętności R (tury)") : null,
     ]);
   }
 

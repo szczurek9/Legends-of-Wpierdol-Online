@@ -48,6 +48,14 @@
     </label>
   </div>
 
+  <div class="wiki-search" role="search">
+    <input id="wiki-search-input" type="text" placeholder="Szukaj w wiki…  ( / )" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Szukaj w wiki">
+    <span id="wiki-search-count" class="wiki-search-count" aria-live="polite"></span>
+    <button type="button" id="wiki-search-prev" aria-label="Poprzedni wynik" title="Poprzedni wynik (Shift+Enter)" disabled>▲</button>
+    <button type="button" id="wiki-search-next" aria-label="Następny wynik" title="Następny wynik (Enter)" disabled>▼</button>
+    <button type="button" id="wiki-search-clear" aria-label="Wyczyść wyszukiwanie" title="Wyczyść (Esc)" hidden>✕</button>
+  </div>
+
   <div class="wiki-layout">
     <nav class="toc" aria-label="Spis treści">
       <a href="#klasy">Klasy</a><a href="#walka">Walka</a><a href="#ikony">Ikony</a><a href="#umiejetnosci">Umiejętności</a>
@@ -155,6 +163,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 
 <section id="umiejetnosci">
 <h2>Umiejętności klasowe</h2>
+<p><b>Redukcja odnowienia.</b> Część przedmiotów (AD i AP) skraca odnowienie umiejętności o stałą liczbę tur. Redukcja ogólna działa na wszystkie umiejętności z odnowieniem, a redukcja „R" tylko na umiejętność pod klawiszem R i dolicza się do ogólnej. Łączne limity z wszystkich założonych przedmiotów: maks. −2 tury redukcji ogólnej i maks. −2 tury redukcji R. Odnowienie nigdy nie spada poniżej 1 tury, a Gwiezdnego Uderzenia i Mushin (odnowienie 1) w ogóle nie da się skrócić.</p>
 <details open><summary>Zabójca — pasywka: Overkill</summary><div class="inner">
 <p>Nadwyżka obrażeń ponad HP wroga trafia do puli Overkill. Przy 50% maks. HP wroga następny atak ignoruje 80% jego pancerza. Pula leczy przy każdym ataku (skaluje się z pancerzem/penetracją), zabójstwo przywraca 10% many.</p>
 <table><tr><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
@@ -253,6 +262,9 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <tr><td>Płaszcz Zabójcy</td><td>3600 $</td><td>+180 AD, +30% crit</td><td>wróg &lt;30% HP → +20% dmg; unikalne</td></tr>
 <tr><td>Uchwyt Wilka</td><td>2600 $</td><td>+150 AD, +20% crit, +20% lifestealu</td><td>+10+10%AD dmg/atak, stackuje się z kolejnymi sztukami</td></tr>
 <tr><td>Potęga Nocy</td><td>3300 $</td><td>+170 AD, +15 pen.</td><td>co 5. atak: 10+10%AD dmg nieuchronnych; unikalne</td></tr>
+<tr><td>Ostrze Pośpiechu</td><td>1400 $</td><td>+60 AD, +5 pen. płaskiej</td><td>−1 tura odnowienia umiejętności</td></tr>
+<tr><td>Sygnet Egzekutora</td><td>2000 $</td><td>+80 AD, +10 pen. płaskiej</td><td>−2 tury odnowienia umiejętności pod R</td></tr>
+<tr><td>Szpon Impulsu</td><td>3100 $</td><td>+120 AD, +10 pen. płaskiej, +10% crit</td><td>−2 tury odnowienia umiejętności</td></tr>
 </table></div>
 </section>
 
@@ -276,6 +288,9 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <tr><td>Kostur Martwej Gwiazdy</td><td>3400 $</td><td>+300 AP, +100 many, +20 pen. magicznej</td></tr>
 <tr><td>Fontanna Many</td><td>2500 $</td><td>+200 many, +50 AP, +250% regen. many</td></tr>
 <tr><td>Niszczyciel Światów</td><td>5500 $</td><td>lifesteal magiczny 25% (limit 50% dla tego przedmiotu), +400 AP, +150 many, +30 pen. magicznej; max 2 sztuki</td></tr>
+<tr><td>Klepsydra Czarodzieja</td><td>1500 $</td><td>+70 AP, +50 many, −1 tura odnowienia umiejętności</td></tr>
+<tr><td>Pętla Przepływu</td><td>2000 $</td><td>+90 AP, +60 many, −2 tury odnowienia umiejętności pod R</td></tr>
+<tr><td>Machina Rozdarcia Czasu</td><td>3200 $</td><td>+130 AP, +100 many, +10 pen. magicznej, −2 tury odnowienia umiejętności</td></tr>
 </table></div>
 </section>
 
@@ -517,6 +532,217 @@ Kupowane za Skin Pointy, część należy do tematycznych kolekcji (np. Cyberpun
       if (links[section.id]) observer.observe(section);
     });
   }
+})();
+</script>
+<script>
+// Wyszukiwarka wiki — działa jak Ctrl+F: podświetla wszystkie trafienia, liczy je i przechodzi między nimi.
+// Ignoruje wielkość liter i polskie znaki (np. „lucznik” znajdzie „Łucznik”), a frazy z kilku słów
+// znajduje także wtedy, gdy część z nich jest pogrubiona albo w osobnym znaczniku.
+(function () {
+  var root = document.querySelector(".wrap");
+  var input = document.getElementById("wiki-search-input");
+  var countEl = document.getElementById("wiki-search-count");
+  var prevBtn = document.getElementById("wiki-search-prev");
+  var nextBtn = document.getElementById("wiki-search-next");
+  var clearBtn = document.getElementById("wiki-search-clear");
+  var MIN_LENGTH = 2;
+  var BLOCKS = "p, li, td, th, summary, h1, h2, h3, h4, pre, div, section";
+  var matches = [];   // [{ segs, marks }] w kolejności występowania na stronie
+  var current = -1;
+  var timer = 0;
+
+  // Znak bez wielkości liter i ogonków (ł nie rozkłada się w Unicode, więc osobno).
+  function fold(ch) {
+    if (ch === "ł" || ch === "Ł") return "l";
+    var plain = ch.normalize ? ch.normalize("NFD").replace(/[\u0300-\u036f]/g, "") : ch;
+    return plain.toLowerCase();
+  }
+
+  // Tekst po złożeniu (małe litery, bez ogonków, spacje zwinięte do jednej) + mapa: znak złożony -> pozycja w oryginale.
+  function buildIndex(raw) {
+    var text = "";
+    var map = [];
+    for (var i = 0; i < raw.length; i++) {
+      var ch = raw.charAt(i);
+      if (/\s/.test(ch)) {
+        if (text && text.charAt(text.length - 1) !== " ") { text += " "; map.push(i); }
+        continue;
+      }
+      var folded = fold(ch);
+      for (var k = 0; k < folded.length; k++) { text += folded.charAt(k); map.push(i); }
+    }
+    return { text: text, map: map };
+  }
+
+  function normalizedQuery() {
+    return buildIndex(input.value).text.replace(/ +$/, "");
+  }
+
+  function clearMarks() {
+    var parents = [];
+    root.querySelectorAll("mark.wiki-hit").forEach(function (mark) {
+      var parent = mark.parentNode;
+      while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+      parent.removeChild(mark);
+      if (parents.indexOf(parent) < 0) parents.push(parent);
+    });
+    parents.forEach(function (parent) { parent.normalize(); });
+    matches = [];
+    current = -1;
+  }
+
+  // Węzły tekstowe pogrupowane według najbliższego bloku (akapit, komórka tabeli, punkt listy...).
+  function collectGroups() {
+    var groups = new Map();
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (node) {
+        var tag = node.parentNode.nodeName;
+        if (tag === "SCRIPT" || tag === "STYLE" || tag === "NOSCRIPT" || !node.nodeValue) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    while (walker.nextNode()) {
+      var node = walker.currentNode;
+      var block = node.parentNode.closest(BLOCKS) || root;
+      if (!groups.has(block)) groups.set(block, []);
+      groups.get(block).push(node);
+    }
+    return groups;
+  }
+
+  function isBefore(a, b) {
+    return Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+  }
+
+  function runSearch() {
+    clearMarks();
+    var query = normalizedQuery();
+    if (query.length >= MIN_LENGTH) {
+      var found = [];
+      collectGroups().forEach(function (nodes) {
+        var raw = "";
+        var starts = [];
+        nodes.forEach(function (node) { starts.push(raw.length); raw += node.nodeValue; });
+        var index = buildIndex(raw);
+        var from = 0;
+        var at;
+        while ((at = index.text.indexOf(query, from)) >= 0) {
+          var rawStart = index.map[at];
+          var rawEnd = index.map[at + query.length - 1] + 1;
+          var match = { segs: [], marks: [] };
+          nodes.forEach(function (node, k) {
+            var s = Math.max(rawStart, starts[k]);
+            var e = Math.min(rawEnd, starts[k] + node.nodeValue.length);
+            if (e > s) match.segs.push({ node: node, s: s - starts[k], e: e - starts[k] });
+          });
+          if (match.segs.length) found.push(match);
+          from = at + query.length;
+        }
+      });
+
+      // Zawijamy trafienia w <mark>, w każdym węźle od końca, żeby wcześniejsze pozycje się nie przesuwały.
+      var perNode = new Map();
+      found.forEach(function (match) {
+        match.segs.forEach(function (seg) {
+          if (!perNode.has(seg.node)) perNode.set(seg.node, []);
+          perNode.get(seg.node).push({ s: seg.s, e: seg.e, match: match });
+        });
+      });
+      perNode.forEach(function (list, node) {
+        list.sort(function (a, b) { return b.s - a.s; });
+        list.forEach(function (seg) {
+          node.splitText(seg.e);
+          var middle = node.splitText(seg.s);
+          var mark = document.createElement("mark");
+          mark.className = "wiki-hit";
+          middle.parentNode.insertBefore(mark, middle);
+          mark.appendChild(middle);
+          seg.match.marks.push(mark);
+        });
+      });
+      found.forEach(function (match) {
+        match.marks.sort(function (a, b) { return isBefore(a, b) ? -1 : 1; });
+      });
+      found.sort(function (a, b) { return isBefore(a.marks[0], b.marks[0]) ? -1 : 1; });
+      matches = found;
+    }
+    if (matches.length) go(0); else update();
+  }
+
+  function setCurrent(match, on) {
+    match.marks.forEach(function (mark) { mark.classList.toggle("is-current", on); });
+  }
+
+  // Rozwija zwinięte <details> wokół trafienia (tak jak robi to Ctrl+F w przeglądarce).
+  function openAncestors(element) {
+    for (var parent = element.parentElement; parent; parent = parent.parentElement) {
+      if (parent.tagName === "DETAILS") parent.open = true;
+    }
+  }
+
+  function go(index) {
+    if (!matches.length) return;
+    if (current >= 0 && matches[current]) setCurrent(matches[current], false);
+    current = (index + matches.length) % matches.length;
+    var match = matches[current];
+    setCurrent(match, true);
+    openAncestors(match.marks[0]);
+    match.marks[0].scrollIntoView({ block: "center", inline: "nearest" });
+    update();
+  }
+
+  function update() {
+    var text = "";
+    var query = normalizedQuery();
+    if (input.value.trim()) {
+      if (query.length < MIN_LENGTH) text = "min. " + MIN_LENGTH + " znaki";
+      else if (!matches.length) text = "Brak wyników";
+      else text = (current + 1) + " / " + matches.length;
+    }
+    countEl.textContent = text;
+    countEl.classList.toggle("is-empty", text === "Brak wyników");
+    prevBtn.disabled = nextBtn.disabled = !matches.length;
+    clearBtn.hidden = !input.value;
+  }
+
+  function reset(keepFocus) {
+    clearTimeout(timer);
+    timer = 0;
+    clearMarks();
+    input.value = "";
+    update();
+    if (keepFocus) input.focus();
+  }
+
+  input.addEventListener("input", function () {
+    clearBtn.hidden = !input.value;
+    clearTimeout(timer);
+    timer = setTimeout(function () { timer = 0; runSearch(); }, 150);
+  });
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      if (timer) { clearTimeout(timer); timer = 0; runSearch(); }
+      else go(current + (event.shiftKey ? -1 : 1));
+    } else if (event.key === "Escape") {
+      if (input.value) reset(true); else input.blur();
+    }
+  });
+  prevBtn.addEventListener("click", function () { go(current - 1); });
+  nextBtn.addEventListener("click", function () { go(current + 1); });
+  clearBtn.addEventListener("click", function () { reset(true); });
+
+  // „/” otwiera wyszukiwarkę (Ctrl+F zostaje przy przeglądarce).
+  document.addEventListener("keydown", function (event) {
+    var target = event.target;
+    var typing = target && (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable);
+    if (event.key === "/" && !typing && !event.ctrlKey && !event.metaKey && !event.altKey) {
+      event.preventDefault();
+      input.focus();
+      input.select();
+    }
+  });
+  update();
 })();
 </script>
 </body>

@@ -217,7 +217,9 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = "ability-button";
-      button.title = `${ability.description} Koszt: ${ability.cost} many${ability.cooldown ? ` | CD: ${ability.cooldown} tur` : ""}`;
+      const maxCooldown = window.BattleMath.effectiveCooldown(ability);
+      const cooldownNote = maxCooldown ? ` | CD: ${maxCooldown} tur${maxCooldown < ability.cooldown ? ` (bazowo ${ability.cooldown})` : ""}` : "";
+      button.title = `${ability.description} Koszt: ${ability.cost} many${cooldownNote}`;
 
       const hotkey = isMage ? ["Q", "W", "E", "R"][abilityIndex] : ["W", "E", "R"][abilityIndex];
       const isToggle = ability.id === "senNoKata";
@@ -229,7 +231,7 @@
         sub = state.senMode === "boei" ? `Bōei · atak ${state.senAttackCount}/3` : "Chikara";
       }
 
-      const tile = { name: ability.name, hotkey, cost: ability.cost, cooldown, noMana, sub, maxCooldown: ability.cooldown };
+      const tile = { name: ability.name, hotkey, cost: ability.cost, cooldown, noMana, sub, maxCooldown };
       buildTile(button, { ...tile, icon: window.GameIcons.abilityIcon(window.player.classId, ability, "tile-img") });
       button.setAttribute("aria-label", describeTile(tile));
       button.disabled = cooldown > 0 || noMana;

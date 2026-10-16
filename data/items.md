@@ -30,6 +30,8 @@ Pola ze statystykami leżą bezpośrednio w obiekcie:
 | `lifesteal` | % lifestealu |
 | `armorPenetration` | płaska penetracja pancerza |
 | `armorPenetrationPercent` | % penetracji pancerza |
+| `cooldownReduction` | o ile tur skraca odnowienie wszystkich umiejętności (patrz „Redukcja odnowienia”) |
+| `rCooldownReduction` | o ile tur skraca odnowienie tylko umiejętności pod klawiszem R |
 | `unique` | `true` = można mieć tylko jedną sztukę |
 
 ### Przedmiot AP (`data/magic-items.json`)
@@ -53,9 +55,20 @@ Tutaj statystyki są w obiekcie `effects`:
 | `manaRegenPercent` | % bazowej regeneracji many |
 | `magicPenetration` | penetracja magii |
 | `magicResistance` | odporność magiczna |
+| `cooldownReduction` | o ile tur skraca odnowienie wszystkich umiejętności (patrz „Redukcja odnowienia”) |
+| `rCooldownReduction` | o ile tur skraca odnowienie tylko umiejętności pod klawiszem R |
 | `magicLifesteal` | magiczny lifesteal (wymaga też `maxMagicLifesteal` na poziomie przedmiotu, to limit sumy) |
 
-Opcjonalne pola na poziomie przedmiotu: `unique`, `maxOwned` (limit sztuk, np. `3`) i `noMageDiscount: true`. Bez tego ostatniego mag płaci 75% ceny.
+Opcjonalne pola na poziomie przedmiotu: `unique`, `maxOwned` (limit sztuk, np. `3`) i `noClassDiscount: true`. Bez tego ostatniego mag płaci 75% ceny, a łucznik 85% (stałe `MAGIC_DISCOUNT_PCT` w `shop.js`).
+
+### Redukcja odnowienia
+
+Pola `cooldownReduction` i `rCooldownReduction` (AD: bezpośrednio w obiekcie, AP: w `effects`) liczą się z założonych przedmiotów, nie z całego ekwipunku. Całość jest w `battleMath.js` (`cooldownReductions`, `effectiveCooldown`):
+
+- Limity SUMY: `MAX_COOLDOWN_REDUCTION = 2` (ogólna) i `MAX_R_COOLDOWN_REDUCTION = 2` (R). Umiejętność pod R dostaje obie, czyli do −4 tur.
+- `MIN_COOLDOWN = 1`: odnowienie nigdy nie spada poniżej 1 tury.
+- Umiejętność pod R to zawsze ostatnia na liście klasy w `data/abilities.json`.
+- Flaga `"cdReducible": false` w `data/abilities.json` wyłącza redukcję dla danej umiejętności (teraz: Gwiezdne Uderzenie i Mushin). Umiejętności bez `cooldown` nie mają flagi.
 
 ### Ikona
 Plik `res/icons/ad-items/<id>.png` albo `res/icons/magic-items/<id>.png`, 64×64, z przezroczystością. Nazwa musi być identyczna z `id`. Bez pliku pokaże się ℹ️.

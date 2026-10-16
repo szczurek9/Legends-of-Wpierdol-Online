@@ -28,6 +28,7 @@
     accuracy:  { file: "accuracy",   glyph: "🎯", label: "Celność" },
     lifesteal: { file: "lifesteal",  glyph: "🩸", label: "Kradzież życia (lifesteal)" },
     magicPen:  { file: "magic-pen",  glyph: "🪄", label: "Penetracja magii" },
+    cooldown:  { file: "cooldown",   glyph: "⏳", label: "Redukcja odnowienia (tury)" },
   };
 
   const CLASS_GLYPHS = { assassin: "🥷", mage: "🧙", tank: "🛡️", samurai: "⚔️", archer: "🏹" };

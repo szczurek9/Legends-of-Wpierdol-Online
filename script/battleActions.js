@@ -263,7 +263,7 @@
     M.regenMana();
     next = enemyTurn(next);
     next = S.tickCooldowns(next);
-    if (cooldownAbility) next = S.setCooldown(next, cooldownAbility, cooldownAbility.cooldown || 0);
+    if (cooldownAbility) next = S.setCooldown(next, cooldownAbility, M.effectiveCooldown(cooldownAbility));
     if (!next.enemyDefeated && next.message !== next.actionMessage) {
       next.message = `${next.actionMessage} ${next.message}`;
     }
@@ -285,7 +285,7 @@
     if (ability.id === "absoluteFocus") {
       if (state.focusMark) return { ...state, message: "Przeciwnik jest już oznaczony." };
       if (!M.payMana(window.player, ability.cost)) return { ...state, message: "Za mało many." };
-      const marked = S.setCooldown({ ...state, focusMark: true }, ability, ability.cooldown || 0);
+      const marked = S.setCooldown({ ...state, focusMark: true }, ability, M.effectiveCooldown(ability));
       return { ...marked, message: "Nieokiełznane Skupienie: następny atak (Q) będzie gwarantowanym krytykiem x2." };
     }
 
