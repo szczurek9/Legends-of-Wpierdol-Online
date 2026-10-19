@@ -438,3 +438,37 @@ td.icon-cell {
     margin: 0 auto;
     object-fit: contain;
 }
+
+/* --- Ikony przedmiotów (emotka zastępcza → PNG, gdy plik istnieje) --------- */
+.wiki-item-icon {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto;
+}
+
+.wiki-item-icon .wiki-icon {
+    width: 100%;
+    height: 100%;
+}
+
+.wiki-icon-glyph {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.card h3 .wiki-item-icon {
+    display: inline-block;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin: 0 0.5rem 0 0;
+    vertical-align: middle;
+}
+
+.card h3 .wiki-icon-glyph {
+    font-size: 1.25rem;
+}

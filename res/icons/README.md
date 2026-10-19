@@ -40,7 +40,7 @@ Brak pliku = emotka kategorii (🗡️ broń, ⚔️ AD, 🔮 AP, ✨ wzmocnieni
 
 - zrobione `res/icons/weapons/<id>.png` — bronie (`data/weapons.json`)
 - `res/icons/ad-items/<id>.png` — przedmioty AD (`data/ad-items.json`)
-- `res/icons/magic-items/<id>.png` — przedmioty AP (`data/magic-items.json`)
+- zrobione `res/icons/magic-items/<id>.png` — przedmioty AP (`data/magic-items.json`)
 - zrobione `res/icons/skills/<id>.png` — wzmocnienia (`data/skills.json`)
 - zrobione `res/icons/potions/<id>.png` — mikstury (już opisane wyżej)
 - zrobione `res/icons/passives/<klasa>.png` — pasywki klas (`assassin`, `mage`, `tank`, `samurai`, `archer`)
