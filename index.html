@@ -178,9 +178,14 @@
                 <div id="shop-backdrop" class="shop-backdrop"></div>
 
                 <aside id="shop-details" class="shop-details" aria-live="polite">
-                    <button id="shop-details-close" class="modal-close shop-details-close" type="button" aria-label="Zamknij podgląd">✕</button>
-                    <h3 id="shop-details-name">Kliknij przedmiot, aby zobaczyć podgląd.</h3>
-                    <p id="shop-details-kind"></p>
+                    <div class="shop-details-head">
+                        <div class="shop-details-title">
+                            <h3 id="shop-details-name">Kliknij przedmiot, aby zobaczyć podgląd.</h3>
+                            <p id="shop-details-kind"></p>
+                        </div>
+                        <div id="shop-details-icon-slot" class="shop-details-icon-slot"></div>
+                        <button id="shop-details-close" class="modal-close shop-details-close" type="button" aria-label="Zamknij podgląd">✕</button>
+                    </div>
                     <div id="shop-details-body" class="shop-details-body"></div>
                     <div id="shop-actions" class="shop-details-actions"></div>
                 </aside>

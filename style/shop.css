@@ -220,7 +220,7 @@
 }
 
 .shop-card .shop-card-icon img {
-    padding: 0.125rem;
+    padding: 0;
     box-sizing: border-box;
 }
 
@@ -289,15 +289,31 @@
     background: var(--shop-card-background);
 }
 
-.shop-details h3 {
-    margin: 0 0 0.25rem;
-    padding: 0 2.5rem;
-    text-align: center;
+/* Nagłówek podglądu: nazwa i kategoria po lewej, ikona po prawej. */
+.shop-details-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
 }
 
-.shop-details > p {
-    margin: 0 0 0.625rem;
-    text-align: center;
+.shop-details-title {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.shop-details h3 {
+    margin: 0 0 0.25rem;
+    text-align: left;
+}
+
+.shop-details-title p {
+    margin: 0;
+}
+
+.shop-details-icon-slot:empty {
+    display: none;
 }
 
 /* Zamykanie i tło są potrzebne tylko, gdy podgląd jest oknem (telefon). */
@@ -313,13 +329,26 @@
 }
 
 .shop-details .shop-details-icon {
-    width: 4rem;
-    height: 4rem;
-    align-self: center;
+    width: 5rem;
+    height: 5rem;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 8px;
+    background: var(--shop-info-background);
+}
+
+.shop-details .shop-details-icon.is-large {
+    width: 6rem;
+    height: 6rem;
 }
 
 .shop-details .shop-details-icon .game-icon-glyph {
-    font-size: 2rem;
+    font-size: 2.5rem;
+}
+
+.shop-details .shop-details-icon.is-large .game-icon-glyph {
+    font-size: 3rem;
 }
 
 .shop-price-box {

@@ -196,8 +196,9 @@
 }
 
 .tile-frame .tile-img img {
-    padding: 0.125rem;
+    padding: 0;
     box-sizing: border-box;
+    border-radius: 5px;
 }
 
 .tile-frame .game-icon-glyph {

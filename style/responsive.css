@@ -146,10 +146,9 @@
         display: block;
     }
 
+    /* Przycisk zamknięcia stoi w nagłówku obok ikony i jest wyśrodkowany względem niej. */
     .shop-details-close {
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
+        flex: none;
         display: block;
     }
 

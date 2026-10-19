@@ -16,6 +16,7 @@
   const detailsName = document.getElementById("shop-details-name");
   const detailsKind = document.getElementById("shop-details-kind");
   const detailsBody = document.getElementById("shop-details-body");
+  const detailsIconSlot = document.getElementById("shop-details-icon-slot");
   const actions = document.getElementById("shop-actions");
   const filters = [...document.querySelectorAll(".shop-filter")];
 
@@ -774,7 +775,7 @@
 
     const nodes = [];
     const icon = entryIcon(entry, "shop-details-icon");
-    if (icon) nodes.push(icon);
+    detailsIconSlot.replaceChildren(...(icon ? [icon] : []));
     if (entry.kind !== "ability") nodes.push(createPriceBox(entry, state));
 
     const rows = previewRows(entry);
@@ -824,6 +825,7 @@
     selectedKey = null;
     detailsName.textContent = "Kliknij przedmiot, aby zobaczyć podgląd.";
     detailsKind.textContent = "";
+    detailsIconSlot.replaceChildren();
     detailsBody.replaceChildren();
     actions.replaceChildren();
     closeModal();
