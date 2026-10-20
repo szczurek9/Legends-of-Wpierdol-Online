@@ -62,7 +62,7 @@
       <a href="#efekty">Efekty</a><a href="#bronie">Bronie</a><a href="#ad">Przedmioty AD</a>
       <a href="#magiczne">Magiczne</a><a href="#mikstury">Mikstury</a><a href="#skille">Skille</a>
       <a href="#przeciwnicy">Przeciwnicy</a><a href="#fale">Fale i ucieczka</a><a href="#arena">Arena</a><a href="#sklep">Sklep</a>
-      <a href="#skiny">Skiny</a><a href="#sterowanie">Sterowanie</a>
+      <a href="#skiny">Skiny</a><a href="#zapis">Zapis i opcje</a><a href="#sterowanie">Sterowanie</a>
     </nav>
 
 <div class="wrap">
@@ -213,6 +213,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="evadeNext" data-glyph="ℹ️"></span></td><td>Unik z Rytmu Wojny</td><td>Rytm Wojny (Łucznik)</td><td>następny atak wroga zostaje uniknięty; czeka, jeśli wróg jest ogłuszony</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="ironTaunt" data-glyph="ℹ️"></span></td><td>Żelazna Prowokacja</td><td>umiejętność Tanka</td><td>mniejsza kara ciężkiej broni, +25% celności</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="bastion" data-glyph="ℹ️"></span></td><td>Bastion</td><td>Kamienny Bastion</td><td>+2% pancerza/turę, maks. 5 tur</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="rageArmor" data-glyph="ℹ️"></span></td><td>Pancerz z wściekłości</td><td>Skumulowany Gniew (Tank)</td><td>po wybuchu puli Gniewu: pancerz +5% wartości puli do następnego ataku wroga (ponad limit pancerza klasy)</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="potionAccuracy" data-glyph="ℹ️"></span></td><td>Eliksir Precyzji</td><td>mikstura</td><td>+50% celności na 7 tur</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="potionLifesteal" data-glyph="ℹ️"></span></td><td>Koktajl Wampira</td><td>mikstura</td><td>+10% lifestealu na 10 tur</td></tr>
 </table></div>
@@ -276,11 +277,11 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="enchantedBook"></span></td><td>Zaklęta Księga</td><td>500 $</td><td>+60 many, +60 AP</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="wandOfDestruction"></span></td><td>Różdżka Zniszczenia</td><td>1200 $</td><td>+100 AP, +70 many, +15 pen. magicznej</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="etherCrystal"></span></td><td>Kryształ Eteru</td><td>850 $</td><td>+75 AP, +8 pen. magicznej</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="healerNecklace"></span></td><td>Naszyjnik Uzdrowicielki</td><td>350 $</td><td>+100 many, +5 AP, +80% regen. many</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="healerNecklace"></span></td><td>Naszyjnik Uzdrowicielki</td><td>350 $</td><td>+100 many, +80% regen. many</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="astrologerRobe"></span></td><td>Szata Astrologa</td><td>400 $</td><td>+25 odp. magicznej, +50 many</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="angelShield"></span></td><td>Tarcza Anioła</td><td>550 $</td><td>+30 odp. magicznej, +50% regen. many</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="vampireHands"></span></td><td>Dłonie Wampira</td><td>600 $</td><td>lifesteal magiczny 15% (limit 30% dla tego przedmiotu)</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="adeptsBook"></span></td><td>Księga Adeptów</td><td>280 $</td><td>+5 AP po rzucie czaru (+5 dla Maga te 3 dla reszty klas), limit 30 AP; unikalna</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="adeptsBook"></span></td><td>Księga Adeptów</td><td>280 $</td><td>+5 AP po rzucie czaru (+5 dla Maga, +3 dla pozostałych klas), limit 30 AP; unikalna</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="adeptsBookUpgrade"></span></td><td>Ulepszenie Księgi Adeptów</td><td>850 $</td><td>podnosi limit Księgi Adeptów do 150; unikalne, wymaga Księgi</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="ringOfFate"></span></td><td>Pierścień Przeznaczenia</td><td>1800 $</td><td>+180 AP, +120 many, +100% regen. many (z malejącą skutecznością)</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="magic-items" data-id="shadowMask"></span></td><td>Maska Cienia</td><td>1900 $</td><td>+140 AP, +20 odp. magicznej, +15 pen. magicznej</td></tr>
@@ -388,7 +389,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 
 <h3>Jak działa walka</h3>
 <ul>
-  <li><b>Osobna pula HP i many:</b> do areny wchodzisz z pełnym HP i pełną maną, niezależnie od stanu w kampanii. Po walce (wygrana, porażka lub ucieczka) wraca stan kampanii: HP, mana, lifesteal z mikstur, Drugi Oddech i stosy Księgi Adepta.</li>
+  <li><b>Osobna pula HP i many:</b> do areny wchodzisz z pełnym HP i pełną maną, niezależnie od stanu w kampanii. Po walce (wygrana, porażka lub ucieczka) wraca stan kampanii: HP, mana, lifesteal z mikstur, Drugie Tchnienie i stosy Księgi Adeptów.</li>
   <li><b>Mikstury</b> użyte w arenie pozostają zużyte.</li>
   <li><b>Battle Bot jest skrojony pod Twój build.</b> Jego HP wynika z Twoich obrażeń, a jego obrażenia z Twojego maks. HP, więc arena nie staje się trywialna tylko dlatego, że masz mocniejszy sprzęt. Liczy się to, jak sprawnie walczysz.</li>
   <li>Pancerz, odporność na magię i penetrację bot dostaje jak przeciwnik z Twojego poziomu w kampanii (maks. poziom 50).</li>
@@ -447,14 +448,31 @@ nagroda = round(bazowa × mnożnikWykonania)</div>
 
 <section id="skiny">
 <h2>Skiny</h2>
-<p>19 skinów (w tym domyślny „Patyczak") o rzadkościach:
+<p>21 skinów (w tym domyślny „Patyczak") o rzadkościach:
 <span class="rarity-basic">basic</span>,
 <span class="rarity-rare">rare</span>,
 <span class="rarity-epic">epic</span>,
 <span class="rarity-mythic">mythic</span>,
 <span class="rarity-legendary">legendary</span>,
-<span class="rarity-ultimate">ultimate</span>.
-Kupowane za Skin Pointy, część należy do tematycznych kolekcji (np. Cyberpunk Edgerunners, Dragon Ball, Doki Doki Literature Club). Czysto kosmetyczne — bez wpływu na statystyki.</p>
+<span class="rarity-ultimate">ultimate</span>
+i <span class="rarity-secret">secret</span>.
+Większość skinów kupisz za Skin Pointy, część należy do tematycznych kolekcji (np. Cyberpunk Edgerunners, Dragon Ball, Genshin Impact, Doki Doki Literature Club). Czysto kosmetyczne — bez wpływu na statystyki.</p>
+</section>
+
+<section id="zapis">
+<h2>Zapis, konto i opcje</h2>
+<p>Na ekranie startowym wybierasz <strong>Zagraj jako gość</strong> albo <strong>Logowanie przez Discord</strong>. Przy tworzeniu postaci wpisujesz nick i wybierasz klasę (strzałki na klawiaturze przełączają karty klas). Wszystko, co dotyczy zapisu i wyglądu gry, jest w oknie <strong>Opcje</strong>.</p>
+<h3>Zapis</h3>
+<div class="tablewrap"><table>
+<tr><th>Metoda</th><th>Przyciski</th><th>Opis</th></tr>
+<tr><td>☁️ Chmura (Discord)</td><td>Zaloguj, Zapisz, Wczytaj, Usuń dane</td><td>Zapis na koncie Discord. Przyciski zapisu, wczytania i usuwania działają po zalogowaniu.</td></tr>
+<tr><td>📋 Kod zapisu</td><td>Zapisz grę, Kopiuj zapis, Wczytaj zapis</td><td>Zapis jako tekst, który możesz skopiować, przechować i wkleić do wczytania — także na innym urządzeniu.</td></tr>
+</table></div>
+<p class="note">Cooldown areny jest częścią kodu zapisu, więc wczytanie starszego zapisu go nie omija (zob. <a href="#arena">Arena</a>).</p>
+<h3>Wygląd</h3>
+<p>Motyw interfejsu: <strong>Noc</strong> (ciemny), <strong>Dzień</strong> (jasny), <strong>Wysoki kontrast</strong> i <strong>Las</strong> (ciemna zieleń). Wiki ma własny przełącznik motywu na górze strony.</p>
+<h3>Telefon</h3>
+<p>Na telefonie ekrany z wieloma kartami (np. statystyki, sklep, skiny) przewijasz przesunięciem palca w bok albo przeskakujesz zakładkami nad kartami. Gra pamięta ostatnio oglądaną kartę każdego ekranu.</p>
 </section>
 
 <section id="sterowanie">

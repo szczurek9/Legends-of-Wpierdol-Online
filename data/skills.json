@@ -2,5 +2,5 @@
   {"id":"healthStone","name":"Skała Zdrowia","price":180,"description":"+50 maksymalnego HP.","effect":"maxHealth","value":50},
   {"id":"waterOfLife","name":"Woda Życia","price":560,"description":"+160 maksymalnego HP.","effect":"maxHealth","value":160},
   {"id":"chainmail","name":"Kolczuga","price":220,"description":"+15 pancerza.","effect":"armor","value":15},
-  {"id":"secondWind","name":"Drugie Tchnienie","price":275,"description":"Pokonanie przeciwnika leczy Cię o 25% maksymalnego HP.","effect":"secondWind","value":25}
+  {"id":"secondWind","name":"Drugie Tchnienie","price":275,"description":"Pokonanie przeciwnika leczy Cię o 25% maksymalnego HP i many.","effect":"secondWind","value":25}
 ]

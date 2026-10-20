@@ -397,6 +397,7 @@ details .inner {
 .rarity-mythic { color: var(--rar-mythic); }
 .rarity-legendary { color: var(--rar-legendary); }
 .rarity-ultimate { color: var(--rar-ultimate); }
+.rarity-secret { color: var(--rar-secret); }
 
 /* --- Telefon: spis treści jako przyklejony pasek chipów ------------------------------- */
 @media (max-width: 760px) {
