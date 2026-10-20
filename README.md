@@ -32,7 +32,7 @@ Przeglądarkowa gra RPG z turowym systemem walki, napisana w całości w czystym
 ## Licencja
 
 - **Kod źródłowy** (`script/`, `style/`, `functions/`, pliki HTML i `data/`) — [MIT](LICENSE)
-- **Grafiki** (`res/`, `favicon.ico`) — [CC BY-NC 4.0](LICENSE-ASSETS) (uznanie autorstwa, bez użycia komercyjnego)
+- **Grafiki** (`res/`, `favicon.ico`) — [CC BY-NC 4.0](LICENSE-ASSETS) (uznanie autorstwa, bez użycia komercyjnego). 
 
 ## Credits
 
