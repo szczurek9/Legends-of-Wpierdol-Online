@@ -234,18 +234,21 @@
       delete nextState.effects.mirror;
     }
 
+    // Pancerz z Gniewu działa tylko na jeden atak wroga: kasujemy poprzedni PRZED ewentualnym
+    // ustawieniem nowego (wcześniej kasowanie szło po ustawieniu i premia znikała od razu).
+    if (next.effects.rageArmor) delete nextState.effects.rageArmor;
+
     // Tank's passive: once accumulated rage crosses a threshold, it
     // automatically detonates for bonus true-ish damage and self-heal.
     if (M.classId() === "tank" && rage >= M.currentWeaponDamage() * 1.5) {
       const rageDamage = M.physicalDamage(rage * 0.70, nextState.enemyArmor, player.armorPenetration);
       nextState.enemyHealth = Math.max(0, nextState.enemyHealth - rageDamage);
       player.healthPoints = M.clamp(player.healthPoints + Math.floor(rage * 0.35), 0, player.maxHealthPoints);
-      nextState.effects.rageArmor = Math.floor(rage * 0.0005);
+      nextState.effects.rageArmor = Math.floor(rage * 0.05);
       nextState.rage = 0;
       nextState.enemyDefeated = nextState.enemyHealth <= 0;
       nextState.message += ` Skumulowany Gniew automatycznie zadaje ${rageDamage} obrażeń i leczy ${Math.floor(rage * 0.35)} HP.`;
     }
-    if (next.effects.rageArmor) delete nextState.effects.rageArmor;
     return nextState;
   }
 

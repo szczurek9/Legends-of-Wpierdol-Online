@@ -52,6 +52,23 @@
     rageArmor: "Pancerz z wściekłości",
     focusMark: "Znacznik Skupienia",
     evadeNext: "Unik następnego ataku",
+    undodgeableSpeed: "Un-Dodgable Speed",
+    primalStrike: "Primal Strike",
+    overkillPool: "Overkill",
+    ragePool: "Skumulowany Gniew",
+    jhinPool: "Pula Pistoletu Jhina",
+    yamatoJudgement: "Judgement Cut",
+  };
+
+  // Efekty bez własnego pliku w res/icons/effects/ używają ikony umiejętności, która je wywołuje.
+  // Po dodaniu res/icons/effects/<id>.png usuń odpowiedni wpis.
+  const EFFECT_ICON_OVERRIDES = {
+    undodgeableSpeed: "res/abilities/assassin/ability2.png",
+    primalStrike: "res/abilities/assassin/ability1.png",
+    overkillPool: "res/icons/passives/assassin.png",
+    ragePool: "res/icons/passives/tank.png",
+    jhinPool: "res/icons/weapons/jhinPistol.png",
+    yamatoJudgement: "res/icons/weapons/yamato.png",
   };
 
   // Które adresy obrazków istnieją (wiemy dopiero po próbnym załadowaniu).
@@ -72,7 +89,7 @@
   const potionUrl = (id) => `res/icons/potions/${id}.png`;
   const abilityUrl = (classId, ability) => `res/abilities/${classId}/${ability.icon}`;
   const itemUrl = (group, id) => `res/icons/${group}/${id}.png`;
-  const effectUrl = (id) => `res/icons/effects/${id}.png`;
+  const effectUrl = (id) => EFFECT_ICON_OVERRIDES[id] || `res/icons/effects/${id}.png`;
 
   // Element ikony: <img> jeśli plik istnieje, w przeciwnym razie emotka.
   function make(url, glyph, className, isText) {

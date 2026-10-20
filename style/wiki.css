@@ -266,6 +266,20 @@ li {
     margin: 0.875rem 0;
 }
 
+/* Klasy postaci: jedna pod drugą, z większą ikoną przy nazwie. */
+#klasy .grid {
+    grid-template-columns: 1fr;
+}
+
+#klasy .card h3 .wiki-item-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+}
+
+#klasy .card h3 .wiki-icon-glyph {
+    font-size: 1.5rem;
+}
+
 .card {
     padding: 0.75rem 0.9rem;
     border: 1px solid var(--shop-border-color);

@@ -638,6 +638,17 @@
     background: #e6eaf2;
 }
 
+/* Chipy efektów: ikona wypełnia koło i jest przycięta do jego kształtu, nic nie wystaje poza ramkę. */
+.effect-icon-chip .game-icon {
+    padding: 0;
+    overflow: hidden;
+}
+
+.effect-icon-chip .game-icon img {
+    border-radius: 999px;
+    object-fit: cover;
+}
+
 .stat-line strong,
 .resource-label strong {
     white-space: nowrap;

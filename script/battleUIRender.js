@@ -83,11 +83,36 @@
         const id = name.endsWith("Turns") ? name.slice(0, -5) : name;
         const label = window.GameIcons.EFFECTS[id] || id;
         if (id === "rageArmor") return [id, `+${value}`, `${label}: +${value}`];
+        if (value === true) return [id, "", `${label}: aktywne`];
         return [id, value, `${label}: ${value} tur`];
       });
     // Łucznik: znacznik Skupienia i unik z Rytmu Wojny nie mają licznika tur.
     if (state.focusMark) chips.push(["focusMark", "", "Znacznik Skupienia: następny atak (Q)"]);
     if (effects.evadeNext) chips.push(["evadeNext", "", "Unik następnego ataku wroga"]);
+    // Zabójca: Un-Dodgable Speed (jedyny efekt z enemyAccuracyTurns) i Primal Strike (gwarantowany krytyk).
+    if (effects.enemyAccuracyTurns > 0) chips.push(["undodgeableSpeed", effects.enemyAccuracyTurns, `Un-Dodgable Speed: ${effects.enemyAccuracyTurns} tur`]);
+    if (state.guaranteedCrit) chips.push(["primalStrike", "", "Primal Strike: następny atak to gwarantowany krytyk"]);
+    // Pule i progi (pasywki klas, bronie unikalne): wartość przy ikonie, próg w dymku.
+    const player = window.player;
+    const short = (n) => (n >= 10000 ? `${String(Math.round(n / 100) / 10).replace(".", ",")}k` : String(n));
+    const classId = player.classId || "assassin";
+    if (classId === "assassin" && player.overkillPool > 0) {
+      const pool = Math.floor(player.overkillPool);
+      const threshold = Math.ceil(state.enemyMaxHealth * 0.5);
+      chips.push(["overkillPool", short(pool), `Overkill: ${pool} (od ${threshold} atak ignoruje 80% pancerza)`]);
+    }
+    if (classId === "tank" && state.rage > 0) {
+      const rage = Math.floor(state.rage);
+      const threshold = Math.floor(window.BattleMath.currentWeaponDamage() * 1.5);
+      chips.push(["ragePool", short(rage), `Skumulowany Gniew: ${rage} (wybucha od ${threshold})`]);
+    }
+    if (player.weaponId === "jhinPistol" && state.jhinPool > 0) {
+      chips.push(["jhinPool", short(state.jhinPool), `Pula Pistoletu Jhina: ${state.jhinPool}`]);
+    }
+    if (player.weaponId === "yamato") {
+      const threshold = Math.min(100, (player.yamatoExecuteCap || 5) + (state.yamatoJudgementStacks || 0));
+      chips.push(["yamatoJudgement", `${threshold}%`, `Judgement Cut: egzekucja wroga poniżej ${threshold}% HP`]);
+    }
     // Efekty jako ikony (jak chipy statystyk): liczba tur przy ikonie, nazwa po najechaniu lub dotknięciu.
     refs.effectsPanel.replaceChildren();
     if (!chips.length) {

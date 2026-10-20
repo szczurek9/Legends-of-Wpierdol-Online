@@ -75,27 +75,27 @@
 <h2>Klasy postaci</h2>
 <p>Wybór jest jednorazowy przy tworzeniu postaci. Każda klasa ma inny limit pancerza i startowe bonusy.</p>
 <div class="grid">
-  <div class="card"><span class="tag">Limit pancerza: 60</span><h3>Zabójca</h3><ul>
+  <div class="card"><span class="tag">Limit pancerza: 60</span><h3><span class="wiki-item-icon" data-group="classes" data-id="assassin" data-glyph="🥷"></span>Zabójca</h3><ul>
     <li>+10% obrażeń broni, +5% lifestealu, +10% celności</li>
     <li>Pasywka <b>Overkill</b> — nadmiarowe obrażenia budują pulę leczącą i przebijającą pancerz</li>
     <li>Ma dostęp do broni i przedmiotów AD</li>
   </ul></div>
-  <div class="card"><span class="tag">Limit pancerza: 90</span><h3>Mag</h3><ul>
+  <div class="card"><span class="tag">Limit pancerza: 90</span><h3><span class="wiki-item-icon" data-group="classes" data-id="mage" data-glyph="🧙"></span>Mag</h3><ul>
     <li>Start: 320 many, +125% regeneracji many, +5 pen. magicznej, +15 pancerza</li>
     <li>Nie może używać broni ani przedmiotów AD — walczy wyłącznie umiejętnościami</li>
     <li>8 slotów magicznych, 25% zniżki na przedmioty magiczne</li>
   </ul></div>
-  <div class="card"><span class="tag">Limit pancerza: 150</span><h3>Tank</h3><ul>
+  <div class="card"><span class="tag">Limit pancerza: 150</span><h3><span class="wiki-item-icon" data-group="classes" data-id="tank" data-glyph="🛡️"></span>Tank</h3><ul>
     <li>+200 maks. HP, +20 pancerza poza limitem klas</li>
-    <li>Pasywka <b>Skumulowany Gniew</b> — otrzymane obrażenia budują pulę, która eksploduje automatycznie</li>
+    <li>Pasywka <b>Skumulowany Gniew</b> — otrzymane obrażenia (1:1, po redukcji pancerzem) budują pulę, która eksploduje automatycznie</li>
     <li>Kara -25% obrażeń za broń zadającą &gt;500 dmg</li>
   </ul></div>
-  <div class="card"><span class="tag">Limit pancerza: 50</span><h3>Samurai</h3><ul>
+  <div class="card"><span class="tag">Limit pancerza: 50</span><h3><span class="wiki-item-icon" data-group="classes" data-id="samurai" data-glyph="⚔️"></span>Samurai</h3><ul>
     <li>+15% obrażeń, +15% celności, +10% uniku, +5 pancerza</li>
     <li>Pasywka <b>Opanowanie</b> — krytyki x1,2 zamiast x1,5 (poza Kōgeki)</li>
     <li>Przełącznik stylu walki <b>Sen no Kata</b> (Bōei / Chikara)</li>
   </ul></div>
-  <div class="card"><span class="tag">Limit pancerza: 60</span><h3>Łucznik</h3><ul>
+  <div class="card"><span class="tag">Limit pancerza: 60</span><h3><span class="wiki-item-icon" data-group="classes" data-id="archer" data-glyph="🏹"></span>Łucznik</h3><ul>
     <li>+30% celności, +5% lifestealu, start: 200 many</li>
     <li>8 dynamicznych slotów — każdy slot to przedmiot AD albo AP, w dowolnych proporcjach</li>
     <li>Pasywka <b>Eagle Sight</b> — +10% obrażeń zwykłego ataku z broni dystansowej (Ranged)</li>
@@ -166,55 +166,55 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <p><b>Redukcja odnowienia.</b> Część przedmiotów (AD i AP) skraca odnowienie umiejętności o stałą liczbę tur. Redukcja ogólna działa na wszystkie umiejętności z odnowieniem, a redukcja „R" tylko na umiejętność pod klawiszem R i dolicza się do ogólnej. Łączne limity z wszystkich założonych przedmiotów: maks. −2 tury redukcji ogólnej i maks. −2 tury redukcji R. Odnowienie nigdy nie spada poniżej 1 tury, a Gwiezdnego Uderzenia i Mushin (odnowienie 1) w ogóle nie da się skrócić.</p>
 <details open><summary>Zabójca — pasywka: Overkill</summary><div class="inner">
 <p>Nadwyżka obrażeń ponad HP wroga trafia do puli Overkill. Przy 50% maks. HP wroga następny atak ignoruje 80% jego pancerza. Pula leczy przy każdym ataku (skaluje się z pancerzem/penetracją), zabójstwo przywraca 10% many.</p>
-<table><tr><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
-<tr><td>Primal Strike</td><td>200</td><td>—</td><td>Wymusza krytyka; jeśli i tak byłby krytykiem → super-krytyk x2,25</td></tr>
-<tr><td>Un-Dodgable Speed</td><td>80</td><td>4</td><td>+25% celności gracza, -30% celności wroga na 3 tury</td></tr>
-<tr><td>Overkill Release</td><td>120</td><td>5</td><td>Uwalnia całą pulę Overkill jako obrażenia ign. 80% pancerza</td></tr>
+<table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability1.png" data-glyph="⚔️"></span></td><td>Primal Strike</td><td>200</td><td>—</td><td>Wymusza krytyka; jeśli i tak byłby krytykiem → super-krytyk x2,25</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability2.png" data-glyph="✨"></span></td><td>Un-Dodgable Speed</td><td>80</td><td>4</td><td>+25% celności gracza, -30% celności wroga na 3 tury</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability3.png" data-glyph="⚔️"></span></td><td>Overkill Release</td><td>120</td><td>5</td><td>Uwalnia całą pulę Overkill jako obrażenia ign. 80% pancerza</td></tr>
 </table></div></details>
 <details><summary>Mag — brak pasywki</summary><div class="inner">
-<table><tr><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
-<tr><td>Powiew Burzy</td><td>25</td><td>—</td><td>15 + 25% AP obrażeń magicznych</td></tr>
-<tr><td>Gwiezdne Uderzenie</td><td>100</td><td>1</td><td>60 + 90% AP obrażeń magicznych</td></tr>
-<tr><td>Zabójcze Pnącza</td><td>70</td><td>4</td><td>Ogłusza 3 tury, 10 + 10% AP obrażeń/turę</td></tr>
-<tr><td>Śmiertelne Lustro</td><td>50</td><td>5</td><td>Blokuje 10% (99% jeśli cios byłby śmiertelny) nadchodzącego ciosu i odbija część na wroga</td></tr>
+<table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability1.png" data-glyph="🔮"></span></td><td>Powiew Burzy</td><td>25</td><td>—</td><td>15 + 25% AP obrażeń magicznych</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability2.png" data-glyph="🔮"></span></td><td>Gwiezdne Uderzenie</td><td>100</td><td>1</td><td>60 + 90% AP obrażeń magicznych</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability3.png" data-glyph="🔮"></span></td><td>Zabójcze Pnącza</td><td>70</td><td>4</td><td>Ogłusza 3 tury, 10 + 10% AP obrażeń/turę</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability4.png" data-glyph="⚔️"></span></td><td>Śmiertelne Lustro</td><td>50</td><td>5</td><td>Blokuje 10% (99% jeśli cios byłby śmiertelny) nadchodzącego ciosu i odbija część na wroga</td></tr>
 </table></div></details>
 <details><summary>Tank — pasywka: Skumulowany Gniew</summary><div class="inner">
-<p>Otrzymane obrażenia fizyczne budują pulę Gniewu. Przy 150% obrażeń broni gracza pula automatycznie eksploduje: 70% jako obrażenia, leczy o 35%, chwilowo zwiększa pancerz.</p>
-<table><tr><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
-<tr><td>Kamienny Bastion</td><td>50</td><td>4</td><td>Ogłusza 2 tury; +2% pancerza/turę przez 5 tur (maks. +10%)</td></tr>
-<tr><td>Skumulowany Gniew (aktywna)</td><td>50</td><td>2</td><td>Manualnie detonuje pulę: 25% obrażeń magicznych, leczy 30%</td></tr>
-<tr><td>Żelazna Prowokacja</td><td>45</td><td>2</td><td>2 tury: kara ciężkiej broni -25%→-20%, +25% celności</td></tr>
+<p>Otrzymane obrażenia fizyczne budują pulę Gniewu w stosunku 1:1: 100% obrażeń faktycznie otrzymanych po redukcji pancerzem trafia do puli. Przy 150% obrażeń broni gracza pula automatycznie eksploduje: 70% jako obrażenia, leczy o 35%, a do następnego ataku wroga zwiększa pancerz o 5% wartości puli (ponad limit pancerza klasy).</p>
+<table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability1.png" data-glyph="✨"></span></td><td>Kamienny Bastion</td><td>50</td><td>4</td><td>Ogłusza 2 tury; +2% pancerza/turę przez 5 tur (maks. +10%)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability2.png" data-glyph="⚡"></span></td><td>Skumulowany Gniew (aktywna)</td><td>50</td><td>2</td><td>Manualnie detonuje pulę: 25% obrażeń magicznych, leczy 30%</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability3.png" data-glyph="✨"></span></td><td>Żelazna Prowokacja</td><td>45</td><td>2</td><td>2 tury: kara ciężkiej broni -25%→-20%, +25% celności</td></tr>
 </table></div></details>
 <details><summary>Samurai — pasywka: Opanowanie</summary><div class="inner">
-<table><tr><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
-<tr><td>Mushin</td><td>50</td><td>1</td><td>Leczy 3–10% maks. HP (skaluje z pen. pancerza); -30% obrażeń wroga na 3 tury</td></tr>
-<tr><td>Sen no Kata</td><td>0</td><td>—</td><td>Przełącznik (nie zużywa tury): Bōei — co 3. atak 10% dmg + ogłuszenie; Chikara — +7,5% dmg gracza, +4,5% dmg wroga</td></tr>
-<tr><td>Kōgeki</td><td>30</td><td>2</td><td>Zawsze pełny krytyk x1,5 + 50% obrażeń broni jako magiczne (skaluje z pen. pancerza)</td></tr>
+<table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability1.png" data-glyph="✨"></span></td><td>Mushin</td><td>50</td><td>1</td><td>Leczy 3–10% maks. HP (skaluje z pen. pancerza); -30% obrażeń wroga na 3 tury</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability2.png" data-glyph="🔄"></span></td><td>Sen no Kata</td><td>0</td><td>—</td><td>Przełącznik (nie zużywa tury): Bōei — co 3. atak 10% dmg + ogłuszenie; Chikara — +7,5% dmg gracza, +4,5% dmg wroga</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability3.png" data-glyph="⚡"></span></td><td>Kōgeki</td><td>30</td><td>2</td><td>Zawsze pełny krytyk x1,5 + 50% obrażeń broni jako magiczne (skaluje z pen. pancerza)</td></tr>
 </table></div></details>
 <details><summary>Łucznik — pasywka: Eagle Sight</summary><div class="inner">
 <p>+10% obrażeń zwykłego ataku z broni Ranged. 8 wspólnych slotów na przedmioty AD i magiczne (AP). Atak Q zadaje obrażenia fizyczne: obrażenia = obrażenia bazowe broni + AP × (skalowanie AD broni × 0,72) + 50% AD. Bez przedmiotów AP: obrażenia bazowe broni + AD × (skalowanie AD broni × 1,16), bez dodatku 50% AD. Bez przedmiotów AD atak Q leczy z magicznego lifestealu (50% skuteczności) zamiast fizycznego.</p>
-<table><tr><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
-<tr><td>Nieokiełznane Skupienie (W)</td><td>55</td><td>3</td><td>Nie zużywa tury. Następny atak Q to gwarantowany krytyk x2 (nie może chybić)</td></tr>
-<tr><td>Rytm Wojny (E)</td><td>70</td><td>3</td><td>Zwykły atak + 145% AD jako obrażenia magiczne (bez przedmiotów AD: 50 + 40% AP); może krytować, leczy tylko magiczny lifesteal; gwarantowany unik następnego ataku wroga</td></tr>
-<tr><td>Strzała Mrozu (R)</td><td>170</td><td>6</td><td>100 + 85% AP + 107% AD obrażeń magicznych, ogłuszenie na 3 tury</td></tr>
+<table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability1.png" data-glyph="✨"></span></td><td>Nieokiełznane Skupienie (W)</td><td>55</td><td>3</td><td>Nie zużywa tury. Następny atak Q to gwarantowany krytyk x2 (nie może chybić)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability2.png" data-glyph="🔮"></span></td><td>Rytm Wojny (E)</td><td>70</td><td>3</td><td>Zwykły atak + 145% AD jako obrażenia magiczne (bez przedmiotów AD: 50 + 40% AP); może krytować, leczy tylko magiczny lifesteal; gwarantowany unik następnego ataku wroga</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability3.png" data-glyph="🔮"></span></td><td>Strzała Mrozu (R)</td><td>170</td><td>6</td><td>100 + 85% AP + 107% AD obrażeń magicznych, ogłuszenie na 3 tury</td></tr>
 </table></div></details>
 </section>
 
 <section id="efekty">
 <h2>Efekty statusowe w walce</h2>
 <div class="tablewrap"><table>
-<tr><th>Efekt</th><th>Źródło</th><th>Działanie</th></tr>
-<tr><td>Ogłuszenie</td><td>Sen no Kata, Zabójcze Pnącza, Kamienny Bastion</td><td>wróg pomija turę</td></tr>
-<tr><td>Zatrucie</td><td>Kieł Węża (co 5. atak)</td><td>30+25%AD obrażeń magicznych/turę, obniża szansę na unik wroga o 10% (min. 0%)</td></tr>
-<tr><td>Pnącza</td><td>Zabójcze Pnącza</td><td>10+10%AP obrażeń magicznych/turę</td></tr>
-<tr><td>Śmiertelne Lustro</td><td>umiejętność Maga</td><td>blok + odbicie następnego ciosu, zużywa się po trafieniu</td></tr>
-<tr><td>Mushin</td><td>umiejętność Samuraja</td><td>-30% obrażeń wroga na 3 tury</td></tr>
-<tr><td>Znacznik Skupienia</td><td>Nieokiełznane Skupienie (Łucznik)</td><td>następny atak Q: gwarantowany krytyk x2, nie chybia</td></tr>
-<tr><td>Unik z Rytmu Wojny</td><td>Rytm Wojny (Łucznik)</td><td>następny atak wroga zostaje uniknięty; czeka, jeśli wróg jest ogłuszony</td></tr>
-<tr><td>Żelazna Prowokacja</td><td>umiejętność Tanka</td><td>mniejsza kara ciężkiej broni, +25% celności</td></tr>
-<tr><td>Bastion</td><td>Kamienny Bastion</td><td>+2% pancerza/turę, maks. 5 tur</td></tr>
-<tr><td>Eliksir Precyzji</td><td>mikstura</td><td>+50% celności na 7 tur</td></tr>
-<tr><td>Koktajl Wampira</td><td>mikstura</td><td>+10% lifestealu na 10 tur</td></tr>
+<tr><th>Ikona</th><th>Efekt</th><th>Źródło</th><th>Działanie</th></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="stun" data-glyph="ℹ️"></span></td><td>Ogłuszenie</td><td>Sen no Kata, Zabójcze Pnącza, Kamienny Bastion</td><td>wróg pomija turę</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="poison" data-glyph="ℹ️"></span></td><td>Zatrucie</td><td>Kieł Węża (co 5. atak)</td><td>30+25%AD obrażeń magicznych/turę, obniża szansę na unik wroga o 10% (min. 0%)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="vines" data-glyph="ℹ️"></span></td><td>Pnącza</td><td>Zabójcze Pnącza</td><td>10+10%AP obrażeń magicznych/turę</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="mirror" data-glyph="ℹ️"></span></td><td>Śmiertelne Lustro</td><td>umiejętność Maga</td><td>blok + odbicie następnego ciosu, zużywa się po trafieniu</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="mushin" data-glyph="ℹ️"></span></td><td>Mushin</td><td>umiejętność Samuraja</td><td>-30% obrażeń wroga na 3 tury</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="focusMark" data-glyph="ℹ️"></span></td><td>Znacznik Skupienia</td><td>Nieokiełznane Skupienie (Łucznik)</td><td>następny atak Q: gwarantowany krytyk x2, nie chybia</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="evadeNext" data-glyph="ℹ️"></span></td><td>Unik z Rytmu Wojny</td><td>Rytm Wojny (Łucznik)</td><td>następny atak wroga zostaje uniknięty; czeka, jeśli wróg jest ogłuszony</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="ironTaunt" data-glyph="ℹ️"></span></td><td>Żelazna Prowokacja</td><td>umiejętność Tanka</td><td>mniejsza kara ciężkiej broni, +25% celności</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="bastion" data-glyph="ℹ️"></span></td><td>Bastion</td><td>Kamienny Bastion</td><td>+2% pancerza/turę, maks. 5 tur</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="potionAccuracy" data-glyph="ℹ️"></span></td><td>Eliksir Precyzji</td><td>mikstura</td><td>+50% celności na 7 tur</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="potionLifesteal" data-glyph="ℹ️"></span></td><td>Koktajl Wampira</td><td>mikstura</td><td>+10% lifestealu na 10 tur</td></tr>
 </table></div>
 </section>
 
@@ -748,6 +748,7 @@ Kupowane za Skin Pointy, część należy do tematycznych kolekcji (np. Cyberpun
 <script>
 // Ikony przedmiotów: pokazuje emotkę kategorii, a gdy plik res/icons/<grupa>/<id>.png istnieje, podmienia ją na obrazek.
 // Nowe PNG wystarczy wrzucić do folderu — HTML wiki nie wymaga zmian.
+// data-src = pełna ścieżka pliku (umiejętności), data-glyph = własna emotka zastępcza.
 (function () {
   var GLYPHS = { weapons: "🗡️", "ad-items": "⚔️", "magic-items": "🔮", skills: "✨", potions: "🧪" };
   document.querySelectorAll(".wiki-item-icon").forEach(function (holder) {
@@ -755,13 +756,13 @@ Kupowane za Skin Pointy, część należy do tematycznych kolekcji (np. Cyberpun
     var glyph = document.createElement("span");
     glyph.className = "wiki-icon-glyph";
     glyph.setAttribute("aria-hidden", "true");
-    glyph.textContent = GLYPHS[group] || "•";
+    glyph.textContent = holder.dataset.glyph || GLYPHS[group] || "•";
     holder.appendChild(glyph);
     var img = new Image();
     img.className = "wiki-icon";
     img.alt = "";
     img.onload = function () { holder.replaceChildren(img); };
-    img.src = "res/icons/" + group + "/" + holder.dataset.id + ".png";
+    img.src = holder.dataset.src || ("res/icons/" + group + "/" + holder.dataset.id + ".png");
   });
 })();
 </script>
