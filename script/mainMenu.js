@@ -237,6 +237,8 @@ startButton.addEventListener("click", () => {
     window.player.manaPoints = 200;
   }
   showMainMenu();
+  // Nowa postać: pytamy, czy pokazać samouczek (tylko jeśli gracz jeszcze go nie przeszedł / nie odrzucił).
+  window.Tutorial?.offer();
 });
 
 document.getElementById("options-btn").addEventListener("click", openOptions);

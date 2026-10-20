@@ -1,0 +1,277 @@
+/* ==========================================================================
+   Samouczek (script/tutorial.js): okno z pytaniem o doświadczenie, nakładka
+   z reflektorem na elementach interfejsu i kafelek z opisem kroku.
+   Kolory pochodzą z motywów (themes.css), więc działa w każdym motywie.
+   ========================================================================== */
+
+/* --- Pytanie na starcie nowej gry ---------------------------------------- */
+.tut-modal {
+    z-index: 2100;
+}
+
+.tut-modal .modal-content {
+    width: min(100%, 30rem);
+    text-align: center;
+}
+
+.tut-modal h2 {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-title);
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 1.15;
+    color: var(--accent);
+    text-shadow: var(--title-shadow);
+}
+
+.tut-modal p {
+    margin: 0;
+}
+
+.tut-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.tut-choice button {
+    width: 100%;
+}
+
+/* --- Nakładka ------------------------------------------------------------- */
+.tut-root {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    pointer-events: none;
+}
+
+/* Cztery panele wokół „dziury” na podświetlony element: przyciemniają ekran i blokują kliknięcia. */
+.tut-block {
+    position: fixed;
+    background: rgba(6, 9, 16, 0.74);
+    pointer-events: auto;
+    touch-action: none;
+}
+
+/* Przezroczysta zaślepka na samą dziurę — w krokach „kliknij” jest wyłączona. */
+.tut-hole {
+    position: fixed;
+    pointer-events: auto;
+    touch-action: none;
+}
+
+.tut-ring {
+    position: fixed;
+    box-sizing: border-box;
+    border: 3px solid var(--accent);
+    border-radius: 0.6rem;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.45), 0 0 1rem var(--accent);
+    pointer-events: none;
+}
+
+.tut-ring.is-click {
+    animation: tut-pulse 1.3s ease-in-out infinite;
+}
+
+@keyframes tut-pulse {
+    50% {
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.45), 0 0 1.75rem 0.3rem var(--accent);
+    }
+}
+
+/* --- Kafelek z opisem kroku ------------------------------------------------ */
+.tut-card {
+    position: fixed;
+    z-index: 2;
+    width: min(24rem, calc(100vw - 1rem));
+    max-height: calc(100dvh - 1rem);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 0.85rem 1rem 0.75rem;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 0.75rem;
+    color: var(--text-color);
+    background: var(--main-background);
+    box-shadow: 0.35rem 0.35rem 0 var(--main-shadow);
+    pointer-events: auto;
+    text-align: left;
+    outline: none;
+}
+
+.tut-progress {
+    height: 0.25rem;
+    margin-bottom: 0.6rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--shop-info-background);
+}
+
+.tut-progress > span {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: var(--accent);
+    transition: width 200ms ease;
+}
+
+.tut-title {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-title);
+    font-weight: 400;
+    font-size: 1.2rem;
+    line-height: 1.2;
+}
+
+.tut-body {
+    font-size: 0.95rem;
+    line-height: 1.45;
+}
+
+.tut-body p {
+    margin: 0 0 0.5rem;
+}
+
+.tut-body p:last-child {
+    margin-bottom: 0;
+}
+
+.tut-body ul.tut-list {
+    margin: 0.25rem 0 0;
+    padding-left: 1.15rem;
+}
+
+.tut-body ul.tut-list li {
+    margin-bottom: 0.3rem;
+}
+
+.tut-body b {
+    font-weight: 700;
+}
+
+.tut-key {
+    display: inline-block;
+    min-width: 1.2em;
+    padding: 0 0.35rem;
+    box-sizing: border-box;
+    border: 1px solid var(--shop-border-color);
+    border-bottom-width: 2px;
+    border-radius: 0.3rem;
+    background: var(--shop-info-background);
+    font-family: inherit;
+    font-size: 0.85em;
+    line-height: 1.35;
+    text-align: center;
+}
+
+.tut-abilities {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tut-abilities li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tut-abilities small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.tut-hint {
+    margin: 0.6rem 0 0;
+    padding: 0.4rem 0.6rem;
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--shop-info-background);
+    font-size: 0.9rem;
+}
+
+.tut-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.tut-actions-main {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+/* „Pomiń samouczek” wygląda jak link, ale ma normalny rozmiar celu dotyku. */
+.tut-skip {
+    padding: 0.4rem 0.5rem;
+    border-color: transparent;
+    color: var(--text-muted);
+    background: transparent;
+    box-shadow: none;
+    font-size: 0.85rem;
+    text-decoration: underline;
+}
+
+/* --- Znacznik w trakcie walki (kiedy samouczek czeka na gracza) ------------ */
+.tut-pill {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    max-width: min(20rem, calc(100vw - 1rem));
+    padding: 0.2rem 0.3rem 0.2rem 0.75rem;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 999px;
+    color: var(--text-color);
+    background: var(--main-background);
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.4);
+    font-size: 0.85rem;
+    line-height: 1.25;
+    pointer-events: auto;
+}
+
+.tut-pill .tut-skip {
+    flex: none;
+    min-height: 2.25rem;
+}
+
+.tut-root .hidden {
+    display: none !important;
+}
+
+/* --- Karta w Opcjach ------------------------------------------------------ */
+.tut-opt-card {
+    margin-top: 0.75rem;
+    align-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.tut-opt-text {
+    margin: 0 0 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tut-ring.is-click {
+        animation: none;
+    }
+
+    .tut-progress > span {
+        transition: none;
+    }
+}
