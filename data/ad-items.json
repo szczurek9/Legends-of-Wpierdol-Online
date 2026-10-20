@@ -37,7 +37,7 @@
     "cooldownReduction": 1
   },
   {
-    "id": "executionerSignet",
+    "id": "executionerSigil",
     "name": "Sygnet Egzekutora",
     "price": 2000,
     "description": "+80 AD. Twoje ataki ignorują 10 pkt pancerza przeciwnika. Odnowienie umiejętności pod klawiszem R krótsze o 2 tury (limit: 2 tury).",
