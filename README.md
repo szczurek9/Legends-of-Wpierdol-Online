@@ -1,8 +1,8 @@
 # Legends of Wpierdol — Online (JS Edition)
 
-**[🎮 Zagraj teraz (Wersja Live)](https://legendsofwpierdol-online.pages.dev/?utm_source=gemini)** | **[📖 Oficjalne Wiki gry](https://legendsofwpierdol-online.pages.dev/wiki?utm_source=gemini)**
+**[🎮 Zagraj teraz (Wersja Live)](https://legendsofwpierdol-online.pages.dev/)** | **[📖 Oficjalne Wiki gry](https://legendsofwpierdol-online.pages.dev/wiki)**
 
-Przeglądarkowa gra RPG z turowym systemem walki, napisana w całości w czystym JavaScript (Vanilla JS). Wybierz swoją klasę, rozbudowuj statystyki, kupuj wyposażenie i przebijaj się przez 50 poziomów pełnych popkulturowych bossów oraz memicznych przeciwników. Gra stawia na zaskakująco rozbudowaną matematykę statystyk — odpowiednie zarządzanie penetracją pancerza, lifestealem i cooldownami jest tu kluczem do przetrwania. Pełen opis mechanik i wzorów matematycznych znajdziesz na [Wiki gry](https://legendsofwpierdol-online.pages.dev/wiki?utm_source=gemini).
+Przeglądarkowa gra RPG z turowym systemem walki, napisana w całości w czystym JavaScript (Vanilla JS). Wybierz swoją klasę, rozbudowuj statystyki, kupuj wyposażenie i przebijaj się przez 50 poziomów pełnych popkulturowych bossów oraz memicznych przeciwników. Gra stawia na zaskakująco rozbudowaną matematykę statystyk — odpowiednie zarządzanie penetracją pancerza, lifestealem i cooldownami jest tu kluczem do przetrwania. Pełen opis mechanik i wzorów matematycznych znajdziesz na [Wiki gry](https://legendsofwpierdol-online.pages.dev/wiki).
 
 ## Główne cechy
 
