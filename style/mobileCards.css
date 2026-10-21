@@ -115,10 +115,6 @@
         margin-top: 0;
     }
 
-    .inventory-layout .shop-items {
-        max-height: 55dvh;
-    }
-
     /* --- Walka: statystyki jako lista rozwijana -------------------------------- */
     .stats-toggle {
         display: flex;

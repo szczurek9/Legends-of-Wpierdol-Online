@@ -17,6 +17,14 @@
   const bulkBar = document.getElementById("inventory-bulk");
   const searchInput = document.getElementById("inventory-search");
   const sortSelect = document.getElementById("inventory-sort");
+  const modalBackdrop = document.getElementById("inv-backdrop");
+  const modal = document.getElementById("inv-details");
+  const modalClose = document.getElementById("inv-details-close");
+  const modalName = document.getElementById("inv-details-name");
+  const modalKind = document.getElementById("inv-details-kind");
+  const modalIconSlot = document.getElementById("inv-details-icon-slot");
+  const modalBody = document.getElementById("inv-details-body");
+  const modalActions = document.getElementById("inv-details-actions");
 
   const SELL_RATE = 0.4;
   const CONFIRM_MS = 3500;
@@ -32,10 +40,15 @@
   let sortMode = "default";
   let pendingSell = null;      // klucz przedmiotu czekającego na potwierdzenie sprzedaży
   let pendingTimer = 0;
-  const openDescriptions = new Set(); // rozwinięte opisy przetrwają odświeżenie listy
+  // Okno szczegółów: kluczowi przedmiotu odpowiada funkcja budująca jego zawartość.
+  // Rejestr jest odtwarzany przy każdym odświeżeniu, więc okno zawsze pokazuje aktualny stan.
+  const detailBuilders = new Map();
+  let modalKey = null;
 
   function showMessage(text, type) {
     window.setStatusMessage(message, text, "shop-message", type);
+    // Komunikat na dole strony jest zasłonięty przez okno — wtedy pokazujemy go jako toast.
+    if (modalKey && text && typeof window.showToast === "function") window.showToast(text, type);
   }
 
   function el(tag, className, text) {
@@ -91,12 +104,12 @@
   }
 
   // Sprzedaż w dwóch krokach: pierwsze kliknięcie uzbraja przycisk, drugie sprzedaje.
-  function sellButton(key, name, price, onConfirm, label = "Sprzedaj") {
+  function sellButton(key, name, price, onConfirm, label = "Sprzedaj", focusPrefix = "") {
     const armed = pendingSell === key;
     const button = actionButton(
       armed ? `Potwierdź (${price} $)` : `${label} (${price} $)`,
       `inv-sell${armed ? " is-confirm" : ""}`,
-      `sell:${key}`,
+      `${focusPrefix}sell:${key}`,
       () => {
         if (pendingSell === key) {
           clearPending();
@@ -183,24 +196,58 @@
     return [{ stat: "damage", label: "Obrażenia bronią", from: equippedWeaponDamage(), to: weaponDamageFor(weapon), suffix: "" }];
   }
 
-  // Rozwijane "Szczegóły": podgląd zmiany statystyk, uwaga o slotach i opis. Stan rozwinięcia zapamiętujemy.
-  function createDetails(key, { title, rows, note, text }) {
-    const details = el("details", "inv-desc");
-    details.open = openDescriptions.has(key);
-    details.appendChild(el("summary", "", "Szczegóły"));
-    if (rows && rows.length) {
-      details.appendChild(el("p", "inv-details-title", title));
+  // ---- Okno szczegółów --------------------------------------------------------
+
+  function isModalOpen() {
+    return modalKey !== null;
+  }
+
+  function closeModal() {
+    modalKey = null;
+    modal.classList.remove("is-open");
+    modalBackdrop.classList.remove("is-open");
+  }
+
+  function renderModal(spec) {
+    modalName.textContent = spec.title;
+    modalKind.textContent = spec.kind || "";
+    const icon = window.GameIcons.itemIcon(spec.iconGroup, spec.iconId, "shop-details-icon");
+    modalIconSlot.replaceChildren(...(icon ? [icon] : []));
+
+    const nodes = [];
+    if (spec.chips) nodes.push(spec.chips);
+    if (spec.rows && spec.rows.length) {
+      nodes.push(el("p", "inv-details-title", spec.rowsTitle));
       const list = el("div", "shop-stat-rows");
-      rows.forEach((row) => list.appendChild(buildStatRow(row)));
-      details.appendChild(list);
+      spec.rows.forEach((row) => list.appendChild(buildStatRow(row)));
+      nodes.push(list);
     }
-    if (note) details.appendChild(el("p", "inv-details-note", note));
-    if (text) details.appendChild(el("p", "", text));
-    details.addEventListener("toggle", () => {
-      if (details.open) openDescriptions.add(key);
-      else openDescriptions.delete(key);
-    });
-    return details;
+    if (spec.text) nodes.push(el("p", "shop-details-description", spec.text));
+    if (spec.note) nodes.push(el("p", "shop-details-note", spec.note));
+    modalBody.replaceChildren(...nodes);
+    modalActions.replaceChildren(...spec.actions());
+  }
+
+  function openModal(key) {
+    const build = detailBuilders.get(key);
+    if (!build) return;
+    modalKey = key;
+    renderModal(build());
+    modal.classList.add("is-open");
+    modalBackdrop.classList.add("is-open");
+    modal.scrollTop = 0;
+  }
+
+  // Po każdym odświeżeniu listy: przerysuj otwarte okno albo zamknij je, gdy przedmiotu już nie ma (sprzedany).
+  function syncModal() {
+    if (modalKey === null) return;
+    const build = detailBuilders.get(modalKey);
+    if (build) renderModal(build());
+    else closeModal();
+  }
+
+  function detailsButton(key) {
+    return actionButton("Szczegóły", "inv-details-btn", `det:${key}`, () => openModal(key));
   }
 
   function iconSlot(group, id, large) {
@@ -311,14 +358,18 @@
     return chipsRow(chips);
   }
 
-  function createWeaponCard(weapon, index) {
-    const equipped = isEquippedWeapon(weapon);
+  function weaponTags(weapon) {
     const tags = [];
     if (TYPE_LABELS[weapon.type]) tags.push(tag(TYPE_LABELS[weapon.type]));
     if (weapon.unique) tags.push(tag("Unikat", "is-unique"));
+    return tags;
+  }
 
+  // Przyciski Wyposaż / Sprzedaj — te same na karcie i w oknie szczegółów (prefix rozróżnia fokus).
+  function weaponActions(weapon, index, focusPrefix) {
+    const equipped = isEquippedWeapon(weapon);
     const actions = [];
-    const equip = actionButton(equipped ? "Wyposażona" : "Wyposaż", equipped ? "inv-equip is-active" : "inv-equip", `eq:w${index}`, () => equipWeapon(index));
+    const equip = actionButton(equipped ? "Wyposażona" : "Wyposaż", equipped ? "inv-equip is-active" : "inv-equip", `${focusPrefix}eq:w${index}`, () => equipWeapon(index));
     equip.disabled = equipped;
     actions.push(equip);
 
@@ -327,17 +378,38 @@
     } else if (weapon.unique) {
       actions.push(tag("Nie do sprzedania", "is-note"));
     } else {
-      actions.push(sellButton(`w:${index}`, weapon.name, weaponSalePrice(weapon), () => sellWeapon(index)));
+      actions.push(sellButton(`w:${index}`, weapon.name, weaponSalePrice(weapon), () => sellWeapon(index), "Sprzedaj", focusPrefix));
     }
+    return actions;
+  }
 
+  function weaponDetailSpec(weapon, index) {
+    const equipped = isEquippedWeapon(weapon);
+    const kinds = ["Broń"];
+    if (TYPE_LABELS[weapon.type]) kinds.push(TYPE_LABELS[weapon.type]);
+    if (weapon.unique) kinds.push("Unikat");
+    return {
+      title: weapon.name,
+      kind: kinds.join(" · "),
+      iconGroup: "weapons",
+      iconId: weapon.id,
+      chips: weaponChips(weapon, { withDelta: !equipped }),
+      rowsTitle: "Po wyposażeniu:",
+      rows: weaponPreviewRows(weapon),
+      text: weapon.description,
+      actions: () => weaponActions(weapon, index, "m:"),
+    };
+  }
+
+  function createWeaponCard(weapon, index) {
+    const equipped = isEquippedWeapon(weapon);
     return buildCard({
       icon: iconSlot("weapons", weapon.id),
       title: weapon.name,
       badge: equipped ? "Wyposażona" : "",
-      tags,
+      tags: weaponTags(weapon),
       chips: weaponChips(weapon, { withDelta: !equipped }),
-      description: createDetails(`w:${weapon.id}`, { title: "Po wyposażeniu:", rows: weaponPreviewRows(weapon), text: weapon.description }),
-      actions,
+      actions: [detailsButton(`w:${weapon.id}`), ...weaponActions(weapon, index, "")],
       equipped,
     });
   }
@@ -347,6 +419,7 @@
     const entries = player.inventory.map((weapon, index) => ({ weapon, index }));
     // Od najsilniejszej (tylko kolejność wyświetlania). Wyposażenie nie przestawia kart.
     entries.sort((a, b) => weaponDamageFor(b.weapon) - weaponDamageFor(a.weapon));
+    entries.forEach(({ weapon, index }) => detailBuilders.set(`w:${weapon.id}`, () => weaponDetailSpec(weapon, index)));
     weapons.replaceChildren(...entries.map(({ weapon, index }) => createWeaponCard(weapon, index)));
     weaponCount.textContent = `(${player.inventory.length})`;
   }
@@ -494,14 +567,39 @@
     ]);
   }
 
-  function createItemCard({ kind, item, index }) {
+  const itemKey = ({ kind, item }) => `${kind}:${item.uid || item.id}`;
+
+  function itemActions({ kind, item, index }, focusPrefix) {
+    const key = itemKey({ kind, item });
+    const equip = actionButton(item.equipped ? "Zdejmij" : "Wyposaż", "inv-equip", `${focusPrefix}eq:${key}`, () => toggleItem(kind, index));
+    const sell = sellButton(key, item.name, itemSalePrice(item), () => sellItem(kind, index), "Sprzedaj", focusPrefix);
+    return [equip, sell];
+  }
+
+  function itemDetailSpec(entry) {
+    const { kind, item } = entry;
     const isAd = kind === "ad";
-    const key = `${kind}:${item.uid || item.id}`;
+    const kinds = [isAd ? "Przedmiot AD" : "Przedmiot AP"];
+    if (item.unique) kinds.push("Unikat");
+    return {
+      title: item.name,
+      kind: kinds.join(" · "),
+      iconGroup: isAd ? "ad-items" : "magic-items",
+      iconId: item.id,
+      chips: itemChips(kind, item),
+      rowsTitle: item.equipped ? "Po zdjęciu:" : "Po wyposażeniu:",
+      rows: itemPreviewRows(kind, item, item.equipped ? -1 : 1),
+      note: !item.equipped && !window.hasFreeItemSlot(kind) ? `Brak wolnego slotu ${isAd ? "AD" : "AP"} — najpierw zdejmij inny przedmiot.` : "",
+      text: item.description,
+      actions: () => itemActions(entry, "m:"),
+    };
+  }
+
+  function createItemCard(entry) {
+    const { kind, item } = entry;
+    const isAd = kind === "ad";
     const tags = [tag(isAd ? "AD" : "AP", isAd ? "is-ad" : "is-ap")];
     if (item.unique) tags.push(tag("Unikat", "is-unique"));
-
-    const equip = actionButton(item.equipped ? "Zdejmij" : "Wyposaż", "inv-equip", `eq:${key}`, () => toggleItem(kind, index));
-    const sell = sellButton(key, item.name, itemSalePrice(item), () => sellItem(kind, index));
 
     return buildCard({
       icon: iconSlot(isAd ? "ad-items" : "magic-items", item.id),
@@ -509,13 +607,7 @@
       badge: item.equipped ? "Wyposażony" : "",
       tags,
       chips: itemChips(kind, item),
-      description: createDetails(key, {
-        title: item.equipped ? "Po zdjęciu:" : "Po wyposażeniu:",
-        rows: itemPreviewRows(kind, item, item.equipped ? -1 : 1),
-        note: !item.equipped && !window.hasFreeItemSlot(kind) ? `Brak wolnego slotu ${isAd ? "AD" : "AP"} — najpierw zdejmij inny przedmiot.` : "",
-        text: item.description,
-      }),
-      actions: [equip, sell],
+      actions: [detailsButton(itemKey(entry)), ...itemActions(entry, "")],
       equipped: item.equipped,
     });
   }
@@ -551,6 +643,7 @@
 
   function renderItems() {
     const all = collectItems();
+    all.forEach((entry) => detailBuilders.set(itemKey(entry), () => itemDetailSpec(entry)));
     renderFilter(all);
     renderBulk(all);
 
@@ -613,6 +706,31 @@
     slotMeter.replaceChildren(...rows);
   }
 
+  // ---- Wysokość list -----------------------------------------------------------
+
+  // Każda lista (bronie, przedmioty) pokazuje ok. 1,5 karty i przewija się w środku,
+  // żeby cała strona ekwipunku nie była długa. Wysokość liczymy z faktycznej wysokości karty.
+  const VISIBLE_CARDS = 1.5;
+
+  function fitList(list) {
+    const card = list.querySelector(".inv-card");
+    if (!card || !card.offsetHeight) {
+      list.style.maxHeight = "";
+      return;
+    }
+    const style = window.getComputedStyle(list);
+    const gap = parseFloat(style.rowGap) || 0;
+    const padding = style.boxSizing === "border-box"
+      ? (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0)
+      : 0;
+    list.style.maxHeight = `${Math.round(card.offsetHeight * VISIBLE_CARDS + gap * 0.5 + padding)}px`;
+  }
+
+  function fitLists() {
+    fitList(weapons);
+    fitList(magicItems);
+  }
+
   // ---- Odświeżanie ----------------------------------------------------------
 
   function refresh() {
@@ -621,10 +739,13 @@
     const focusKey = inventoryScreen.contains(document.activeElement) ? document.activeElement.dataset?.focusKey : null;
 
     money.textContent = `💸 Hajs: ${player.money} $`;
+    detailBuilders.clear();
     renderCurrentWeapon();
     renderWeapons();
     renderSlots();
     renderItems();
+    syncModal();
+    window.requestAnimationFrame(fitLists);
 
     if (focusKey) {
       const target = [...inventoryScreen.querySelectorAll("[data-focus-key]")].find((node) => node.dataset.focusKey === focusKey && !node.disabled);
@@ -635,12 +756,14 @@
 
   function openInventory() {
     clearPending();
+    closeModal();
     filter = "all";
     searchTerm = "";
     searchInput.value = "";
     refresh();
     mainMenu.classList.add("hidden");
     inventoryScreen.classList.remove("hidden");
+    fitLists();
     // Na ekranie dotykowym nie ma najechania, więc podpowiadamy, jak zobaczyć nazwę statystyki.
     const touch = window.matchMedia("(hover: none)").matches;
     showMessage(touch ? "Dotknij ikony statystyki, aby zobaczyć jej nazwę. Pełny podgląd zmian jest w „Szczegóły”." : "Wybierz broń lub przedmiot.");
@@ -648,6 +771,7 @@
 
   function closeInventory() {
     clearPending();
+    closeModal();
     inventoryScreen.classList.add("hidden");
     mainMenu.classList.remove("hidden");
     window.refreshMainMenu();
@@ -656,6 +780,16 @@
   window.refreshInventory = refresh;
   inventoryButton.addEventListener("click", openInventory);
   backButton.addEventListener("click", closeInventory);
+  modalClose.addEventListener("click", closeModal);
+  modalBackdrop.addEventListener("click", closeModal);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isModalOpen()) closeModal();
+  });
+  window.addEventListener("resize", fitLists);
+  // Ikony doładowują się po starcie i mogą zmienić wysokość kart.
+  document.addEventListener("gameicons:ready", () => {
+    if (!inventoryScreen.classList.contains("hidden")) refresh();
+  });
   searchInput.addEventListener("input", () => {
     searchTerm = searchInput.value;
     clearPending();

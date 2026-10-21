@@ -298,6 +298,20 @@
             <div class="inventory-actions">
                 <button id="inventory-back-btn" class="secondary-button" type="button">Wróć do menu</button>
             </div>
+
+            <div id="inv-backdrop" class="inv-backdrop"></div>
+            <aside id="inv-details" class="inv-modal" role="dialog" aria-modal="true" aria-labelledby="inv-details-name">
+                <div class="shop-details-head">
+                    <div class="shop-details-title">
+                        <h3 id="inv-details-name"></h3>
+                        <p id="inv-details-kind"></p>
+                    </div>
+                    <div id="inv-details-icon-slot" class="shop-details-icon-slot"></div>
+                    <button id="inv-details-close" class="modal-close inv-modal-close" type="button" aria-label="Zamknij szczegóły">✕</button>
+                </div>
+                <div id="inv-details-body" class="shop-details-body"></div>
+                <div id="inv-details-actions" class="shop-details-actions"></div>
+            </aside>
         </section>
 
         <section id="battle-screen" class="hidden" aria-live="polite">

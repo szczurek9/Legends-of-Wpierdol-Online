@@ -75,6 +75,8 @@
 /* --- Karty przedmiotów, broni i umiejętności --------------------------------- */
 .inventory-layout .shop-items {
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    /* Zapas, zanim skrypt policzy wysokość ~1,5 karty (patrz fitLists w inventory.js). */
+    max-height: 15rem;
 }
 
 .inv-card {
@@ -179,33 +181,9 @@
     align-items: center;
 }
 
-/* Opis rozwijany przy kliknięciu; stan zapamiętuje skrypt. */
-.inv-desc {
-    margin-top: 0.375rem;
-    font-size: 0.875rem;
-}
-
-.inv-desc summary {
-    width: fit-content;
-    padding: 0.25rem 0;
-    color: var(--text-muted);
-    cursor: pointer;
-}
-
 .inv-details-title {
-    margin-bottom: 0.25rem;
+    margin: 0;
     color: var(--text-muted);
-}
-
-.inv-desc .shop-stat-rows {
-    margin: 0.25rem 0 0.5rem;
-}
-
-.inv-desc p {
-    margin: 0.25rem 0 0;
-    color: var(--text-color);
-    font-size: 0.875rem;
-    line-height: 1.4;
 }
 
 /* Przyciski akcji: w jednym rzędzie na dole karty. */
@@ -401,4 +379,83 @@
     font-size: 0.7em;
     opacity: 0.85;
     white-space: nowrap;
+}
+
+/* --- Przycisk „Szczegóły” na karcie ------------------------------------------------ */
+.inv-card-actions .inv-details-btn {
+    flex: 0 0 100%;
+}
+
+/* --- Okno szczegółów (telefon i komputer) ------------------------------------------ */
+.inv-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 19;
+    display: none;
+    background: rgba(0, 0, 0, 0.65);
+}
+
+.inv-backdrop.is-open {
+    display: block;
+}
+
+.inv-modal {
+    position: fixed;
+    z-index: 20;
+    top: 50%;
+    right: 0.75rem;
+    left: 0.75rem;
+    display: none;
+    box-sizing: border-box;
+    max-width: 26rem;
+    max-height: calc(100dvh - 1.5rem);
+    margin: 0 auto;
+    padding: 1rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateY(-50%);
+    border: 1px solid var(--shop-border-color);
+    border-radius: 6px;
+    background: var(--shop-card-background);
+}
+
+.inv-modal.is-open {
+    display: block;
+}
+
+.inv-modal h3 {
+    margin: 0 0 0.25rem;
+    text-align: left;
+}
+
+.inv-modal .shop-details-title p {
+    margin: 0;
+}
+
+.inv-modal .shop-details-icon {
+    width: 5rem;
+    height: 5rem;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 8px;
+    background: var(--shop-info-background);
+}
+
+.inv-modal .shop-details-icon .game-icon-glyph {
+    font-size: 2.5rem;
+}
+
+.inv-modal-close {
+    flex: none;
+}
+
+.inv-modal .shop-details-actions button,
+.inv-modal .shop-details-actions .inv-tag {
+    min-height: 2.5rem;
+}
+
+.inv-modal .shop-details-actions .inv-tag {
+    display: grid;
+    place-items: center;
 }
