@@ -1,6 +1,6 @@
 # Legends of Wpierdol — Online (JS Edition)
 
-**[🎮 Zagraj teraz (Wersja Live)](https://legendsofwpierdol-online.pages.dev/)** | **[📖 Oficjalne Wiki gry](https://legendsofwpierdol-online.pages.dev/wiki)** | **[Profil TikTok gry](https://www.tiktok.com/@legendsofwpierdol)**
+**[🎮 Zagraj teraz (Wersja Live)](https://legendsofwpierdol-online.pages.dev/)** | **[📖 Oficjalne Wiki gry](https://legendsofwpierdol-online.pages.dev/wiki)** | **[Profil TikTok gry](https://www.tiktok.com/@legendsofwpierdol)** | **[Discord](https://discord.gg/CYDWgR5Z2H)**
 
 Przeglądarkowa gra RPG z turowym systemem walki, napisana w całości w czystym JavaScript (Vanilla JS). Wybierz swoją klasę, rozbudowuj statystyki, kupuj wyposażenie i przebijaj się przez 50 poziomów pełnych popkulturowych bossów oraz memicznych przeciwników. Gra stawia na zaskakująco rozbudowaną matematykę statystyk — odpowiednie zarządzanie penetracją pancerza, lifestealem i cooldownami jest tu kluczem do przetrwania. Pełen opis mechanik i wzorów matematycznych znajdziesz na [Wiki gry](https://legendsofwpierdol-online.pages.dev/wiki).
 
