@@ -209,7 +209,7 @@
     const def = byId.get(id);
     if (!def || !window.showToast) return;
     if (def.tier === "P") {
-      window.showToast(`🏆 PLATYNA! ${def.name} — odblokowano wszystkie osiągnięcia!`, "success", 8000);
+      window.showToast(`🏆 LEGENDARNE! ${def.name} — odblokowano wszystkie osiągnięcia!`, "success", 8000);
       return;
     }
     const reward = spOf(def) > 0 ? ` (+${spOf(def)} SP)` : "";

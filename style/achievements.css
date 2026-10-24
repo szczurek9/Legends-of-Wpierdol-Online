@@ -23,6 +23,16 @@
     gap: 0.5rem;
 }
 
+/* Lista przewija się w środku ekranu; nagłówek, status i przycisk powrotu zostają na miejscu. */
+#achievements-list {
+    max-height: clamp(14rem, calc(100dvh - 17rem), 36rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    padding-right: 0.25rem;
+    margin-bottom: 0.75rem;
+}
+
 .ach-summary {
     font-weight: 700;
     text-align: right;
@@ -131,7 +141,7 @@
     color: var(--good);
 }
 
-/* Platyna: osobna, szeroka karta z animowaną tęczową ramką. */
+/* Legendarne: osobna, szeroka karta ze złoto-czerwoną, animowaną ramką. */
 @property --ach-angle {
     syntax: "<angle>";
     initial-value: 0deg;
@@ -147,13 +157,13 @@
     border: 3px solid transparent;
     background:
         linear-gradient(var(--shop-card-background), var(--shop-card-background)) padding-box,
-        conic-gradient(from var(--ach-angle), #ff2e93, #ffb300, #fff176, #3df5ff, #a259ff, #ff2e93) border-box;
+        conic-gradient(from var(--ach-angle), #ffe27a, #ffb300, #e5321c, #a30f14, #e5321c, #ffb300, #ffe27a) border-box;
     animation: ach-spin 4s linear infinite;
 }
 
 .ach-P .ach-name {
     font-size: 1.3rem;
-    background: linear-gradient(90deg, #ff2e93, #ffb300, #fff176, #3df5ff, #a259ff);
+    background: linear-gradient(90deg, #ffe27a, #ffb300, #e5321c);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -165,7 +175,7 @@
 }
 
 .ach-P.is-unlocked {
-    box-shadow: 0 0 22px -2px #ffb300, 0 0 40px -8px #a259ff;
+    box-shadow: 0 0 22px -2px #ffb300, 0 0 40px -8px #e5321c;
 }
 
 @keyframes ach-spin {

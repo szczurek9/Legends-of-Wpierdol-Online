@@ -3,7 +3,7 @@
     "E": { "label": "Łatwe", "sp": 0 },
     "M": { "label": "Średnie", "sp": 0 },
     "H": { "label": "Trudne", "sp": 1 },
-    "P": { "label": "Platyna", "sp": 5 }
+    "P": { "label": "Legendarne", "sp": 5 }
   },
   "sections": [
     { "id": "progress", "title": "Postęp" },
