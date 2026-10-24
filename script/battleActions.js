@@ -144,6 +144,7 @@
       superCritical,
       overkill: result.overkill,
       overkillArmorBreak: primalReady,
+      missed: false,   // bez tego zostawała stara wartość z poprzedniego chybienia
       playerMessage: `${playerMessage}${fourthJhinAttack ? " Czwarty atak Jhina!" : ""}${jhinAutoReleaseDamage > 0 ? ` Pula Pistoletu Jhina uwalnia się automatycznie, zadając ${jhinAutoReleaseDamage} obrażeń!` : ""}`,
       message: playerMessage,
     };
@@ -242,6 +243,7 @@
     // automatically detonates for bonus true-ish damage and self-heal.
     if (M.classId() === "tank" && rage >= M.currentWeaponDamage() * 1.5) {
       const rageDamage = M.physicalDamage(rage * 0.70, nextState.enemyArmor, player.armorPenetration);
+      nextState.rageBurst = Math.max(nextState.rageBurst || 0, Math.min(rageDamage, nextState.enemyHealth));   // dla osiągnięć
       nextState.enemyHealth = Math.max(0, nextState.enemyHealth - rageDamage);
       player.healthPoints = M.clamp(player.healthPoints + Math.floor(rage * 0.35), 0, player.maxHealthPoints);
       nextState.effects.rageArmor = Math.floor(rage * 0.05);
@@ -330,6 +332,7 @@
       next = result.state;
       window.player.healthPoints = M.clamp(window.player.healthPoints + Math.floor(state.rage * 0.3), 0, window.player.maxHealthPoints);
       next.rage = 0;
+      next.rageBurst = Math.max(next.rageBurst || 0, result.dealt);   // dla osiągnięć
       message = `Skumulowany Gniew zadaje ${result.dealt} magicznych obrażeń.`;
     } else if (ability.id === "ironTaunt") {
       next = { ...state, effects: { ...state.effects, ironTaunt: 2, accuracy: 25, accuracyTurns: 2 } };

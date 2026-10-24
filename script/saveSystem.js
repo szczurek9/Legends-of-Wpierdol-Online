@@ -131,6 +131,16 @@
     if (typeof player.arenaCooldownUntil !== "number") player.arenaCooldownUntil = 0;
     if (typeof player.arenaEscapeLockUntil !== "number") player.arenaEscapeLockUntil = 0;
 
+    // Osiągnięcia: starsze zapisy ich nie mają i ich nie zdobywają (trzeba założyć nową grę po zalogowaniu).
+    if (typeof player.achievementsEnabled !== "boolean") player.achievementsEnabled = false;
+    if (typeof player.achievementSpGranted !== "number" || !(player.achievementSpGranted >= 0)) player.achievementSpGranted = 0;
+    const defaultRun = window.createAchievementRun();
+    if (!player.achRun || typeof player.achRun !== "object") player.achRun = defaultRun;
+    if (typeof player.achRun.fistsOnly !== "boolean") player.achRun.fistsOnly = defaultRun.fistsOnly;
+    if (typeof player.achRun.noItems !== "boolean") player.achRun.noItems = defaultRun.noItems;
+    if (typeof player.achRun.escapes !== "number" || !(player.achRun.escapes >= 0)) player.achRun.escapes = 0;
+    if (typeof player.achRun.potionFreeLevels !== "number" || !(player.achRun.potionFreeLevels >= 0)) player.achRun.potionFreeLevels = 0;
+
     return player;
   }
 

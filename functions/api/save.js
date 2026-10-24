@@ -1,6 +1,6 @@
 // GET /api/save — pobiera zapis zalogowanego gracza.
 // PUT /api/save — zapisuje (nadpisuje) zapis zalogowanego gracza.
-// DELETE /api/save — trwale usuwa dane gracza z bazy (ID, nazwa, zapis) i wylogowuje.
+// DELETE /api/save — trwale usuwa dane gracza z bazy (ID, nazwa, zapis, osiągnięcia) i wylogowuje.
 // Zapis to ten sam kod base64, który gracz może skopiować ręcznie.
 // Serwer tylko go przechowuje i sprawdza kształt; pełną walidację gry robi
 // klient przy wczytywaniu (SaveSystem.loadSaveCode).
@@ -72,6 +72,16 @@ export async function onRequestDelete({ request, env }) {
   if (!isSameOrigin(request)) return json({ error: "forbidden" }, 403);
 
   await env.DB.prepare("DELETE FROM saves WHERE user_id = ?").bind(session.userId).run();
+  // Osiągnięcia i ich postęp też należą do danych konta. Błąd (np. tabele jeszcze nie istnieją)
+  // nie może blokować usunięcia zapisu.
+  try {
+    await env.DB.batch([
+      env.DB.prepare("DELETE FROM achievements WHERE user_id = ?").bind(session.userId),
+      env.DB.prepare("DELETE FROM achievement_progress WHERE user_id = ?").bind(session.userId),
+    ]);
+  } catch (error) {
+    // brak tabel osiągnięć — nic do usunięcia
+  }
 
   return new Response(JSON.stringify({ ok: true }), {
     headers: {

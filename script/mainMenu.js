@@ -44,6 +44,9 @@ function refreshMainMenu() {
 
   const arenaBtn = document.getElementById("arena-btn");
   if (arenaBtn) arenaBtn.classList.toggle("hidden", window.player.level < (window.Arena?.UNLOCK_LEVEL ?? 30));
+
+  // Osiągnięcia zależne od stanu postaci (skórki, bronie, poziom) sprawdzamy przy każdym odświeżeniu menu.
+  window.Achievements?.onMenuRefresh();
 }
 
 function showMainMenu() {
@@ -236,6 +239,8 @@ startButton.addEventListener("click", () => {
     window.player.maxManaPoints = 200;
     window.player.manaPoints = 200;
   }
+  // Osiągnięcia ma tylko postać założona po zalogowaniu przez Discord.
+  window.Achievements?.markNewGame();
   showMainMenu();
   // Nowa postać: pytamy, czy pokazać samouczek (tylko jeśli gracz jeszcze go nie przeszedł / nie odrzucił).
   window.Tutorial?.offer();

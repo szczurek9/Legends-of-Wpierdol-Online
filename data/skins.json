@@ -7,7 +7,9 @@
     "collection": "no",
     "modelAlive": "res/skins/player_model.png",
     "modelDead": "res/skins/player_model.png",
-    "sellable": false
+    "sellable": false,
+    "gender": "none",
+    "achivement-countable": false
   },
   {
     "id": "skin1",
@@ -17,7 +19,9 @@
     "collection": "no",
     "modelAlive": "res/skins/sa1.png",
     "modelDead": "res/skins/sd1.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "none",
+    "achivement-countable": false
   },
   {
     "id": "skin2",
@@ -27,7 +31,9 @@
     "collection": "Social Media",
     "modelAlive": "res/skins/sa2.png",
     "modelDead": "res/skins/sd2.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
   },
   {
     "id": "skin3",
@@ -37,7 +43,9 @@
     "collection": "no",
     "modelAlive": "res/skins/sa4.png",
     "modelDead": "res/skins/sd4.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
   },
   {
     "id": "skin4",
@@ -47,7 +55,9 @@
     "collection": "Social Media",
     "modelAlive": "res/skins/sa5.png",
     "modelDead": "res/skins/sd5.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "female",
+    "achivement-countable": true
   },
   {
     "id": "skin5",
@@ -57,7 +67,9 @@
     "collection": "Devil May Cry",
     "modelAlive": "res/skins/sa6.png",
     "modelDead": "res/skins/sd6.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
   },
   {
     "id": "skin6",
@@ -67,7 +79,9 @@
     "collection": "Cyberpunk Edgerunners",
     "modelAlive": "res/skins/sa7.png",
     "modelDead": "res/skins/sd7.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
   },
   {
     "id": "skin7",
@@ -77,7 +91,9 @@
     "collection": "Cyberpunk Edgerunners",
     "modelAlive": "res/skins/sa8.png",
     "modelDead": "res/skins/sd8.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "female",
+    "achivement-countable": true
   },
   {
     "id": "skin8",
@@ -87,7 +103,9 @@
     "collection": "Brainrot",
     "modelAlive": "res/skins/sa9.png",
     "modelDead": "res/skins/sd9.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
   },
   {
     "id": "skin9",
@@ -97,7 +115,9 @@
     "collection": "Memy",
     "modelAlive": "res/skins/sa10.png",
     "modelDead": "res/skins/sd10.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
   },
   {
     "id": "skin10",
@@ -107,7 +127,9 @@
     "collection": "Dragon Ball",
     "modelAlive": "res/skins/sa11.png",
     "modelDead": "res/skins/sd11.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
   },
   {
     "id": "skin11",
@@ -117,7 +139,9 @@
     "collection": "Memy",
     "modelAlive": "res/skins/sa12.png",
     "modelDead": "res/skins/sd12.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
   },
   {
     "id": "skin12",
@@ -127,7 +151,9 @@
     "collection": "League of Legends",
     "modelAlive": "res/skins/sa13.png",
     "modelDead": "res/skins/sd13.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "female",
+    "achivement-countable": true
   },
     {
     "id": "skin13",
@@ -137,7 +163,9 @@
     "collection": "Doki Doki Literature Club",
     "modelAlive": "res/skins/sa14.png",
     "modelDead": "res/skins/sd14.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "female",
+    "achivement-countable": true
   },
   {
     "id": "skin14",
@@ -147,7 +175,9 @@
     "collection": "Doki Doki Literature Club",
     "modelAlive": "res/skins/sa15.png",
     "modelDead": "res/skins/sd15.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "female",
+    "achivement-countable": true
   },
   {
     "id": "skin15",
@@ -157,7 +187,9 @@
     "collection": "Genshin Impact",
     "modelAlive": "res/skins/sa16.png",
     "modelDead": "res/skins/sd16.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "female",
+    "achivement-countable": true
   },
   {
     "id": "skin16",
@@ -167,7 +199,9 @@
     "collection": "Genshin Impact",
     "modelAlive": "res/skins/sa17.png",
     "modelDead": "res/skins/sd17.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "female",
+    "achivement-countable": true
   },
   {
     "id": "skin17",
@@ -177,7 +211,9 @@
     "collection": "League of Legends",
     "modelAlive": "res/skins/sa18.png",
     "modelDead": "res/skins/sd18.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "female",
+    "achivement-countable": true
   },
   {
     "id": "skin18",
@@ -187,7 +223,9 @@
     "collection": "Social Media",
     "modelAlive": "res/skins/sa19.png",
     "modelDead": "res/skins/sd19.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
   },
   {
     "id": "skin19",
@@ -197,7 +235,9 @@
     "collection": "Doki Doki Literature Club",
     "modelAlive": "res/skins/sa20.png",
     "modelDead": "res/skins/sd20.png",
-    "sellable": true
+    "sellable": true,
+    "gender": "female",
+    "achivement-countable": true
   },
   {
     "id": "skin20",
@@ -207,7 +247,9 @@
     "collection": "Doki Doki Literature Club",
     "modelAlive": "res/skins/sa21.png",
     "modelDead": "res/skins/sd21.png",
-    "sellable": false
+    "sellable": false,
+    "gender": "female",
+    "achivement-countable": true
   }
 
 ]

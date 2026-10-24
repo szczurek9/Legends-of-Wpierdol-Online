@@ -76,6 +76,9 @@
     } catch (error) {
       me = { loggedIn: false };
     }
+    // Osiągnięcia dowiadują się stąd, czy ktoś jest zalogowany (ten plik ładuje się wcześniej niż achievements.js).
+    window.LowCloudStatus = { loggedIn: Boolean(me.loggedIn) };
+    window.Achievements?.setCloudStatus(window.LowCloudStatus);
     render();
   }
 

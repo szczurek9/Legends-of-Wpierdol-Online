@@ -1,5 +1,5 @@
 // Wersja gry — zmieniaj tylko tutaj (pokazuje się w stopce strony).
-window.GAME_VERSION = "1.0.1";
+window.GAME_VERSION = "1.0.2";
 (function showGameVersion() {
   const element = document.getElementById("game-version");
   if (element) element.textContent = `v${window.GAME_VERSION}`;
@@ -16,6 +16,16 @@ window.isKnownTheme = function (theme) {
 window.normalizeTheme = function (theme) {
   if (window.THEME_IDS.includes(theme)) return theme;
   return window.LEGACY_THEMES[theme] || window.DEFAULT_THEME;
+};
+
+// Liczniki przebiegu postaci potrzebne osiągnięciom (zapisywane razem z postacią).
+window.createAchievementRun = function () {
+  return {
+    fistsOnly: true,          // żadna walka nie odbyła się z inną bronią niż Pięści
+    noItems: true,            // żadna walka nie odbyła się z przedmiotem AD/AP
+    escapes: 0,               // ile razy użyto ucieczki w kampanii
+    potionFreeLevels: 0,      // poziomy z rzędu ukończone bez mikstury
+  };
 };
 
 window.createDefaultPlayer = function () {
@@ -71,6 +81,10 @@ window.createDefaultPlayer = function () {
     usedEscape: false,
     arenaCooldownUntil: 0,     // ms (Date.now()) do kiedy trwa cooldown areny
     arenaEscapeLockUntil: 0,   // ms do kiedy trwa blokada po ucieczce
+    // Osiągnięcia (tylko zapisy założone po zalogowaniu przez Discord).
+    achievementsEnabled: false,  // true = ta postać zdobywa osiągnięcia
+    achievementSpGranted: 0,     // ile SP za osiągnięcia ta postać już dostała
+    achRun: window.createAchievementRun(),
   };
 };
 

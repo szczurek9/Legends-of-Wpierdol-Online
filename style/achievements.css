@@ -1,0 +1,179 @@
+/* Osiągnięcia: ekran jak sklep/skiny, karty bez ikon, kolor ramki = trudność. */
+#achievements-screen {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1rem;
+    border: 1px solid var(--shop-border-color);
+    background: var(--shop-page-background);
+    border-radius: 0.75rem;
+    box-shadow: inset 0 0 0 1px var(--border-soft);
+}
+
+@media (max-width: 760px) {
+    #achievements-screen {
+        padding: 0.65rem;
+    }
+}
+
+/* Dwa przyciski obok siebie w karcie postaci: skiny i osiągnięcia. */
+.hero-buttons {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.ach-summary {
+    font-weight: 700;
+    text-align: right;
+}
+
+.ach-summary small {
+    display: block;
+    font-weight: 400;
+    color: var(--text-muted);
+}
+
+.ach-section-title {
+    margin: 1rem 0 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.ach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.5rem;
+}
+
+/* Kolory trudności: E niebieski, M pomarańczowy, H czerwony. Sekret = szary do odblokowania. */
+.ach-card {
+    --ach-color: #8a93a8;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.25rem;
+    box-sizing: border-box;
+    padding: 0.6rem 0.7rem;
+    border: 2px solid var(--ach-color);
+    border-radius: 6px;
+    background: var(--shop-card-background);
+}
+
+.ach-E { --ach-color: #3d8bff; }
+.ach-M { --ach-color: #ff9a2e; }
+.ach-H { --ach-color: #ff4d4d; }
+.ach-secret { --ach-color: #8a93a8; border-style: dashed; }
+
+.ach-card.is-locked {
+    opacity: 0.62;
+}
+
+.ach-card.is-unlocked {
+    box-shadow: 0 0 0 1px var(--ach-color), 0 0 14px -3px var(--ach-color);
+}
+
+.ach-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.ach-name {
+    margin: 0;
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
+}
+
+.ach-tier {
+    flex: none;
+    padding: 0 0.4rem;
+    border: 1px solid var(--ach-color);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ach-color);
+}
+
+.ach-desc {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.ach-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.25rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.ach-class {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.ach-reward {
+    font-weight: 700;
+    color: var(--ach-color);
+}
+
+.ach-done {
+    font-weight: 700;
+    color: var(--good);
+}
+
+/* Platyna: osobna, szeroka karta z animowaną tęczową ramką. */
+@property --ach-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.ach-platinum {
+    margin-bottom: 0.75rem;
+}
+
+.ach-P {
+    --ach-color: #ffd34d;
+    border: 3px solid transparent;
+    background:
+        linear-gradient(var(--shop-card-background), var(--shop-card-background)) padding-box,
+        conic-gradient(from var(--ach-angle), #ff2e93, #ffb300, #fff176, #3df5ff, #a259ff, #ff2e93) border-box;
+    animation: ach-spin 4s linear infinite;
+}
+
+.ach-P .ach-name {
+    font-size: 1.3rem;
+    background: linear-gradient(90deg, #ff2e93, #ffb300, #fff176, #3df5ff, #a259ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.ach-P.is-locked {
+    opacity: 0.8;
+    filter: saturate(0.6);
+}
+
+.ach-P.is-unlocked {
+    box-shadow: 0 0 22px -2px #ffb300, 0 0 40px -8px #a259ff;
+}
+
+@keyframes ach-spin {
+    to { --ach-angle: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ach-P {
+        animation: none;
+    }
+}

@@ -39,6 +39,7 @@
     <link rel="stylesheet" href="style/shop.css">
     <link rel="stylesheet" href="style/inventory.css">
     <link rel="stylesheet" href="style/skins.css">
+    <link rel="stylesheet" href="style/achievements.css">
     <link rel="stylesheet" href="style/responsive.css">
     <link rel="stylesheet" href="style/modals.css">
     <link rel="stylesheet" href="style/utilities.css">
@@ -84,7 +85,10 @@
                 <div class="hero-portrait">
                     <img src="res/skins/player_model.png" alt="Postać gracza">
                 </div>
-                <button id="change-playerModel" type="button">👁️ Zmień skina</button>
+                <div class="hero-buttons">
+                    <button id="change-playerModel" type="button">👁️ Zmień skina</button>
+                    <button id="achievements-btn" type="button">🏆 Osiągnięcia</button>
+                </div>
             </section>
 
             <section id="main-playerSummary" aria-label="Statystyki gracza">
@@ -246,6 +250,19 @@
 
             <div id="skin-message" class="shop-message" aria-live="polite">Wybierz skina.</div>
             <button id="skin-back-btn" class="secondary-button" type="button">Wróć do menu</button>
+        </section>
+
+        <section id="achievements-screen" class="hidden" aria-live="polite">
+            <div class="shop-header">
+                <div>
+                    <span class="eyebrow">ONLINE</span>
+                    <h2>Osiągnięcia</h2>
+                </div>
+                <div id="achievements-summary" class="ach-summary"></div>
+            </div>
+            <p id="achievements-status" class="screen-message" aria-live="polite"></p>
+            <div id="achievements-list"></div>
+            <button id="achievements-back-btn" class="secondary-button" type="button">Wróć do menu</button>
         </section>
 
         <section id="inventory-screen" class="hidden" aria-live="polite">
@@ -518,6 +535,7 @@
     <script src="script/shop.js"></script>
     <script src="script/inventory.js"></script>
     <script src="script/skins.js"></script>
+    <script src="script/achievements.js"></script>
     <script src="script/battleMath.js"></script>
     <script src="script/battleState.js"></script>
     <script src="script/battleActions.js"></script>

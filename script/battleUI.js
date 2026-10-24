@@ -81,8 +81,13 @@
 
   function beginAction() {
     pendingFx = { hp: window.player.healthPoints, enemyHp: state.enemyHealth };
+    // Osiągnięcia: akcja wykonana przez Auto-walkę na 3× i to, czy wróg miał pełne HP.
+    window.Achievements?.onAction({
+      autoAtMax: autoActing && AUTO_SPEEDS[autoSpeedIndex] === 3,
+      enemyFull: state.enemyHealth >= state.enemyMaxHealth,
+    });
     // Flagi z poprzedniej akcji nie mogą przeciekać do nowej.
-    state = { ...state, critical: false, superCritical: false, enemyCritical: false, enemyHit: null };
+    state = { ...state, critical: false, superCritical: false, enemyCritical: false, enemyHit: null, rageBurst: 0 };
   }
 
   function spawnFloat(box, kind, text, options = {}) {
@@ -161,6 +166,7 @@
       finish("Przegrywasz w arenie. Brak nagrody, cooldown areny uruchomiony.", "danger");
       return;
     }
+    window.Achievements?.onPlayerDeath(state);
     stopAuto();
     refs.actions.classList.add("hidden");
     refs.escapeButton.classList.add("hidden");
@@ -227,6 +233,7 @@
     window.SaveSystem.captureBattleState();
     state = window.BattleSystem.start(window.player.level);
     showBattleScreen();
+    if (!state.finished) window.Achievements?.onBattleStart({ arena: false });
 
     if (state.finished) {
       refs.battleTitle.textContent = "Koniec gry";
@@ -310,11 +317,19 @@
     scheduleAuto(250);
   }
 
+  // Osiągnięcia odróżniają akcje Auto-walki od ręcznych (Leniwiec).
+  let autoActing = false;
+
   function runAutoAction(action) {
-    if (action.kind === "potion") usePotion(action.id);
-    else if (action.kind === "weapon") useWeaponAbility();
-    else if (action.kind === "ability") useAbility(action.id);
-    else attack();
+    autoActing = true;
+    try {
+      if (action.kind === "potion") usePotion(action.id);
+      else if (action.kind === "weapon") useWeaponAbility();
+      else if (action.kind === "ability") useAbility(action.id);
+      else attack();
+    } finally {
+      autoActing = false;
+    }
   }
 
   function autoStep() {
@@ -386,12 +401,18 @@
     const bot = window.Arena.buildBot(difficultyId);             // po beginArena, liczy z maks. HP gracza
     state = window.BattleSystem.startArena(bot);
     showBattleScreen();
+    window.Achievements?.onBattleStart({ arena: true });
     renderAll();
     showMessage(`Arena (${window.Arena.DIFFICULTIES[difficultyId].label}): wybierz akcję.`);
   }
 
   function finishArena() {
     const result = window.Arena.settle(state);
+    // Zdrowie areny trzeba odczytać przed endArena(), bo ta przywraca stan kampanii.
+    window.Achievements?.onArenaWin({
+      difficulty: state.arenaEnemy?.arena?.difficulty,
+      fullHp: window.player.healthPoints >= window.player.maxHealthPoints,
+    });
     window.SaveSystem.endArena({ reward: result.reward, cooldownMs: window.Arena.COOLDOWN_MS });
     finish(`Arena ukończona! Obrażenia: ${result.taken} (oczekiwane ${Math.round(result.expectedLoss)}), tury: ${result.turns} (par ${result.parTurns.toFixed(1)}). Mnożnik wykonania ×${result.performance.toFixed(2)}. Nagroda: ${result.reward} $.`, "success");
   }
@@ -402,6 +423,7 @@
   // difference between the two call sites: ability/potion kills also hide
   // those panels during the pause, while a plain attack kill does not.
   function resolveEnemyDefeated(message, hideAbilitiesAndPotions) {
+    window.Achievements?.onEnemyDefeated(state);
     window.player.money += window.BattleState.enemyOf(state).reward;
     isTransitioning = true;
     refs.actions.classList.add("hidden");
@@ -420,6 +442,7 @@
       if (state.arenaWon) {
         finishArena();
       } else if (state.levelUp) {
+        window.Achievements?.onLevelComplete(state);
         finish(`${message} ${state.message} Otrzymujesz nagrodę: ${state.reward} $.`, "success");
       } else {
         refs.actions.classList.remove("hidden");
@@ -434,9 +457,11 @@
 
   function attack() {
     if (!canAct()) return;
+    const wasFocused = Boolean(state.focusMark);
     beginAction();
     const attackResult = window.BattleSystem.attack(state);
     state = attackResult;
+    window.Achievements?.onAttack(attackResult, { focused: wasFocused });
 
     if (attackResult.enemyDefeated) {
       resolveEnemyDefeated(UI.formatPlayerAttack(attackResult), false);
@@ -473,6 +498,7 @@
     if (!canAct()) return;
     beginAction();
     const result = window.BattleSystem.useAbility(state, abilityId);
+    window.Achievements?.onAbility(abilityId, result);
     actionResult(result, result.message);
   }
 
@@ -480,6 +506,7 @@
     if (!canAct()) return;
     beginAction();
     const result = window.BattleSystem.usePotion(state, potionId);
+    window.Achievements?.onPotion();
     state = result;
     renderAll();
     showMessage(result.message, "success");
@@ -553,6 +580,7 @@
       return;
     }
 
+    window.Achievements?.onEscape();
     isTransitioning = true;
     state = { ...state, escaped: true, finished: true };
     renderAll();

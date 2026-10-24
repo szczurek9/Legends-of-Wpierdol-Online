@@ -1,0 +1,53 @@
+{
+  "tiers": {
+    "E": { "label": "Łatwe", "sp": 0 },
+    "M": { "label": "Średnie", "sp": 0 },
+    "H": { "label": "Trudne", "sp": 1 },
+    "P": { "label": "Platyna", "sp": 5 }
+  },
+  "sections": [
+    { "id": "progress", "title": "Postęp" },
+    { "id": "challenges", "title": "Wyzwania" },
+    { "id": "class", "title": "Klasowe" },
+    { "id": "arena", "title": "Arena" },
+    { "id": "collection", "title": "Kolekcja" }
+  ],
+  "achievements": [
+    { "id": "firstBlood", "section": "progress", "tier": "E", "name": "Pierwsza krew", "description": "Wygraj pierwszą walkę." },
+    { "id": "legendBegins", "section": "progress", "tier": "E", "name": "Początek Legendy", "description": "Pokonaj 3 pierwszych bossów (poziomy 5, 10 i 15)." },
+    { "id": "crabWinner", "section": "progress", "tier": "H", "name": "Krab Zwycięzca", "description": "Pokonaj Scuttle Crab (poziom 50)." },
+    { "id": "versatile", "section": "progress", "tier": "H", "name": "Wszechstronny", "description": "Ukończ poziom 50 każdą z 5 klas.", "progress": { "type": "set", "key": "classesCleared", "goal": 5 } },
+
+    { "id": "fistfighter", "section": "challenges", "tier": "M", "name": "Pięściarz", "description": "Dojdź do poziomu 10 tylko na Pięściach (nie dotyczy Maga)." },
+    { "id": "noFear", "section": "challenges", "tier": "H", "name": "\"I fear no man.\"", "description": "Dojdź do poziomu 15 bez użycia ucieczki." },
+    { "id": "noPotions", "section": "challenges", "tier": "E", "name": "Bez mikstur", "description": "Ukończ 10 poziomów z rzędu bez żadnej mikstury.", "progress": { "type": "potionStreak", "goal": 10 } },
+    { "id": "untouchable", "section": "challenges", "tier": "H", "name": "Nietykalny", "description": "Wygraj walkę z bossem, nie tracąc ani HP." },
+    { "id": "edgerunner", "section": "challenges", "tier": "M", "name": "Edgerunner", "description": "Wygraj walkę z mniej niż 15% HP." },
+    { "id": "oneTap", "section": "challenges", "tier": "M", "name": "OneTap", "description": "Pokonaj falę bossa jednym atakiem." },
+    { "id": "lazy", "section": "challenges", "tier": "E", "name": "Leniwiec", "description": "Ukończ 5 poziomów w Auto-walce na 3×.", "progress": { "type": "counter", "key": "autoLevels", "goal": 5 } },
+    { "id": "shame", "section": "challenges", "tier": "M", "name": "Hańba", "description": "Umrzyj, nie zadając przeciwnikowi żadnych obrażeń.", "secret": true },
+    { "id": "waitingInLine", "section": "challenges", "tier": "H", "name": "Czekasz w kolejce", "description": "Pokonaj Steam Support.", "secret": true },
+    { "id": "hardcore", "section": "challenges", "tier": "H", "name": "Hardcore", "description": "Ukończ poziom 50 bez żadnych przedmiotów AD ani AP (broń i umiejętności klasowe są dozwolone)." },
+
+    { "id": "assassinOverkill", "section": "class", "tier": "E", "class": "assassin", "name": "Zabójca", "description": "Odpal 10 razy ignorowanie pancerza z Overkilla.", "progress": { "type": "counter", "key": "overkillProcs", "goal": 10 } },
+    { "id": "mageMana", "section": "class", "tier": "M", "class": "mage", "name": "Mag", "description": "Wygraj walkę, kończąc z mniej niż 10% many." },
+    { "id": "tankRage", "section": "class", "tier": "M", "class": "tank", "name": "Tank", "description": "Zdetonuj Gniew na ponad 800 obrażeń naraz." },
+    { "id": "samuraiStreak", "section": "class", "tier": "H", "class": "samurai", "name": "Samurai", "description": "Traf 12 ataków pod rząd w jednej walce." },
+    { "id": "archerFocus", "section": "class", "tier": "M", "class": "archer", "name": "Łucznik", "description": "Zadaj 5 ataków wzmocnionych Nieokiełznanym Skupieniem w jednej walce." },
+
+    { "id": "arenaFirst", "section": "arena", "tier": "E", "name": "Do areny, marsz", "description": "Wygraj pierwszą walkę w Arenie (odblokowanie na poziomie 30)." },
+    { "id": "threeCrowns", "section": "arena", "tier": "E", "name": "Trzy korony", "description": "Wygraj w Arenie na Łatwym, Średnim i Trudnym.", "progress": { "type": "set", "key": "arenaDifficulties", "goal": 3 } },
+    { "id": "gladiator", "section": "arena", "tier": "M", "name": "Gladiator", "description": "Wygraj w Arenie na Trudnym z pełnym zdrowiem." },
+
+    { "id": "gambler", "section": "collection", "tier": "M", "name": "Hazardzista", "description": "Wylosuj Yamato albo Pistolet Jhina z lootboxa." },
+    { "id": "uniqueCollector", "section": "collection", "tier": "M", "name": "Kolekcjoner unikatów", "description": "Miej oba: Yamato i Pistolet Jhina.", "progress": { "type": "uniqueWeapons", "goal": 2 } },
+    { "id": "wardrobe", "section": "collection", "tier": "M", "name": "Szafiarz", "description": "Posiadaj 8 skórek.", "progress": { "type": "skins", "goal": 8 } },
+    { "id": "masterGooner", "section": "collection", "tier": "M", "name": "Master Gooner", "description": "Posiadaj 5 damskich skórek.", "progress": { "type": "femaleSkins", "goal": 5 }, "secret": true }
+  ],
+  "platinum": {
+    "id": "legend",
+    "tier": "P",
+    "name": "Legenda Wpierdolu",
+    "description": "Odblokuj wszystkie pozostałe osiągnięcia."
+  }
+}
