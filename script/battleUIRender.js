@@ -223,7 +223,45 @@
     return parts.join(", ");
   }
 
-  function renderAbilities(refs, state, onUseAbility) {
+  // Kafelek umiejętności broni (Yamato: Judgement Cut, Pistolet Jhina: wystrzał puli).
+  // Zwraca null, jeśli aktualna broń nie ma aktywnej umiejętności.
+  function buildWeaponAbilityTile(state, onUse) {
+    const player = window.player;
+    let name;
+    let sub;
+    let ready;
+    let notReady;
+    if (player.weaponId === "yamato") {
+      const threshold = Math.min(100, (player.yamatoExecuteCap || 5) + (state.yamatoJudgementStacks || 0));
+      name = "Judgement Cut";
+      sub = `poniżej ${threshold}% HP`;
+      notReady = `Judgement Cut wymaga celu poniżej ${threshold}% HP.`;
+      ready = state.enemyHealth <= state.enemyMaxHealth * threshold / 100;
+    } else if (player.weaponId === "jhinPistol") {
+      const pool = Math.floor(state.jhinPool || 0);
+      name = "Pula Jhina";
+      sub = pool > 0 ? String(pool) : "pusta";
+      notReady = "Pula Pistoletu Jhina jest pusta.";
+      ready = pool > 0;
+    } else {
+      return null;
+    }
+    ready = ready && !state.enemyDefeated && state.enemyHealth > 0;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "ability-button weapon-ability-button";
+    const tile = { name, hotkey: "Spc", sub };
+    buildTile(button, { ...tile, icon: window.GameIcons.itemIcon("weapons", player.weaponId, "tile-img") });
+    button.title = `Umiejętność broni: ${player.weaponName}`;
+    button.setAttribute("aria-label", `${name}, ${sub}, skrót Spacja`);
+    // Kafelek zawsze klikalny: gdy umiejętność nie jest gotowa, klik tylko pokazuje powód w logu.
+    button.classList.toggle("is-no-mana", !ready);
+    button.addEventListener("click", () => onUse?.(ready ? null : notReady));
+    return button;
+  }
+
+  function renderAbilities(refs, state, onUseAbility, onUseWeaponAbility) {
     refs.abilitiesPanel.replaceChildren();
     const isMage = window.player.classId === "mage";
 
@@ -236,6 +274,10 @@
     refs.attackButton.title = `Atak bronią: ${window.player.weaponName}`;
     refs.attackButton.setAttribute("aria-label", "Atakuj, skrót Q");
     refs.abilitiesPanel.appendChild(refs.attackButton);
+
+    // Umiejętność broni unikalnej (Spacja) — kafelek dla telefonów, bez klawiatury.
+    const weaponTile = buildWeaponAbilityTile(state, onUseWeaponAbility);
+    if (weaponTile) refs.abilitiesPanel.appendChild(weaponTile);
 
     const classAbilities = window.classAbilities?.[window.player.classId]?.active || [];
     classAbilities.forEach((ability, abilityIndex) => {

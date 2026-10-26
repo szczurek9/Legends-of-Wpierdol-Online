@@ -136,7 +136,7 @@
 
   function renderAll() {
     UI.render(refs, state);
-    UI.renderAbilities(refs, state, useAbility);
+    UI.renderAbilities(refs, state, useAbility, useWeaponAbility);
     UI.renderPotions(refs, state, usePotion);
     updateAutoButtons();
     if (pendingFx) {
@@ -515,8 +515,13 @@
   // Umiejętność broni unikalnej (Spacja). Nie zajmuje tury, ale jeśli zabija
   // przeciwnika (Judgement Cut Yamato, pula Jhina), walka musi to rozliczyć
   // tak samo jak zwykłe zabójstwo: nagroda, pauza i następna fala.
-  function useWeaponAbility() {
+  function useWeaponAbility(notReadyMessage) {
     if (!canAct()) return;
+    // Klik w kafelek, gdy umiejętność niegotowa: sam komunikat, bez rozpoczynania akcji.
+    if (notReadyMessage) {
+      showMessage(notReadyMessage, "warning");
+      return;
+    }
     beginAction();
     const result = window.BattleSystem.useWeaponAbility(state);
     state = result;
