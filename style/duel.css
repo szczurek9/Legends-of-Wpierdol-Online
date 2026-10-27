@@ -1,0 +1,91 @@
+/* Pojedynki 1v1: lista lobby, prośba o walkę i ekran walki (korzysta z klas walki z battle.css). */
+
+#duel-body {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.duel-lobby-list {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.duel-lobby,
+.duel-empty,
+.duel-request {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 8px;
+    background: var(--shop-info-background);
+}
+
+.duel-empty {
+    justify-content: center;
+    text-align: center;
+}
+
+.duel-request {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+}
+
+.duel-lobby-name {
+    display: grid;
+    min-width: 0;
+    gap: 0.125rem;
+}
+
+.duel-lobby-name strong {
+    overflow-wrap: anywhere;
+}
+
+#duel-screen {
+    display: grid;
+    gap: 0.75rem;
+}
+
+#duel-screen.hidden {
+    display: none;
+}
+
+.duel-score,
+.duel-timer {
+    text-align: center;
+    font-weight: 700;
+}
+
+.duel-timer.is-urgent {
+    color: var(--bad);
+}
+
+.duel-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    min-height: 1.75rem;
+    margin-top: 0.5rem;
+}
+
+.duel-chips span {
+    padding: 0.125rem 0.5rem;
+    border: 1px solid var(--shop-border-color);
+    border-radius: 999px;
+    background: var(--shop-info-background);
+    font-size: 0.8125rem;
+}
+
+.duel-actions {
+    flex-wrap: wrap;
+}
+
+.duel-actions button {
+    flex: 1 1 9rem;
+}

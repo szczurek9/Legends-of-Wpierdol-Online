@@ -44,6 +44,7 @@ function refreshMainMenu() {
 
   const arenaBtn = document.getElementById("arena-btn");
   if (arenaBtn) arenaBtn.classList.toggle("hidden", window.player.level < (window.Arena?.UNLOCK_LEVEL ?? 30));
+  window.DuelUI?.refreshButton(); // Pojedynki: od ukończonego 50. poziomu
 
   // Osiągnięcia zależne od stanu postaci (skórki, bronie, poziom) sprawdzamy przy każdym odświeżeniu menu.
   window.Achievements?.onMenuRefresh();

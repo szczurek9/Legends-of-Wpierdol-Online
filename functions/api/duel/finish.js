@@ -2,6 +2,7 @@
 //   { id, winner: "host" | "guest" } — wynik według silnika klienta. Gdy oba zgłoszenia są zgodne, walka jest zakończona;
 //                                       gdy się różnią, walka jest anulowana (rozjazd symulacji, bez wyniku).
 //   { id, forfeit: true }            — poddanie się (np. wyjście z walki): wygrywa przeciwnik.
+//   { id, desync: true }             — klient wykrył rozjazd symulacji (niezgodny ruch przeciwnika): walka anulowana bez wyniku.
 import { json } from "../../_lib/session.js";
 import { authenticate, duelView, loadDuel, otherSide, readBody, settleDuel, sideOf } from "../../_lib/duel.js";
 
@@ -12,7 +13,8 @@ export async function onRequestPost({ request, env }) {
   const body = await readBody(request);
   if (!body) return json({ error: "bad_request" }, 400);
   const forfeit = body.forfeit === true;
-  if (!forfeit && body.winner !== "host" && body.winner !== "guest") return json({ error: "bad_request" }, 400);
+  const desync = body.desync === true;
+  if (!forfeit && !desync && body.winner !== "host" && body.winner !== "guest") return json({ error: "bad_request" }, 400);
 
   let row = await loadDuel(env.DB, body.id);
   const side = row ? sideOf(row, auth.session.userId) : null;
@@ -22,7 +24,11 @@ export async function onRequestPost({ request, env }) {
   row = await settleDuel(env.DB, row, now);
   if (row.status !== "playing") return json({ ok: true, duel: duelView(row, side, { now }) });
 
-  if (forfeit) {
+  if (desync) {
+    await env.DB.prepare(
+      "UPDATE duels SET status = 'void', winner = NULL, end_reason = 'desync', updated_at = ? WHERE id = ? AND status = 'playing'",
+    ).bind(now, row.id).run();
+  } else if (forfeit) {
     await env.DB.prepare(
       "UPDATE duels SET status = 'finished', winner = ?, end_reason = 'forfeit', updated_at = ? WHERE id = ? AND status = 'playing'",
     ).bind(otherSide(side), now, row.id).run();

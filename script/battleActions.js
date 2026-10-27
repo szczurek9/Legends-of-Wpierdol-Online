@@ -3,6 +3,13 @@
   const M = window.BattleMath;
   const S = window.BattleState;
 
+  // Pojedynki 1v1 (duelEngine.js) podstawiają tu własną "turę przeciwnika": zamiast kontrataku wroga
+  // liczą tylko efekty w czasie (zatrucie, pnącza) i ogłuszenie. Poza pojedynkami zawsze null.
+  let opponentTurnOverride = null;
+  function setOpponentTurn(fn) {
+    opponentTurnOverride = typeof fn === "function" ? fn : null;
+  }
+
   function playerAttack(state, options = {}) {
     const player = window.player;
     const enemy = S.enemyOf(state);
@@ -266,7 +273,7 @@
     let next = { ...state, arenaTurns: (state.arenaTurns || 0) + 1, message, actionMessage: message };
     if (isSpell) M.recordSpellCast();
     M.regenMana();
-    next = enemyTurn(next);
+    next = (opponentTurnOverride || enemyTurn)(next);
     next = S.tickCooldowns(next);
     if (cooldownAbility) next = S.setCooldown(next, cooldownAbility, M.effectiveCooldown(cooldownAbility));
     if (!next.enemyDefeated && next.message !== next.actionMessage) {
@@ -415,6 +422,7 @@
   window.BattleActions = {
     playerAttack,
     enemyTurn,
+    setOpponentTurn,
     finishPlayerAction,
     useAbility,
     useWeaponAbility,
