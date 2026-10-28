@@ -96,13 +96,23 @@
     return duel;
   }
 
+  // Czy gracz ma jakąkolwiek akcję inną niż „pass” (atak lub umiejętność, na którą go stać).
+  function hasAnyAction(duel, side) {
+    const options = [{ kind: "attack" }, ...abilitiesOf(duel.sides[side].player).map((item) => ({ kind: "ability", id: item.id }))];
+    return options.some((option) => validate(duel, side, option).ok);
+  }
+
   // Czy ruch jest dozwolony. Nic nie zmienia — klient sprawdza to przed wysłaniem, a klient przeciwnika
   // przed zastosowaniem (nielegalny ruch = rozjazd, walka zostaje anulowana).
   function validate(duel, side, action) {
     if (duel.matchWinner) return { ok: false, reason: "match_over" };
     if (duel.actor !== side) return { ok: false, reason: "not_your_turn" };
     if (!action || typeof action !== "object") return { ok: false, reason: "bad_action" };
-    if (action.kind === "attack") return { ok: true };
+    if (action.kind === "pass") return hasAnyAction(duel, side) ? { ok: false, reason: "has_actions" } : { ok: true };
+    if (action.kind === "attack") {
+      // Mag nie ma zwykłego ataku (jak w kampanii: kafelek „Atakuj” jest dla niego ukryty).
+      return duel.sides[side].player.classId === "mage" ? { ok: false, reason: "mage_no_attack" } : { ok: true };
+    }
     if (action.kind !== "ability") return { ok: false, reason: "unsupported" };
 
     const unit = duel.sides[side];
@@ -170,7 +180,9 @@
 
     let result;
     try {
-      if (action.kind === "attack") {
+      if (action.kind === "pass") {
+        result = A.finishPlayerAction(unit.state, "Brak dostępnych akcji — tracisz turę.");
+      } else if (action.kind === "attack") {
         const focused = Boolean(unit.state.focusMark);
         const attacked = A.playerAttack(unit.state, { forceCritical: Boolean(unit.state.guaranteedCrit), focusStrike: focused });
         attacked.guaranteedCrit = false;
@@ -299,15 +311,43 @@
   function view(duel, side) {
     const mine = duel.sides[side];
     const foe = duel.sides[other(side)];
-    const pack = (unit) => ({
-      classId: unit.player.classId,
-      hp: unit.player.healthPoints,
-      maxHp: unit.player.maxHealthPoints,
-      mana: unit.player.manaPoints,
-      maxMana: unit.player.maxManaPoints,
-      effects: { ...unit.state.effects },
-      cooldowns: { ...unit.state.cooldowns },
-    });
+    const pack = (unit) => {
+      // Statystyki liczone tymi samymi funkcjami co w kampanii (czytają window.player, więc podmieniamy go na chwilę).
+      const previous = window.player;
+      window.player = unit.player;
+      let stats;
+      try {
+        stats = {
+          damage: M.currentWeaponDamage(),
+          ad: unit.player.ad,
+          crit: unit.player.critChance,
+          armorPen: unit.player.armorPenetration,
+          armor: unit.player.armorPoints,
+          mr: unit.player.magicResistance,
+          ap: M.effectiveAbilityPower(),
+          manaRegen: M.manaRegenAmount(unit.player.manaRegenPercent),
+        };
+      } finally {
+        window.player = previous;
+      }
+      return {
+        classId: unit.player.classId,
+        skinName: unit.player.skinName,
+        hp: unit.player.healthPoints,
+        maxHp: unit.player.maxHealthPoints,
+        mana: unit.player.manaPoints,
+        maxMana: unit.player.maxManaPoints,
+        overkillPool: unit.player.overkillPool || 0,
+        effects: { ...unit.state.effects },
+        cooldowns: { ...unit.state.cooldowns },
+        focusMark: Boolean(unit.state.focusMark),
+        guaranteedCrit: Boolean(unit.state.guaranteedCrit),
+        rage: unit.state.rage || 0,
+        senMode: unit.state.senMode,
+        senAttackCount: unit.state.senAttackCount || 0,
+        stats,
+      };
+    };
     return {
       round: duel.round,
       bestOf: duel.bestOf,
@@ -319,5 +359,5 @@
     };
   }
 
-  window.DuelEngine = { create, validate, apply, view, abilitiesOf };
+  window.DuelEngine = { create, validate, apply, view, abilitiesOf, hasAnyAction };
 })();

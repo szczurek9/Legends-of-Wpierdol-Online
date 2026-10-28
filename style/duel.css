@@ -66,26 +66,17 @@
     color: var(--bad);
 }
 
-.duel-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    min-height: 1.75rem;
-    margin-top: 0.5rem;
+.duel-round-box {
+    display: grid;
+    gap: 0.125rem;
+    text-align: right;
 }
 
-.duel-chips span {
-    padding: 0.125rem 0.5rem;
-    border: 1px solid var(--shop-border-color);
-    border-radius: 999px;
-    background: var(--shop-info-background);
+.duel-round-box .duel-score {
     font-size: 0.8125rem;
+    font-weight: 600;
 }
 
-.duel-actions {
-    flex-wrap: wrap;
-}
-
-.duel-actions button {
-    flex: 1 1 9rem;
+.duel-forfeit-row {
+    grid-template-columns: 1fr;
 }

@@ -9,13 +9,6 @@
   const POLL_TURN_MS = 5000;            // moja tura (tylko kontrola, czy walka się nie skończyła)
   const E = window.DuelEngine;
 
-  const EFFECT_LABELS = {
-    stun: "Ogłuszenie", poison: "Zatrucie", vines: "Pnącza", enemyAccuracy: "Osłabiona celność",
-    mirror: "Lustro", mushin: "Mushin", bastionTurns: "Bastion", evadeNext: "Unik", ironTaunt: "Żelazna Zaczepka",
-    rageArmor: "Pancerz z Gniewu", accuracy: "Zwiększona celność",
-  };
-  const DEBUFFS = ["stun", "poison", "vines", "enemyAccuracy"]; // przechowywane u tego, kto je nałożył
-  const BUFFS = ["mirror", "mushin", "bastionTurns", "evadeNext", "ironTaunt", "rageArmor", "accuracy"];
   const END_REASONS = {
     timeout: "przeciwnik nie wykonał ruchu w 30 s", forfeit: "poddanie się", normal: "walka rozegrana do końca",
     reported: "przeciwnik opuścił walkę po jej zakończeniu", desync: "wykryto rozjazd symulacji", abandoned: "obaj gracze opuścili walkę",
@@ -150,41 +143,64 @@
     screen.setAttribute("aria-live", "polite");
     screen.innerHTML = `
       <div class="battle-header">
-        <div><span class="eyebrow" id="duel-mode">POJEDYNEK · CASUAL</span><h2 id="duel-title">Walka</h2></div>
-        <div id="duel-round">Runda 1</div>
+        <div>
+          <span class="eyebrow" id="duel-mode">POJEDYNEK · CASUAL</span>
+          <h2 id="duel-title">Walka</h2>
+        </div>
+        <div class="duel-round-box">
+          <div id="duel-round">Runda 1</div>
+          <div id="duel-score" class="duel-score"></div>
+        </div>
       </div>
-      <div id="duel-score" class="duel-score"></div>
+
       <div class="battle-arena">
         <article class="combatant combatant-player" id="duel-me">
           <span class="combatant-label">TY</span>
           <h3 data-role="name">Gracz</h3>
-          <div class="battle-model battle-model-player"><img data-role="model" src="res/skins/player_model.png" alt=""></div>
+          <div class="battle-model battle-model-player"><img data-role="model" src="res/skins/player_model.png" alt="Twoja postać"></div>
           <div class="battle-resource-bars">
-            <div><span class="resource-label">HP: <strong data-role="hp">0 / 0</strong></span><div class="health-bar"><span data-role="hp-bar"></span></div></div>
-            <div><span class="resource-label">Mana: <strong data-role="mana">0 / 0</strong></span><div class="health-bar mana-bar"><span data-role="mana-bar"></span></div></div>
+            <div>
+              <span class="resource-label"><span class="stat-icon" data-stat-icon="hp"></span> HP: <strong data-role="hp">0 / 0</strong></span>
+              <div class="health-bar"><span data-role="hp-bar"></span></div>
+            </div>
+            <div>
+              <span class="resource-label"><span class="stat-icon" data-stat-icon="mana"></span> Mana: <strong data-role="mana">0 / 0</strong></span>
+              <div class="health-bar mana-bar"><span data-role="mana-bar"></span></div>
+            </div>
           </div>
-          <div class="duel-chips" data-role="chips"></div>
+          <div class="stat-chips">
+            <div class="chips-group" data-role="chips-a"></div>
+            <div class="chips-group" data-role="chips-b"></div>
+          </div>
         </article>
+
         <div class="battle-versus">VS</div>
+
         <article class="combatant combatant-enemy" id="duel-foe">
           <span class="combatant-label">PRZECIWNIK</span>
           <h3 data-role="name">Przeciwnik</h3>
-          <div class="battle-model battle-model-enemy"><img data-role="model" src="res/skins/player_model.png" alt=""></div>
-          <div class="battle-resource-bars">
-            <div><span class="resource-label">HP: <strong data-role="hp">0 / 0</strong></span><div class="health-bar enemy-health-bar"><span data-role="hp-bar"></span></div></div>
-            <div><span class="resource-label">Mana: <strong data-role="mana">0 / 0</strong></span><div class="health-bar mana-bar"><span data-role="mana-bar"></span></div></div>
-          </div>
-          <div class="duel-chips" data-role="chips"></div>
+          <div class="battle-model battle-model-enemy"><img data-role="model" src="res/skins/player_model.png" alt="Przeciwnik"></div>
+          <div class="stat-line"><span><span class="stat-icon" data-stat-icon="hp"></span> HP</span><strong data-role="hp">0 / 0</strong></div>
+          <div class="health-bar enemy-health-bar"><span data-role="hp-bar"></span></div>
+          <div class="stat-line"><span><span class="stat-icon" data-stat-icon="mana"></span> Mana</span><strong data-role="mana">0 / 0</strong></div>
+          <div class="health-bar mana-bar"><span data-role="mana-bar"></span></div>
+          <div class="stat-chips" data-role="chips-a"></div>
         </article>
       </div>
+
       <div id="duel-timer" class="duel-timer"></div>
       <div id="duel-log" class="battle-log">Walka się rozpoczyna…</div>
-      <div id="duel-actions" class="battle-actions duel-actions"></div>
-      <div class="battle-actions">
-        <button id="duel-forfeit-btn" type="button" class="secondary-button">🏳️ Poddaj się</button>
-        <button id="duel-back-btn" type="button" class="secondary-button hidden">Wróć do menu</button>
-      </div>`;
+
+      <div class="battle-actions duel-forfeit-row">
+        <button id="duel-forfeit-btn" type="button">🏳️ Poddaj się</button>
+      </div>
+      <div class="battle-dock">
+        <div id="duel-actions" class="battle-abilities"></div>
+      </div>
+      <div id="duel-effects" class="battle-effects">Brak aktywnych efektów.</div>
+      <button id="duel-back-btn" type="button" class="secondary-button hidden">Wróć do menu</button>`;
     main.appendChild(screen);
+    window.GameIcons?.hydrate(screen);
     $("#duel-forfeit-btn", screen).addEventListener("click", forfeit);
     $("#duel-back-btn", screen).addEventListener("click", leaveFight);
   }
@@ -453,6 +469,7 @@
     const side = move.side;
     const name = fight.names[side];
     const classId = fight.duel.sides[side].player.classId;
+    if (move.action.kind === "pass") return `${name} nie ma żadnej dostępnej akcji i traci turę.`;
     const label = move.action.kind === "attack" ? "atakuje" : `używa ${abilityName(classId, move.action.id)}`;
     let text;
     if (res.missed || res.evaded) text = `${name} ${label}, ale chybia.`;
@@ -464,70 +481,148 @@
     return text;
   }
 
-  function effectChips(own, foe) {
-    const chips = [];
-    BUFFS.forEach((key) => { if (own.effects[key]) chips.push(EFFECT_LABELS[key]); });
-    DEBUFFS.forEach((key) => { if (foe.effects[key]) chips.push(EFFECT_LABELS[key]); });
-    return chips;
+  // ---------- Renderowanie (te same helpery i klasy co ekran walki PvE) ----------
+  const R = () => window.BattleUIRender;
+  const HIDDEN_EFFECTS = ["accuracy", "enemyAccuracy", "bastionArmor", "evadeNext", "accuracyTurns", "enemyAccuracyTurns"];
+  const DEBUFFS_ON_TARGET = ["stun", "poison", "vines"]; // zapisane u tego, kto je nałożył
+
+  function shortNumber(n) {
+    return n >= 10000 ? `${String(Math.round(n / 100) / 10).replace(".", ",")}k` : String(n);
   }
 
-  function fillCard(card, side, view, opponentView) {
-    const unit = view[side === fight.side ? "me" : "opponent"];
-    const opposite = view[side === fight.side ? "opponent" : "me"];
+  // Efekty własne jednej strony (buffy, pule, znaczniki) jako wpisy [ikona, wartość, podpis].
+  function ownEffectEntries(unit, prefix) {
+    const out = [];
+    Object.entries(unit.effects)
+      .filter(([name]) => !HIDDEN_EFFECTS.includes(name) && !DEBUFFS_ON_TARGET.includes(name))
+      .forEach(([name, value]) => {
+        const id = name.endsWith("Turns") ? name.slice(0, -5) : name;
+        const label = window.GameIcons.EFFECTS[id] || id;
+        if (id === "rageArmor") out.push([id, `+${value}`, `${prefix}${label}: +${value}`]);
+        else if (value === true) out.push([id, "", `${prefix}${label}: aktywne`]);
+        else out.push([id, value, `${prefix}${label}: ${value} tur`]);
+      });
+    if (unit.focusMark) out.push(["focusMark", "", `${prefix}Znacznik Skupienia: następny atak`]);
+    if (unit.effects.evadeNext) out.push(["evadeNext", "", `${prefix}Unik następnego ataku`]);
+    if (unit.effects.enemyAccuracyTurns > 0) out.push(["undodgeableSpeed", unit.effects.enemyAccuracyTurns, `${prefix}Un-Dodgable Speed: ${unit.effects.enemyAccuracyTurns} tur`]);
+    if (unit.guaranteedCrit) out.push(["primalStrike", "", `${prefix}Primal Strike: następny atak to gwarantowany krytyk`]);
+    if (unit.classId === "assassin" && unit.overkillPool > 0) out.push(["overkillPool", shortNumber(Math.floor(unit.overkillPool)), `${prefix}Overkill: ${Math.floor(unit.overkillPool)}`]);
+    if (unit.classId === "tank" && unit.rage > 0) out.push(["ragePool", shortNumber(Math.floor(unit.rage)), `${prefix}Skumulowany Gniew: ${Math.floor(unit.rage)}`]);
+    return out;
+  }
+
+  // Ogłuszenie, zatrucie i pnącza nałożone przez `caster` na jego przeciwnika.
+  function debuffEntries(caster, prefix) {
+    return DEBUFFS_ON_TARGET.filter((name) => caster.effects[name] > 0).map((name) => {
+      const label = window.GameIcons.EFFECTS[name] || name;
+      return [name, caster.effects[name], `${prefix}${label}: ${caster.effects[name]} tur`];
+    });
+  }
+
+  function renderEffectsPanel(view) {
+    const panel = $("#duel-effects", screen);
+    const entries = [
+      ...ownEffectEntries(view.me, "Ty: "),
+      ...debuffEntries(view.opponent, "Ty: "),
+      ...ownEffectEntries(view.opponent, "Przeciwnik: "),
+      ...debuffEntries(view.me, "Przeciwnik: "),
+    ];
+    panel.replaceChildren();
+    if (!entries.length) { panel.textContent = "Brak aktywnych efektów."; return; }
+    entries.forEach(([id, value, label]) => panel.appendChild(window.GameIcons.effectChip(id, value, label)));
+  }
+
+  function fillCard(card, side, unit, isMe) {
+    const dead = unit.hp <= 0 || (fight.duel.matchWinner && fight.duel.matchWinner !== side);
     $("[data-role=name]", card).textContent = fight.names[side];
-    $("[data-role=hp]", card).textContent = `${Math.max(0, unit.hp)} / ${unit.maxHp}`;
+    const hpElement = $("[data-role=hp]", card);
+    R().flashIfHit(card, hpElement, unit.hp);
+    hpElement.textContent = `${Math.max(0, unit.hp)} / ${unit.maxHp}`;
+    R().setBar($("[data-role=hp-bar]", card), Math.max(0, unit.hp), unit.maxHp);
     $("[data-role=mana]", card).textContent = `${unit.mana} / ${unit.maxMana}`;
-    $("[data-role=hp-bar]", card).style.width = `${Math.max(0, Math.min(100, (unit.hp / unit.maxHp) * 100))}%`;
-    $("[data-role=mana-bar]", card).style.width = `${Math.max(0, Math.min(100, (unit.mana / Math.max(1, unit.maxMana)) * 100))}%`;
-    const skin = window.skinCatalog?.find((item) => item.id === fight.builds[side].skinName);
+    R().setBar($("[data-role=mana-bar]", card), unit.mana, Math.max(1, unit.maxMana));
+
+    const skin = window.skinCatalog?.find((item) => item.id === unit.skinName);
     const model = $("[data-role=model]", card);
     model.onerror = () => { model.onerror = null; model.src = "res/skins/player_model.png"; };
-    model.src = skin ? skin.modelAlive : "res/skins/player_model.png";
-    model.alt = fight.names[side];
-    const chips = $("[data-role=chips]", card);
-    chips.replaceChildren();
-    const classChip = document.createElement("span");
-    classChip.textContent = className(unit.classId);
-    chips.appendChild(classChip);
-    effectChips(unit, opposite).forEach((label) => {
-      const chip = document.createElement("span");
-      chip.textContent = label;
-      chips.appendChild(chip);
-    });
+    model.src = skin ? (dead ? skin.modelDead : skin.modelAlive) : "res/skins/player_model.png";
+    model.alt = `${fight.names[side]}${dead ? " — pokonany" : ""}`;
+
+    const stats = unit.stats;
+    if (isMe) {
+      R().renderChips($("[data-role=chips-a]", card), [["damage", stats.damage, "Obrażenia broni"], ["ad", stats.ad], ["crit", `${stats.crit}%`], ["armorPen", stats.armorPen]]);
+      R().renderChips($("[data-role=chips-b]", card), [["ap", stats.ap], ["manaRegen", `+${stats.manaRegen}`], ["armor", stats.armor], ["mr", stats.mr]]);
+    } else {
+      R().renderChips($("[data-role=chips-a]", card), [["damage", stats.damage], ["ad", stats.ad], ["crit", `${stats.crit}%`], ["armor", stats.armor], ["mr", stats.mr], ["armorPen", stats.armorPen], ["ap", stats.ap]]);
+    }
   }
 
   function renderFight() {
     const view = E.view(fight.duel, fight.side);
-    $("#duel-round", screen).textContent = `Runda ${view.round} · best of ${view.bestOf}`;
-    const mine = view.wins[fight.side];
-    const theirs = view.wins[other(fight.side)];
-    $("#duel-score", screen).textContent = `Wygrane rundy: Ty ${mine} : ${theirs} Przeciwnik`;
-    fillCard($("#duel-me", screen), fight.side, view);
-    fillCard($("#duel-foe", screen), other(fight.side), view);
+    const foeSide = other(fight.side);
+    $("#duel-round", screen).textContent = `Runda ${view.round} / best of ${view.bestOf}`;
+    $("#duel-score", screen).textContent = `Wygrane rundy: Ty ${view.wins[fight.side]} : ${view.wins[foeSide]} Przeciwnik`;
+    fillCard($("#duel-me", screen), fight.side, view.me, true);
+    fillCard($("#duel-foe", screen), foeSide, view.opponent, false);
+    renderEffectsPanel(view);
     renderActions(view);
     tickTimerText();
   }
 
+  // Kafelki akcji jak w PvE: ikona, skrót, koszt many, odnowienie. Skróty: Q/W/E/R (Mag: Q/W/E/R to umiejętności).
   function renderActions(view) {
     const holder = $("#duel-actions", screen);
     holder.replaceChildren();
+    fight.hotkeys = {};
     const myTurn = !fight.ended && !view.matchWinner && view.actor === fight.side;
-    const make = (label, hint, action) => {
+    const classId = view.me.classId;
+    const isMage = classId === "mage";
+    const abilities = E.abilitiesOf(fight.duel.sides[fight.side].player);
+
+    const addTile = (action, tile, icon, title) => {
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = label;
-      const check = myTurn ? E.validate(fight.duel, fight.side, action) : { ok: false, reason: "not_your_turn" };
+      button.className = "ability-button";
+      R().buildTile(button, { ...tile, icon });
+      button.title = title;
+      button.setAttribute("aria-label", R().describeTile(tile));
+      const check = myTurn ? E.validate(fight.duel, fight.side, action) : { ok: false };
       button.disabled = fight.busy || !check.ok;
-      button.title = hint;
       button.addEventListener("click", () => playMove(action));
+      if (tile.hotkey && !button.disabled) fight.hotkeys[tile.hotkey.toLowerCase()] = action;
       holder.appendChild(button);
     };
-    make("⚔️ Atakuj", "Zwykły atak", { kind: "attack" });
-    E.abilitiesOf(fight.duel.sides[fight.side].player).forEach((ability) => {
-      const cooldown = view.me.cooldowns[ability.id] > 0 ? ` (${view.me.cooldowns[ability.id]} t.)` : "";
-      const cost = ability.cost ? ` · ${ability.cost} many` : "";
-      make(`${ability.name}${cost}${cooldown}`, ability.description || ability.name, { kind: "ability", id: ability.id });
+
+    if (!isMage) {
+      addTile({ kind: "attack" }, { name: "Atakuj", hotkey: "Q" }, window.GameIcons.stat("damage", "tile-glyph"), `Atak bronią: ${fight.duel.sides[fight.side].player.weaponName}`);
+    }
+    abilities.forEach((ability, index) => {
+      const hotkey = isMage ? ["Q", "W", "E", "R"][index] : ["W", "E", "R"][index];
+      const isToggle = ability.id === "senNoKata";
+      const cooldown = isToggle ? 0 : (view.me.cooldowns[ability.id] || 0);
+      const noMana = view.me.mana < ability.cost;
+      const maxCooldown = window.BattleMath.effectiveCooldown ? window.BattleMath.effectiveCooldown(ability) : ability.cooldown;
+      const sub = isToggle ? (view.me.senMode === "boei" ? `Bōei · atak ${view.me.senAttackCount}/3` : "Chikara") : "";
+      const cooldownNote = maxCooldown ? ` | CD: ${maxCooldown} tur` : "";
+      addTile({ kind: "ability", id: ability.id }, { name: ability.name, hotkey, cost: ability.cost, cooldown, noMana, sub, maxCooldown },
+        window.GameIcons.abilityIcon(classId, ability, "tile-img"), `${ability.description} Koszt: ${ability.cost} many${cooldownNote}`);
+      if (isToggle) holder.lastChild.classList.add(view.me.senMode === "boei" ? "ability-mode-boei" : "ability-mode-chikara");
     });
+    // Brak jakiejkolwiek akcji (np. Mag bez many): można tylko oddać turę, zamiast czekać na timeout.
+    if (myTurn && !E.hasAnyAction(fight.duel, fight.side)) {
+      addTile({ kind: "pass" }, { name: "Pomiń turę", hotkey: "Space" }, window.GameIcons.stat("mana", "tile-glyph"), "Nie masz żadnej dostępnej akcji — oddajesz turę.");
+    }
+  }
+
+  function onKeydown(event) {
+    if (!fight || fight.ended || fight.busy || !screen || screen.classList.contains("hidden")) return;
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (/^(input|textarea|select)$/i.test(event.target?.tagName || "")) return;
+    const key = event.key === " " ? "space" : event.key.toLowerCase();
+    const action = fight.hotkeys && fight.hotkeys[key];
+    if (!action) return;
+    event.preventDefault();
+    playMove(action);
   }
 
   function tickTimerText() {
@@ -663,6 +758,7 @@
   function init() {
     const button = document.getElementById("duel-btn");
     if (button) button.addEventListener("click", openBrowser);
+    document.addEventListener("keydown", onKeydown);
     refreshButton();
   }
 

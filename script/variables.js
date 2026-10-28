@@ -1,5 +1,5 @@
 // Wersja gry — zmieniaj tylko tutaj (pokazuje się w stopce strony).
-window.GAME_VERSION = "public-preview_1.0.3";
+window.GAME_VERSION = "public-preview_1.0.3-2";
 (function showGameVersion() {
   const element = document.getElementById("game-version");
   if (element) element.textContent = `v${window.GAME_VERSION}`;

@@ -1,13 +1,13 @@
 // POST /api/duel/move — ruch gracza: { id, n, action: { kind, id? }, next: "host" | "guest" | null }
 //   n      — numer ruchu (równy liczbie dotychczasowych ruchów), chroni przed dubletami i wyścigami
-//   action — kind: attack | ability | weapon | potion, id: identyfikator umiejętności / mikstury
+//   action — kind: attack | ability | weapon | potion | pass (pominięcie tury, gdy brak innej akcji), id: identyfikator umiejętności / mikstury
 //   next   — kto ma następny ruch według silnika walki (null = walka skończona, czekamy na wyniki).
 //            Umiejętność broni nie zajmuje tury, ogłuszenie pomija turę — dlatego deklaruje to wykonujący ruch,
 //            a klient przeciwnika sprawdza zgodność ze swoją symulacją (rozjazd = przerwanie walki).
 import { json } from "../../_lib/session.js";
 import { MOVE_TIMEOUT_MS, authenticate, duelView, loadDuel, readBody, settleDuel, sideOf } from "../../_lib/duel.js";
 
-const ACTION_KINDS = ["attack", "ability", "weapon", "potion"];
+const ACTION_KINDS = ["attack", "ability", "weapon", "potion", "pass"];
 
 function parseAction(raw) {
   if (!raw || typeof raw !== "object" || !ACTION_KINDS.includes(raw.kind)) return null;
