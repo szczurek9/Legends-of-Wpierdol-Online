@@ -275,6 +275,11 @@
     grid-column: auto;
 }
 
+/* Nieparzysta liczba przycisków w ostatnim rzędzie: ostatni (Wiki) zajmuje cały rząd, żeby nie było dziury. */
+#main-buttons button.is-wide {
+    grid-column: 1 / -1;
+}
+
 /* --- Arena ---------------------------------------------------------------- */
 #arena-difficulties {
     display: flex;

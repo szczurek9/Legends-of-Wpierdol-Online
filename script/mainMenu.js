@@ -45,9 +45,25 @@ function refreshMainMenu() {
   const arenaBtn = document.getElementById("arena-btn");
   if (arenaBtn) arenaBtn.classList.toggle("hidden", window.player.level < (window.Arena?.UNLOCK_LEVEL ?? 30));
   window.DuelUI?.refreshButton(); // Pojedynki: od ukończonego 50. poziomu
+  fitMenuButtons();
 
   // Osiągnięcia zależne od stanu postaci (skórki, bronie, poziom) sprawdzamy przy każdym odświeżeniu menu.
   window.Achievements?.onMenuRefresh();
+}
+
+// Siatka przycisków ma 2 kolumny. Gdy po odliczeniu przycisków na cały rząd (Graj bez Areny, Pojedynki)
+// zostaje nieparzysta liczba, ostatni przycisk (Wiki) rozciągamy na cały rząd — bez pustego miejsca.
+function fitMenuButtons() {
+  const container = document.getElementById("main-buttons");
+  if (!container) return;
+  const buttons = [...container.querySelectorAll("button")];
+  buttons.forEach((button) => button.classList.remove("is-wide"));
+  const arenaVisible = !document.getElementById("arena-btn")?.classList.contains("hidden");
+  const isFullRow = (button) => (button.id === "play-btn" && !arenaVisible)
+    || (button.id === "duel-btn" && button.classList.contains("is-main"));
+  const visible = buttons.filter((button) => !button.classList.contains("hidden"));
+  const halves = visible.filter((button) => !isFullRow(button));
+  if (halves.length % 2 === 1) halves[halves.length - 1].classList.add("is-wide");
 }
 
 function showMainMenu() {

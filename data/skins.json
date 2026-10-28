@@ -250,6 +250,54 @@
     "sellable": false,
     "gender": "female",
     "achivement-countable": true
+  },
+  {
+    "id": "skin21",
+    "name": "Vegeta",
+    "rarity": "legendary",
+    "cost": 10,
+    "collection": "Dragon Ball",
+    "modelAlive": "res/skins/sa22.png",
+    "modelDead": "res/skins/sd22.png",
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
+  },
+  {
+    "id": "skin22",
+    "name": "Roman Carax",
+    "rarity": "ultimate",
+    "cost": 15,
+    "collection": "Cyberpunk Edgerunners",
+    "modelAlive": "res/skins/sa23.png",
+    "modelDead": "res/skins/sd23.png",
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
+  },
+  {
+    "id": "skin23",
+    "name": "D",
+    "rarity": "ultimate",
+    "cost": 15,
+    "collection": "Cyberpunk Edgerunners",
+    "modelAlive": "res/skins/sa24.png",
+    "modelDead": "res/skins/sd24.png",
+    "sellable": true,
+    "gender": "male",
+    "achivement-countable": true
+  },
+  {
+    "id": "skin24",
+    "name": "Hoshimi Miyabi",
+    "rarity": "legendary",
+    "cost": 10,
+    "collection": "Zenless Zone Zero",
+    "modelAlive": "res/skins/sa25.png",
+    "modelDead": "res/skins/sd25.png",
+    "sellable": true,
+    "gender": "female",
+    "achivement-countable": true
   }
 
 ]
