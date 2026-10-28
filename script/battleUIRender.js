@@ -115,10 +115,12 @@
     }
     // Efekty jako ikony (jak chipy statystyk): liczba tur przy ikonie, nazwa po najechaniu lub dotknięciu.
     refs.effectsPanel.replaceChildren();
-    if (!chips.length) {
-      refs.effectsPanel.textContent = "Brak aktywnych efektów.";
-      return;
-    }
+    // Rzadziej potrzebne statystyki gracza (AD, regeneracja many) mieszkają tu, żeby pasek statystyk mieścił się w jednym rzędzie.
+    const manaRegen = window.BattleMath.manaRegenAmount(player.manaRegenPercent);
+    refs.effectsPanel.append(
+      window.GameIcons.chip("ad", player.ad),
+      window.GameIcons.chip("manaRegen", `+${manaRegen}`),
+    );
     chips.forEach(([id, value, label]) => refs.effectsPanel.appendChild(window.GameIcons.effectChip(id, value, label)));
   }
 
@@ -143,16 +145,13 @@
     const currentWeaponDamage = window.BattleMath.currentWeaponDamage();
     renderChips(refs.playerWeapon, [
       ["damage", currentWeaponDamage, "Obrażenia broni"],
-      ["ad", player.ad],
       ["crit", `${player.critChance}%`],
       ["armorPen", player.armorPenetration],
     ]);
 
-    const manaRegen = window.BattleMath.manaRegenAmount(player.manaRegenPercent);
     const effectiveAP = window.BattleSystem.getEffectiveAbilityPower ? window.BattleSystem.getEffectiveAbilityPower() : player.abilityPower + player.adeptBookStacks;
     renderChips(refs.playerMana, [
       ["ap", effectiveAP],
-      ["manaRegen", `+${manaRegen}`],
       ["armor", player.armorPoints],
       ["mr", player.magicResistance],
     ]);

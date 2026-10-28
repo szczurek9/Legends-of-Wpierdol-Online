@@ -604,6 +604,49 @@
     }
 }
 
+/* --- Umiejętność broni (Yamato, Pistolet Jhina) ----------------------------------
+   Komputer: bez przycisku, umiejętność działa tylko pod Spacją (nie psuje układu docka).
+   Telefon / ekran dotykowy: ta sama akcja jako pasek nad kafelkami Q/W/E/R. */
+.battle-abilities .weapon-ability-button {
+    display: none;
+}
+
+@media (max-width: 760px), (hover: none) {
+    .battle-abilities .weapon-ability-button {
+        display: flex;
+        order: -1;
+        grid-column: 1 / -1;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        min-height: 0;
+        padding: 0.3125rem 0.625rem;
+        text-align: left;
+    }
+
+    .weapon-ability-button .tile-frame {
+        flex: none;
+        width: 2rem;
+        height: 2rem;
+    }
+
+    /* Na dotyku skrót klawiszowy nie ma sensu. */
+    .weapon-ability-button .tile-key {
+        display: none;
+    }
+
+    .weapon-ability-button .tile-name {
+        flex: 1 1 auto;
+        text-align: left;
+        -webkit-line-clamp: 1;
+    }
+
+    .weapon-ability-button .tile-sub {
+        flex: none;
+    }
+}
+
 /* --- Ikony statystyk: jasna "podkładka", bo grafiki są ciemne i ginęłyby w ciemnych motywach --- */
 .stat-icon {
     padding: 0.1rem;

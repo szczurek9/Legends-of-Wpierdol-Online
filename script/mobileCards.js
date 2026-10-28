@@ -119,4 +119,7 @@
   document.querySelectorAll(".swipe-cards[data-swipe-titles]").forEach(initSwipeCards);
   initCollapsible(document.getElementById("battle-player-chips"), "Statystyki");
   initCollapsible(document.getElementById("battle-enemy-stats"), "Statystyki");
+
+  // Ekran pojedynku (duelUI.js) buduje się dopiero przy pierwszym otwarciu, więc sam podpina swoje statystyki.
+  window.MobileCards = { initCollapsible };
 })();

@@ -183,14 +183,21 @@
     screen.className = "hidden";
     screen.setAttribute("aria-live", "polite");
     screen.innerHTML = `
-      <div class="battle-header">
-        <div>
+      <div class="battle-header duel-header">
+        <div class="duel-header-title">
           <span class="eyebrow" id="duel-mode">POJEDYNEK · CASUAL</span>
           <h2 id="duel-title">Walka</h2>
         </div>
         <div class="duel-round-box">
           <div id="duel-round">Runda 1</div>
-          <div id="duel-score" class="duel-score"></div>
+          <div id="duel-score" class="duel-score" role="img">
+            <span class="duel-score-side"><span class="duel-score-num" data-role="score-me">0</span><span class="duel-score-label">TY</span></span>
+            <span class="duel-score-sep" aria-hidden="true">:</span>
+            <span class="duel-score-side"><span class="duel-score-num" data-role="score-foe">0</span><span class="duel-score-label">RYWAL</span></span>
+          </div>
+        </div>
+        <div class="battle-header-actions duel-header-actions">
+          <button id="duel-forfeit-btn" type="button" class="battle-escape-top">🏳️ Poddaj się</button>
         </div>
       </div>
 
@@ -221,10 +228,16 @@
           <span class="combatant-label">PRZECIWNIK</span>
           <h3 data-role="name">Przeciwnik</h3>
           <div class="battle-model battle-model-enemy"><img data-role="model" src="res/skins/player_model.png" alt="Przeciwnik"></div>
-          <div class="stat-line"><span><span class="stat-icon" data-stat-icon="hp"></span> HP</span><strong data-role="hp">0 / 0</strong></div>
-          <div class="health-bar enemy-health-bar"><span data-role="hp-bar"></span></div>
-          <div class="stat-line"><span><span class="stat-icon" data-stat-icon="mana"></span> Mana</span><strong data-role="mana">0 / 0</strong></div>
-          <div class="health-bar mana-bar"><span data-role="mana-bar"></span></div>
+          <div class="battle-resource-bars">
+            <div>
+              <span class="resource-label"><span class="stat-icon" data-stat-icon="hp"></span> HP: <strong data-role="hp">0 / 0</strong></span>
+              <div class="health-bar enemy-health-bar"><span data-role="hp-bar"></span></div>
+            </div>
+            <div>
+              <span class="resource-label"><span class="stat-icon" data-stat-icon="mana"></span> Mana: <strong data-role="mana">0 / 0</strong></span>
+              <div class="health-bar mana-bar"><span data-role="mana-bar"></span></div>
+            </div>
+          </div>
           <div class="stat-chips" data-role="chips-a"></div>
         </article>
       </div>
@@ -232,9 +245,6 @@
       <div id="duel-timer" class="duel-timer"></div>
       <div id="duel-log" class="battle-log">Walka się rozpoczyna…</div>
 
-      <div class="battle-actions duel-forfeit-row">
-        <button id="duel-forfeit-btn" type="button">🏳️ Poddaj się</button>
-      </div>
       <div class="battle-dock">
         <div id="duel-actions" class="battle-abilities"></div>
       </div>
@@ -242,6 +252,8 @@
       <button id="duel-back-btn" type="button" class="secondary-button hidden">Wróć do menu</button>`;
     main.appendChild(screen);
     window.GameIcons?.hydrate(screen);
+    // Telefon: statystyki obu walczących jako lista rozwijana, tak jak w walce PvE (mobileCards.js).
+    screen.querySelectorAll(".stat-chips").forEach((chips) => window.MobileCards?.initCollapsible(chips, "Statystyki"));
     $("#duel-forfeit-btn", screen).addEventListener("click", forfeit);
     $("#duel-back-btn", screen).addEventListener("click", leaveFight);
   }
@@ -648,7 +660,12 @@
       ...debuffEntries(view.me, "Przeciwnik: "),
     ];
     panel.replaceChildren();
-    if (!entries.length) { panel.textContent = "Brak aktywnych efektów."; return; }
+    // Rzadziej potrzebne statystyki gracza (AD, regeneracja many) mieszkają tu, nie na karcie walczącego.
+    const labels = window.GameIcons.STATS;
+    panel.append(
+      window.GameIcons.chip("ad", view.me.stats.ad, `Ty: ${labels.ad.label}`),
+      window.GameIcons.chip("manaRegen", `+${view.me.stats.manaRegen}`, `Ty: ${labels.manaRegen.label}`),
+    );
     entries.forEach(([id, value, label]) => panel.appendChild(window.GameIcons.effectChip(id, value, label)));
   }
 
@@ -669,11 +686,12 @@
     model.alt = `${fight.names[side]}${dead ? " — pokonany" : ""}`;
 
     const stats = unit.stats;
+    // AD i regeneracja many gracza są w panelu na dole (renderEffectsPanel), żeby pasek statystyk mieścił się w jednym rzędzie.
     if (isMe) {
-      R().renderChips($("[data-role=chips-a]", card), [["damage", stats.damage, "Obrażenia broni"], ["ad", stats.ad], ["crit", `${stats.crit}%`], ["armorPen", stats.armorPen]]);
-      R().renderChips($("[data-role=chips-b]", card), [["ap", stats.ap], ["manaRegen", `+${stats.manaRegen}`], ["armor", stats.armor], ["mr", stats.mr]]);
+      R().renderChips($("[data-role=chips-a]", card), [["damage", stats.damage, "Obrażenia broni"], ["crit", `${stats.crit}%`], ["armorPen", stats.armorPen]]);
+      R().renderChips($("[data-role=chips-b]", card), [["ap", stats.ap], ["armor", stats.armor], ["mr", stats.mr]]);
     } else {
-      R().renderChips($("[data-role=chips-a]", card), [["damage", stats.damage], ["ad", stats.ad], ["crit", `${stats.crit}%`], ["armor", stats.armor], ["mr", stats.mr], ["armorPen", stats.armorPen], ["ap", stats.ap]]);
+      R().renderChips($("[data-role=chips-a]", card), [["damage", stats.damage], ["crit", `${stats.crit}%`], ["armor", stats.armor], ["mr", stats.mr], ["armorPen", stats.armorPen], ["ap", stats.ap]]);
     }
   }
 
@@ -681,7 +699,17 @@
     const view = E.view(fight.duel, fight.side);
     const foeSide = other(fight.side);
     $("#duel-round", screen).textContent = `Runda ${view.round} / best of ${view.bestOf}`;
-    $("#duel-score", screen).textContent = `Wygrane rundy: Ty ${view.wins[fight.side]} : ${view.wins[foeSide]} Przeciwnik`;
+    // Wynik jak na tablicy: wygrane rundy, wyżej prowadzący.
+    const myWins = view.wins[fight.side];
+    const foeWins = view.wins[foeSide];
+    const scoreBoard = $("#duel-score", screen);
+    const myScore = $("[data-role=score-me]", scoreBoard);
+    const foeScore = $("[data-role=score-foe]", scoreBoard);
+    myScore.textContent = String(myWins);
+    foeScore.textContent = String(foeWins);
+    myScore.classList.toggle("is-leading", myWins > foeWins);
+    foeScore.classList.toggle("is-leading", foeWins > myWins);
+    scoreBoard.setAttribute("aria-label", `Wygrane rundy: Ty ${myWins}, Rywal ${foeWins}`);
     fillCard($("#duel-me", screen), fight.side, view.me, true);
     fillCard($("#duel-foe", screen), foeSide, view.opponent, false);
     renderEffectsPanel(view);
