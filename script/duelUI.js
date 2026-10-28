@@ -110,7 +110,48 @@
   function refreshButton() {
     const button = document.getElementById("duel-btn");
     if (!button) return;
-    button.classList.toggle("hidden", !(window.player && window.player.level >= MIN_LEVEL));
+    const unlocked = Boolean(window.player && window.player.level >= MIN_LEVEL);
+    // Po ukończeniu 50. poziomu „Pojedynki” zastępują „Graj” jako główny przycisk menu.
+    button.classList.toggle("hidden", !unlocked);
+    button.classList.toggle("btn-primary", unlocked);
+    button.classList.toggle("is-main", unlocked);
+    document.getElementById("play-btn")?.classList.toggle("hidden", unlocked);
+  }
+
+  // ---------- Gratulacje po ukończeniu 50. poziomu ----------
+  function showUnlockPrompt() {
+    if (document.getElementById("duel-unlock-modal")) return;
+    const modal = document.createElement("section");
+    modal.id = "duel-unlock-modal";
+    modal.className = "modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-labelledby", "duel-unlock-title");
+    modal.innerHTML = `
+      <div class="modal-content duel-unlock">
+        <div class="duel-unlock-trophy" aria-hidden="true">🏆</div>
+        <h2 id="duel-unlock-title">Gratulacje!</h2>
+        <p class="duel-unlock-lead">Przeszedłeś wszystkie 50 poziomów Legends of Wpierdol!</p>
+        <p class="duel-unlock-question">Co teraz? Zmierz się z innymi graczami w pojedynkach 1v1.</p>
+        <ul class="duel-unlock-perks">
+          <li>🥊 Walki na żywo z prawdziwymi graczami (best of 3)</li>
+          <li>🛠️ Walczysz własnym buildem — im lepszy ekwipunek, tym większe szanse</li>
+          <li>☁️ Wymagane: logowanie przez Discord i zapis postaci w chmurze</li>
+        </ul>
+        <div class="modal-actions duel-unlock-actions">
+          <button type="button" id="duel-unlock-go" class="btn-primary">🥊 Do pojedynków</button>
+          <button type="button" id="duel-unlock-later">Później</button>
+        </div>
+      </div>`;
+    document.querySelector(".main")?.appendChild(modal) || document.body.appendChild(modal);
+    const close = () => modal.remove();
+    $("#duel-unlock-later", modal).addEventListener("click", close);
+    $("#duel-unlock-go", modal).addEventListener("click", () => {
+      close();
+      document.getElementById("battle-back-btn")?.click(); // wyjście z ekranu walki do menu
+      openBrowser();
+    });
+    $("#duel-unlock-go", modal).focus();
   }
 
   // ---------- Okno lobby ----------
@@ -252,27 +293,98 @@
     schedule(pollBrowser, POLL_BROWSER_MS);
   }
 
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function waitText(seconds) {
+    if (seconds < 20) return "przed chwilą";
+    if (seconds < 90) return `${seconds} s`;
+    return `${Math.round(seconds / 60)} min`;
+  }
+
+  function lobbyRow(lobby) {
+    const row = el("li", `duel-lobby${lobby.mine ? " is-mine" : ""}${lobby.busy ? " is-busy" : ""}`);
+    const icon = window.GameIcons?.classIcon(lobby.classId, "duel-lobby-icon");
+    if (icon) row.appendChild(icon);
+
+    const info = el("span", "duel-lobby-name");
+    info.appendChild(el("strong", "", lobby.host));          // nick jako tekst — bez wstrzykiwania HTML
+    const meta = el("span", "duel-chips");
+    meta.append(
+      el("span", "duel-chip", className(lobby.classId)),
+      el("span", "duel-chip", `poz. ${lobby.level}`),
+      el("span", "duel-chip", `⏱ ${waitText(lobby.ageSeconds || 0)}`),
+    );
+    info.appendChild(meta);
+    row.appendChild(info);
+
+    const button = el("button", lobby.mine || lobby.busy ? "" : "btn-primary", lobby.mine ? "Twoje" : lobby.busy ? "Zajęte" : "⚔️ Walcz");
+    button.type = "button";
+    button.disabled = Boolean(lobby.mine || lobby.busy);
+    if (!button.disabled) button.addEventListener("click", () => requestFight(lobby.id));
+    row.appendChild(button);
+    return row;
+  }
+
   function renderBrowser(data) {
     const body = $("#duel-body", panel);
+    setStatus("");
     const saved = me.updatedAt ? new Date(me.updatedAt).toLocaleString("pl-PL") : "brak";
-    setStatus(`Zalogowany jako ${me.username}. Walczysz buildem z zapisu w chmurze (ostatni zapis: ${saved}). Po zmianie ekwipunku kliknij „Zapisz w chmurze”.`);
+    const lobbies = [...(data.lobbies || [])].sort((x, y) => (Number(y.mine) - Number(x.mine)) || (Number(x.busy) - Number(y.busy)));
+    body.replaceChildren();
 
-    const rows = (data.lobbies || []).map((lobby) => `
-      <li class="duel-lobby">
-        <span class="duel-lobby-name"><strong></strong> <small>${className(lobby.classId)} · poz. ${lobby.level} · Casual (bo3)</small></span>
-        <button type="button" data-join="${lobby.id}" ${lobby.mine || lobby.busy ? "disabled" : ""}>${lobby.mine ? "Twoje" : lobby.busy ? "Zajęte" : "⚔️ Walcz"}</button>
-      </li>`).join("");
-    body.innerHTML = `
-      ${data.activeDuelId ? `<div class="modal-actions"><button type="button" id="duel-resume-btn" class="btn-primary">↩️ Wróć do trwającej walki</button></div>` : ""}
-      <div class="modal-actions"><button type="button" id="duel-create-btn" class="btn-primary">➕ Utwórz lobby (Casual, best of 3)</button></div>
-      <h3 class="menu-section-title">Otwarte lobby</h3>
-      <ul class="duel-lobby-list">${rows || `<li class="duel-empty">Nikt jeszcze nie czeka na przeciwnika. Utwórz lobby!</li>`}</ul>`;
-    // nicki wstawiamy jako tekst (nick z Discorda nie może wstrzyknąć HTML)
-    body.querySelectorAll(".duel-lobby").forEach((item, index) => { $("strong", item).textContent = data.lobbies[index].host; });
-    body.querySelectorAll("[data-join]").forEach((button) => button.addEventListener("click", () => requestFight(button.dataset.join)));
-    $("#duel-create-btn", body).addEventListener("click", createLobby);
-    const resume = $("#duel-resume-btn", body);
-    if (resume) resume.addEventListener("click", () => resumeFight(data.activeDuelId));
+    // Karta gracza
+    const card = el("div", "duel-player-card");
+    const cardIcon = window.GameIcons?.classIcon(window.player?.classId, "duel-lobby-icon");
+    if (cardIcon) card.appendChild(cardIcon);
+    const who = el("span", "duel-lobby-name");
+    who.appendChild(el("strong", "", me.username || window.player?.nickname || "Gracz"));
+    who.appendChild(el("small", "", `${className(window.player?.classId)} · poz. ${window.player?.level ?? "?"}`));
+    card.appendChild(who);
+    const save = el("span", "duel-save-info");
+    save.append(el("span", "", "☁️ Ostatni zapis"), el("strong", "", saved));
+    card.appendChild(save);
+    body.appendChild(card);
+    body.appendChild(el("p", "duel-hint", "Walczysz buildem z zapisu w chmurze. Po zmianie ekwipunku kliknij „Zapisz w chmurze” w Opcjach."));
+
+    // Wróć do trwającej walki
+    if (data.activeDuelId) {
+      const resume = el("button", "btn-primary duel-wide", "↩️ Wróć do trwającej walki");
+      resume.type = "button";
+      resume.addEventListener("click", () => resumeFight(data.activeDuelId));
+      body.appendChild(resume);
+    }
+
+    // Utwórz lobby
+    const create = el("button", "btn-primary duel-create", "");
+    create.type = "button";
+    create.append(el("span", "duel-create-title", "➕ Utwórz lobby"), el("small", "", "Casual · best of 3 — poczekaj na rywala"));
+    create.addEventListener("click", createLobby);
+    body.appendChild(create);
+
+    // Lista lobby
+    const head = el("div", "duel-list-head");
+    head.appendChild(el("h3", "menu-section-title", `Otwarte lobby (${lobbies.length})`));
+    const refresh = el("button", "duel-refresh", "↻ Odśwież");
+    refresh.type = "button";
+    refresh.addEventListener("click", () => { stopTimers(); pollBrowser(); });
+    head.appendChild(refresh);
+    body.appendChild(head);
+
+    const list = el("ul", "duel-lobby-list");
+    if (lobbies.length) {
+      lobbies.forEach((lobby) => list.appendChild(lobbyRow(lobby)));
+    } else {
+      const empty = el("li", "duel-empty");
+      empty.append(el("span", "duel-empty-icon", "🏜️"), el("strong", "", "Pusto na arenie"), el("small", "", "Nikt jeszcze nie czeka na przeciwnika. Utwórz lobby i zostań pierwszy!"));
+      list.appendChild(empty);
+    }
+    body.appendChild(list);
+    body.appendChild(el("p", "duel-hint", "Lista odświeża się automatycznie co 5 s."));
   }
 
   // ---------- Host: tworzenie lobby i odpowiedź na prośby ----------
@@ -809,6 +921,6 @@
     refreshButton();
   }
 
-  window.DuelUI = { refreshButton, open: openBrowser };
+  window.DuelUI = { refreshButton, open: openBrowser, showUnlockPrompt, MIN_LEVEL };
   init();
 })();

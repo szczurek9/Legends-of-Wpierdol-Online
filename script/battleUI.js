@@ -444,6 +444,8 @@
       } else if (state.levelUp) {
         window.Achievements?.onLevelComplete(state);
         finish(`${message} ${state.message} Otrzymujesz nagrodę: ${state.reward} $.`, "success");
+        // Ukończony 50. poziom (gracz ma teraz 51) — odblokowane pojedynki 1v1.
+        if (window.DuelUI && window.player.level === window.DuelUI.MIN_LEVEL) window.DuelUI.showUnlockPrompt();
       } else {
         refs.actions.classList.remove("hidden");
         if (hideAbilitiesAndPotions) {
