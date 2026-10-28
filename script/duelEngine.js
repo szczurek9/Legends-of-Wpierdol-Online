@@ -14,6 +14,8 @@
   const S = window.BattleState;
   const A = window.BattleActions;
 
+  const YAMATO_BASE_THRESHOLD = 8;           // próg egzekucji Yamato w 1. rundzie (%), niezależny od kampanii
+  const YAMATO_THRESHOLD_PER_ROUND = 1;     // +1 punkt procentowy w każdej kolejnej rundzie
   const MANA_RESTORE_PER_ROUND = 0.5;          // po każdej rundzie +50% maks. many
   const ATTACK_ABILITIES = ["rhythmOfWar", "kōgeki"]; // umiejętności będące atakiem (podlegają unikowi)
   const FREE_ABILITIES = ["senNoKata", "absoluteFocus"]; // nie zużywają tury
@@ -62,6 +64,12 @@
     return { ...S.startState(enemyBlockFor(opponent), -1), arena: true, arenaTurns: 0 };
   }
 
+  // Próg egzekucji Yamato w pojedynku: stały dla obu graczy, 8% w 1. rundzie i +1% w każdej kolejnej.
+  // Nie zależy od progu z kampanii ani od trafień w walce; po pojedynku nic nie wraca do zapisu.
+  function yamatoThreshold(duel) {
+    return Math.min(100, YAMATO_BASE_THRESHOLD + (duel.round - 1) * YAMATO_THRESHOLD_PER_ROUND);
+  }
+
   // Start rundy: pełne HP, +50% many (poza 1. rundą, gdzie obaj mają pełną), czyste cooldowny i efekty.
   function startRound(duel, starter, firstRound) {
     ["host", "guest"].forEach((side) => {
@@ -72,6 +80,8 @@
         : M.clamp(player.manaPoints + Math.floor(player.maxManaPoints * MANA_RESTORE_PER_ROUND), 0, player.maxManaPoints);
       player.overkillPool = 0;
       player.adeptBookStacks = 0;
+      // Kod kampanii (useWeaponAbility) czyta próg z tego pola, więc ustawiamy je zgodnie z regułą pojedynków.
+      player.yamatoExecuteCap = yamatoThreshold(duel);
     });
     ["host", "guest"].forEach((side) => { duel.sides[side].state = freshState(duel, side); });
     duel.actor = starter;
@@ -102,18 +112,13 @@
     return options.some((option) => validate(duel, side, option).ok);
   }
 
-  // Próg egzekucji Yamato: bazowo 5% (rośnie z każdym użyciem) + 1 punkt za każde 6. trafienie w tej rundzie.
-  function yamatoThreshold(unit) {
-    return Math.min(100, (unit.player.yamatoExecuteCap || 5) + (unit.state.yamatoJudgementStacks || 0));
-  }
-
   // Aktywna umiejętność broni unikalnej (Spacja): Judgement Cut (Yamato) albo wystrzał puli (Pistolet Jhina).
   // Jak w kampanii nie zużywa tury.
   function validateWeapon(duel, side) {
     const unit = duel.sides[side];
     const foe = duel.sides[other(side)].player;
     if (unit.player.weaponId === "yamato") {
-      return foe.healthPoints <= foe.maxHealthPoints * yamatoThreshold(unit) / 100 ? { ok: true } : { ok: false, reason: "yamato_not_ready" };
+      return foe.healthPoints <= foe.maxHealthPoints * yamatoThreshold(duel) / 100 ? { ok: true } : { ok: false, reason: "yamato_not_ready" };
     }
     if (unit.player.weaponId === "jhinPistol") {
       return unit.state.jhinPool > 0 ? { ok: true } : { ok: false, reason: "pool_empty" };
@@ -268,7 +273,7 @@
       foe.state = { ...foe.state, rage: (foe.state.rage || 0) + finalDirect };
     }
 
-    unit.state = { ...result, enemyHealth: foe.player.healthPoints, enemyDefeated: foe.player.healthPoints <= 0 };
+    unit.state = { ...result, yamatoJudgementStacks: 0, enemyHealth: foe.player.healthPoints, enemyDefeated: foe.player.healthPoints <= 0 };
     return {
       ctx, hpBefore, direct: finalDirect, dot, reflected, burst, evaded: evading,
       message: result.message, missed: Boolean(result.missed), critical: Boolean(result.critical),
@@ -361,7 +366,7 @@
         weaponId: unit.player.weaponId,
         weaponName: unit.player.weaponName,
         jhinPool: unit.state.jhinPool || 0,
-        yamatoThreshold: yamatoThreshold(unit),
+        yamatoThreshold: yamatoThreshold(duel),
         hp: unit.player.healthPoints,
         maxHp: unit.player.maxHealthPoints,
         mana: unit.player.manaPoints,

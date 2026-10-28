@@ -61,7 +61,7 @@
       <a href="#klasy">Klasy</a><a href="#walka">Walka</a><a href="#ikony">Ikony</a><a href="#umiejetnosci">Umiejętności</a>
       <a href="#efekty">Efekty</a><a href="#bronie">Bronie</a><a href="#ad">Przedmioty AD</a>
       <a href="#magiczne">Magiczne</a><a href="#mikstury">Mikstury</a><a href="#skille">Skille</a>
-      <a href="#przeciwnicy">Przeciwnicy</a><a href="#fale">Fale i ucieczka</a><a href="#arena">Arena</a><a href="#sklep">Sklep</a>
+      <a href="#przeciwnicy">Przeciwnicy</a><a href="#fale">Fale i ucieczka</a><a href="#arena">Arena</a><a href="#pojedynki">Pojedynki 1v1</a><a href="#sklep">Sklep</a>
       <a href="#skiny">Skiny</a><a href="#osiagniecia">Osiągnięcia</a><a href="#zapis">Zapis i opcje</a><a href="#sterowanie">Sterowanie</a>
     </nav>
 
@@ -385,7 +385,7 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 
 <section id="arena">
 <h2>Arena</h2>
-<p>Arena odblokowuje się na <b>30. poziomie</b>. Przycisk <b>🏟️ Arena</b> stoi obok „Graj” w menu głównym i otwiera okno wyboru trudności z orientacyjnym zarobkiem. To osobny tryb: nie daje awansu, Skin Pointów ani nie zmienia postępu kampanii — wygrana daje wyłącznie pieniądze.</p>
+<p>Arena odblokowuje się na <b>30. poziomie</b>. Przycisk <b>🏟️ Arena</b> stoi obok „Graj” w menu głównym (po ukończeniu 50. poziomu „Graj” zastępują <a href="#pojedynki">Pojedynki</a>) i otwiera okno wyboru trudności z orientacyjnym zarobkiem. To osobny tryb: nie daje awansu, Skin Pointów ani nie zmienia postępu kampanii — wygrana daje wyłącznie pieniądze.</p>
 
 <h3>Jak działa walka</h3>
 <ul>
@@ -431,6 +431,57 @@ nagroda = round(bazowa × mnożnikWykonania)</div>
 </table></div>
 <p>Przycisk ucieczki w arenie jest zawsze aktywny (nie obowiązuje limit „raz na poziom”), ale w przeciwieństwie do ucieczki w kampanii <b>nie przywraca HP ani many</b>. Cooldown jest naliczany <b>już w momencie wejścia do areny</b> (po zakończeniu walki liczy się od nowa od jej końca). Trafia do kodu zapisu, a jego kopia jest też pamiętana w przeglądarce, więc odświeżenie strony w trakcie walki i wczytanie starszego zapisu go nie omija. Taka przerwana walka kończy się bez nagrody. Jedyny wyjątek to ucieczka, która cooldownu nie wlicza.</p>
 <p class="note">W obliczeniach areny nie uwzględniono wszystkich możliwości (np. aktywnych umiejętności poza rotacją maga), więc przy niektórych buildach walka bywa szybsza, niż zakłada model, a mnożnik wykonania będzie wtedy powyżej ×1,0.</p>
+</section>
+
+<section id="pojedynki">
+<h2>Pojedynki 1v1</h2>
+<p>Pojedynki to tryb dla graczy, którzy <b>ukończyli 50. poziom</b> (czyli mają poziom 51). Po jego ukończeniu pojawia się komunikat z gratulacjami, a przycisk <b>🥊 Pojedynki</b> zajmuje w menu głównym miejsce przycisku „Graj”. Walczysz na żywo z innym graczem — własnym buildem, według zasad turowych zbliżonych do areny.</p>
+
+<h3>Wymagania</h3>
+<ul>
+  <li><b>Logowanie przez Discord.</b> Twoim nickiem w pojedynkach jest nick z Discorda.</li>
+  <li><b>Zapis w chmurze z poziomem 51+.</b> W pojedynku walczy build z ostatniego zapisu w chmurze, a nie ten z lokalnej gry. Po każdej zmianie ekwipunku, umiejętności czy skina kliknij w Opcjach <b>Zapisz w chmurze</b>, inaczej przeciwnik zobaczy starszą wersję postaci.</li>
+  <li>Przeciwnik nie widzi Twoich pieniędzy, Punktów Skinów, skinów, motywu ani danych osiągnięć i cooldownów areny — do walki trafiają tylko statystyki bojowe.</li>
+</ul>
+
+<h3>Lobby i szukanie przeciwnika</h3>
+<ul>
+  <li>Okno pojedynków pokazuje Twoją kartę gracza (klasa, poziom, data ostatniego zapisu w chmurze), przycisk <b>➕ Utwórz lobby</b> i listę otwartych lobby. Każde lobby ma ikonę klasy hosta, nick, poziom i czas oczekiwania. Lista odświeża się co 5 sekund, a przyciskiem <b>↻ Odśwież</b> zrobisz to od razu.</li>
+  <li><b>Utworzenie lobby:</b> host czeka w oknie na przeciwnika. Lobby jest widoczne na liście tylko wtedy, gdy okno jest otwarte — zamknięcie okna albo przycisk <b>Zamknij lobby</b> je usuwa, a lobby bez sygnału od hosta znika z listy po około 30 sekundach.</li>
+  <li><b>Dołączanie:</b> kliknij <b>⚔️ Walcz</b> przy wybranym lobby. Host dostaje prośbę i ma <b>20 sekund</b> na jej akceptację lub odrzucenie. W tym czasie lobby oznaczone jest jako „Zajęte”. Prośbę możesz wycofać przyciskiem <b>Wycofaj prośbę</b>.</li>
+  <li>Możesz mieć tylko jedną walkę naraz. Jeśli odświeżysz stronę w trakcie pojedynku, w oknie pojawi się przycisk <b>↩️ Wróć do trwającej walki</b>.</li>
+</ul>
+
+<h3>Przebieg walki</h3>
+<ul>
+  <li><b>Tryb Casual — best of 3.</b> Wygrywa ten, kto pierwszy wygra 2 rundy. Tryb rankingowy jest dopiero planowany.</li>
+  <li>Walka jest turowa: gracze wykonują ruchy naprzemiennie. Kto zaczyna pierwszą rundę, jest losowane, a każdą kolejną zaczyna <b>przegrany poprzedniej rundy</b>.</li>
+  <li><b>Start każdej rundy:</b> pełne HP, <b>+50% maks. many</b> (w 1. rundzie pełna mana), wyzerowane cooldowny i efekty oraz stosy Księgi Adeptów i pula Overkill.</li>
+  <li><b>Limit czasu:</b> na ruch masz <b>30 sekund</b> (na początku walki dochodzi 15 sekund na wczytanie). Brak ruchu w tym czasie oznacza przegraną całej walki.</li>
+  <li>Przycisk <b>🏳️ Poddaj się</b> kończy walkę porażką.</li>
+  <li>Walkę liczy ten sam silnik u obu graczy na tych samych danych, więc wynik jest identyczny po obu stronach. Gdyby jednak wykryto rozjazd symulacji, walka jest <b>anulowana bez wyniku</b>.</li>
+</ul>
+
+<h3>Dostępne akcje</h3>
+<ul>
+  <li><b>Judgement Cut (Yamato) ma w pojedynku stały próg egzekucji:</b> 8% HP przeciwnika w 1. rundzie i +1 punkt procentowy w każdej kolejnej (9% w 2., 10% w 3.). Próg z kampanii (rosnący z każdym użyciem) ani stosy za co 6. trafienie nie mają tu wpływu, a po pojedynku nic nie wraca do Twojej postaci.</li>
+  <li>Zwykły atak bronią (nie ma go Mag, tak samo jak w kampanii), umiejętności klasowe (koszt many i cooldowny jak w kampanii) oraz aktywne umiejętności broni unikalnych: <b>Judgement Cut</b> (Yamato) i wystrzał puli <b>Pistoletu Jhina</b>.</li>
+  <li><b>Mikstur nie ma</b> — w pojedynku nie można ich używać. Nie ma też ucieczki.</li>
+  <li>Przeciwnik <b>nie kontratakuje automatycznie</b> — zadaje obrażenia tylko własnymi ruchami. Zatrucie i pnącza ranią przeciwnika na początku jego tury, a ogłuszenie sprawia, że traci on swoją turę.</li>
+  <li>Umiejętność broni oraz Sen no Kata i Absolutne Skupienie <b>nie zużywają tury</b>.</li>
+  <li>Jeśli nie masz żadnej dostępnej akcji (np. brak many i cooldowny), możesz użyć <b>Pomiń turę</b>.</li>
+</ul>
+<div class="tablewrap"><table>
+<tr><th>Klawisz</th><th>Akcja w pojedynku</th></tr>
+<tr><td>Q</td><td>Zwykły atak (dla Maga — 1. umiejętność)</td></tr>
+<tr><td>Q/W/E/R (Mag), W/E/R (pozostałe klasy)</td><td>Umiejętności klasowe</td></tr>
+<tr><td>Spacja</td><td>Umiejętność broni unikalnej</td></tr>
+<tr><td>P</td><td>Pomiń turę (gdy nie masz innej akcji)</td></tr>
+</table></div>
+
+<h3>Nagrody</h3>
+<p>Pojedynki nie dają pieniędzy ani Punktów Skinów i nie zmieniają postępu kampanii — liczy się wyłącznie wynik walki.</p>
+<p class="note">Szczegóły dotyczące zapisu w chmurze znajdziesz w sekcji <a href="#zapis">Zapis, konto i opcje</a>. Balans umiejętności i broni jest wspólny z kampanią i areną.</p>
 </section>
 
 <section id="sklep">
@@ -536,6 +587,7 @@ Większość skinów kupisz za Skin Pointy, część należy do tematycznych kol
 <tr><td>📋 Kod zapisu</td><td>Zapisz grę, Kopiuj zapis, Wczytaj zapis</td><td>Zapis jako tekst, który możesz skopiować, przechować i wkleić do wczytania — także na innym urządzeniu.</td></tr>
 </table></div>
 <p class="note">Cooldown areny jest częścią kodu zapisu, więc wczytanie starszego zapisu go nie omija (zob. <a href="#arena">Arena</a>).</p>
+<p class="note">Do <a href="#pojedynki">pojedynków 1v1</a> liczy się zapis w chmurze: walczysz buildem z ostatniego zapisu, więc po zmianach w ekwipunku zapisz postać ponownie.</p>
 <h3>Wygląd</h3>
 <p>Motyw interfejsu: <strong>Noc</strong> (ciemny), <strong>Dzień</strong> (jasny), <strong>Wysoki kontrast</strong> i <strong>Las</strong> (ciemna zieleń). Wiki ma własny przełącznik motywu na górze strony.</p>
 <h3>Telefon</h3>

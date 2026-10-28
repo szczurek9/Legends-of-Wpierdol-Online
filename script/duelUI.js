@@ -788,7 +788,7 @@
     if (!check.ok) {
       if (action.kind === "weapon") {
         logLine(check.reason === "pool_empty" ? "Pula Pistoletu Jhina jest pusta."
-          : `Judgement Cut wymaga celu poniżej ${E.yamatoThreshold(fight.duel.sides[fight.side])}% HP.`, "warning");
+          : `Judgement Cut wymaga celu poniżej ${E.yamatoThreshold(fight.duel)}% HP.`, "warning");
       }
       return;
     }

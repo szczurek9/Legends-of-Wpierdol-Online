@@ -260,3 +260,15 @@
 @media (prefers-reduced-motion: reduce) {
     .duel-unlock-trophy { animation: none; }
 }
+
+/* Przyciski akcji w oknie lobby (zamknij lobby, wycofaj prośbę, akceptuj/odrzuć) — wyśrodkowane. */
+#duel-body .modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+#duel-body .modal-actions button {
+    min-width: 11rem;
+}
