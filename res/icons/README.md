@@ -1,4 +1,4 @@
-# Ikony interfejsu
+# Ikony w interfejsie
 
 Gra sama podmienia emotkę na obrazek, gdy tylko plik pojawi się w odpowiednim
 folderze (nazwy dokładnie jak niżej, małe litery, PNG z przezroczystością).
