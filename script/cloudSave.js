@@ -133,7 +133,7 @@
         method: "PUT",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: window.SaveSystem.createSaveCode() }),
+        body: JSON.stringify({ code: await window.SaveSystem.createSaveCode() }),
       });
 
       if (response.status === 401) {
@@ -163,7 +163,7 @@
       if (!response.ok) throw new Error(String(response.status));
 
       const { code } = await response.json();
-      if (!window.SaveSystem.loadSaveCode(code)) {
+      if (!(await window.SaveSystem.loadSaveCode(code))) {
         say("Zapis z chmury jest nieprawidłowy lub uszkodzony.", "danger");
         return;
       }

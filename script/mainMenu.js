@@ -189,8 +189,8 @@ function closeOptions() {
   optionsModal.classList.add("hidden");
 }
 
-function loadCode(code) {
-  if (!code || !window.SaveSystem.loadSaveCode(code)) {
+async function loadCode(code) {
+  if (!code || !(await window.SaveSystem.loadSaveCode(code))) {
     return false;
   }
 
@@ -198,11 +198,11 @@ function loadCode(code) {
   return true;
 }
 
-function loadFromPrompt() {
+async function loadFromPrompt() {
   const code = window.prompt("Wklej kod zapisu gry:");
   if (code === null) return;
 
-  if (!loadCode(code)) {
+  if (!(await loadCode(code))) {
     startMessage.textContent = "Nieprawidłowy lub uszkodzony zapis gry.";
   }
 }
@@ -266,14 +266,14 @@ startButton.addEventListener("click", () => {
 document.getElementById("options-btn").addEventListener("click", openOptions);
 document.getElementById("close-options-btn").addEventListener("click", closeOptions);
 
-document.getElementById("save-game-btn").addEventListener("click", () => {
-  saveCode.value = window.SaveSystem.createSaveCode();
+document.getElementById("save-game-btn").addEventListener("click", async () => {
+  saveCode.value = await window.SaveSystem.createSaveCode();
   saveCode.select();
   showOptionsMessage("Zapis gry został wygenerowany.", "success");
 });
 
 document.getElementById("copy-save-btn").addEventListener("click", async () => {
-  if (!saveCode.value) saveCode.value = window.SaveSystem.createSaveCode();
+  if (!saveCode.value) saveCode.value = await window.SaveSystem.createSaveCode();
 
   try {
     await navigator.clipboard.writeText(saveCode.value);
@@ -284,14 +284,61 @@ document.getElementById("copy-save-btn").addEventListener("click", async () => {
   }
 });
 
-document.getElementById("load-save-btn").addEventListener("click", () => {
+document.getElementById("load-save-btn").addEventListener("click", async () => {
   const code = saveCode.value.trim() || window.prompt("Wklej kod zapisu gry:");
   if (code === null) return;
 
-  if (loadCode(code)) {
+  if (await loadCode(code)) {
     closeOptions();
     showOptionsMessage("Gra została wczytana.", "success");
   } else {
     showOptionsMessage("Nieprawidłowy lub uszkodzony zapis gry.", "danger");
+  }
+});
+
+// Zapis do pliku .low (nick_klasa_data_godzina.low) i wczytanie z pliku.
+const importFileInput = document.getElementById("import-file-input");
+
+document.getElementById("export-file-btn").addEventListener("click", async () => {
+  try {
+    const { filename, text } = await window.SaveSystem.createSaveFile();
+    const url = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 2000);
+    showOptionsMessage(`Zapisano plik: ${filename}`, "success");
+  } catch (error) {
+    showOptionsMessage("Nie udało się utworzyć pliku zapisu.", "danger");
+  }
+});
+
+document.getElementById("import-file-btn").addEventListener("click", () => importFileInput.click());
+
+importFileInput.addEventListener("change", async () => {
+  const file = importFileInput.files && importFileInput.files[0];
+  importFileInput.value = "";
+  if (!file) return;
+  if (file.size > 200 * 1024) {
+    showOptionsMessage("Ten plik jest za duży na zapis gry.", "danger");
+    return;
+  }
+
+  let text = "";
+  try {
+    text = (await file.text()).trim();
+  } catch (error) {
+    showOptionsMessage("Nie udało się odczytać pliku.", "danger");
+    return;
+  }
+
+  if (await loadCode(text)) {
+    closeOptions();
+    showOptionsMessage("Gra została wczytana z pliku.", "success");
+  } else {
+    showOptionsMessage("Nieprawidłowy lub uszkodzony plik zapisu.", "danger");
   }
 });

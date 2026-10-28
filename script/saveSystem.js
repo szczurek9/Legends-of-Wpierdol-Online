@@ -55,18 +55,64 @@
     return JSON.parse(JSON.stringify(player));
   }
 
+  // Opisy przedmiotow to tekst z katalogow gry (data/*.json), wiec nie ida do zapisu:
+  // wracaja z katalogu przy wczytywaniu (i przy okazji sa zawsze aktualne).
+  // Liczby (ad, critChance, paidPrice...) zostaja w instancjach, bo zdjecie/sprzedaz
+  // przedmiotu odejmuje dokladnie to, co zostalo dodane.
+  const DEFINITION_LISTS = [
+    ["inventory", "shopWeapons"],
+    ["adItemInventory", "adItems"],
+    ["magicInventory", "magicItems"],
+  ];
+
+  function slimPlayer(player) {
+    DEFINITION_LISTS.forEach(([listKey]) => {
+      (player[listKey] || []).forEach((item) => {
+        if (item && typeof item === "object") delete item.description;
+      });
+    });
+    return player;
+  }
+
+  function hydrateDescriptions(player) {
+    DEFINITION_LISTS.forEach(([listKey, catalogKey]) => {
+      const byId = new Map((window[catalogKey] || []).map((definition) => [definition.id, definition]));
+      (player[listKey] || []).forEach((item) => {
+        if (!item || typeof item !== "object") return;
+        const definition = byId.get(item.id);
+        if (definition && typeof definition.description === "string") item.description = definition.description;
+        else if (typeof item.description !== "string") item.description = "";
+      });
+    });
+  }
+
   function applyPlayer(player) {
     if (!isValidPlayer(player)) return false;
     Object.assign(window.player, copyPlayer(player));
     return true;
   }
 
-  function createSaveCode() {
-    return window.SaveCodec.encode(JSON.stringify({
+  async function createSaveCode() {
+    return window.SaveCodec.encodePacked(JSON.stringify({
       version: SAVE_VERSION,
       savedAt: new Date().toISOString(),
-      player: copyPlayer(arenaSnapshot || window.player),
+      player: slimPlayer(copyPlayer(arenaSnapshot || window.player)),
     }));
+  }
+
+  // Nazwa pliku: nick_klasa_data_godzina.low, np. Szczurek9_assassin_2026-10-28_09-26.low
+  function saveFileName(player) {
+    const pad = (value) => String(value).padStart(2, "0");
+    const now = new Date();
+    const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    const time = `${pad(now.getHours())}-${pad(now.getMinutes())}`;
+    const nick = String(player.nickname || "").trim().replace(/\s+/g, "_").replace(/[^\p{L}\p{N}_-]+/gu, "").slice(0, 24) || "gracz";
+    const classId = String(player.classId || "postac").replace(/[^a-z0-9_-]/gi, "") || "postac";
+    return `${nick}_${classId}_${date}_${time}.low`;
+  }
+
+  async function createSaveFile() {
+    return { filename: saveFileName(arenaSnapshot || window.player), text: await createSaveCode() };
   }
 
   // Older save codes may predate fields that were added later. This backfills
@@ -141,12 +187,16 @@
     if (typeof player.achRun.escapes !== "number" || !(player.achRun.escapes >= 0)) player.achRun.escapes = 0;
     if (typeof player.achRun.potionFreeLevels !== "number" || !(player.achRun.potionFreeLevels >= 0)) player.achRun.potionFreeLevels = 0;
 
+    hydrateDescriptions(player);
+
     return player;
   }
 
-  function loadSaveCode(code) {
+  async function loadSaveCode(code) {
     try {
-      const save = JSON.parse(window.SaveCodec.decode(code));
+      // Opisy wracaja z katalogow, wiec dane gry musza byc juz wczytane.
+      if (window.gameDataReady) await window.gameDataReady;
+      const save = JSON.parse(await window.SaveCodec.decodeAny(code));
       if (!save.player) return false;
 
       migrateLoadedPlayer(save.player);
@@ -165,6 +215,7 @@
 
   window.SaveSystem = {
     createSaveCode,
+    createSaveFile,
     loadSaveCode,
     resetPlayer,
     captureBattleState() {

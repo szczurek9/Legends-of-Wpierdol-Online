@@ -12,12 +12,42 @@ function isSameOrigin(request) {
   return request.headers.get("Origin") === new URL(request.url).origin;
 }
 
-function isValidSaveCode(code) {
+// Format v2 ("LOW2." + deflate-raw + base64) i stary (sam base64 JSON-a).
+const PACKED_PREFIX = "LOW2.";
+const MAX_UNPACKED_LENGTH = 512 * 1024; // ochrona przed "bomba" kompresji
+
+function base64ToBytes(text) {
+  return Uint8Array.from(atob(text), (character) => character.charCodeAt(0));
+}
+
+async function inflate(bytes) {
+  const reader = new Response(bytes).body.pipeThrough(new DecompressionStream("deflate-raw")).getReader();
+  const chunks = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.length;
+    if (total > MAX_UNPACKED_LENGTH) {
+      await reader.cancel();
+      throw new Error("too_large");
+    }
+    chunks.push(value);
+  }
+  const out = new Uint8Array(total);
+  let offset = 0;
+  chunks.forEach((chunk) => { out.set(chunk, offset); offset += chunk.length; });
+  return out;
+}
+
+async function isValidSaveCode(code) {
   if (typeof code !== "string" || code.length < 10 || code.length > MAX_SAVE_LENGTH) return false;
-  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(code)) return false;
+  if (!/^(?:LOW2\.)?[A-Za-z0-9+/]+={0,2}$/.test(code)) return false;
 
   try {
-    const bytes = Uint8Array.from(atob(code), (character) => character.charCodeAt(0));
+    const bytes = code.startsWith(PACKED_PREFIX)
+      ? await inflate(base64ToBytes(code.slice(PACKED_PREFIX.length)))
+      : base64ToBytes(code);
     const save = JSON.parse(new TextDecoder().decode(bytes));
     return Number.isInteger(save.version)
       && save.player !== null
@@ -55,7 +85,7 @@ export async function onRequestPut({ request, env }) {
     return json({ error: "bad_request" }, 400);
   }
 
-  if (!isValidSaveCode(code)) return json({ error: "invalid_save" }, 400);
+  if (!(await isValidSaveCode(code))) return json({ error: "invalid_save" }, 400);
 
   const updatedAt = new Date().toISOString();
   await env.DB.prepare(
