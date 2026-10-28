@@ -11,6 +11,8 @@ export const REQUEST_TIMEOUT_MS = 20 * 1000; // host ma 20 s na odpowiedź na pr
 export const LOBBY_STALE_MS = 30 * 1000; // lobby bez sygnału hosta znika z listy
 export const SEEN_THROTTLE_MS = 10 * 1000; // sygnał życia zapisujemy najwyżej co 10 s (oszczędza zapisy D1)
 const MAX_BUILD_LENGTH = 30 * 1024;
+const PACKED_PREFIX = "LOW2."; // format v2 zapisu: "LOW2." + deflate-raw + base64 (jak w api/save.js)
+const MAX_UNPACKED_LENGTH = 512 * 1024; // ochrona przed "bombą" kompresji
 const CODE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
 
 // Pola, których przeciwnik nie potrzebuje do walki i nie powinien widzieć.
@@ -66,6 +68,39 @@ export async function readBody(request, maxLength = 2048) {
   }
 }
 
+function base64ToBytes(text) {
+  return Uint8Array.from(atob(text), (character) => character.charCodeAt(0));
+}
+
+async function inflateRaw(bytes) {
+  const reader = new Response(bytes).body.pipeThrough(new DecompressionStream("deflate-raw")).getReader();
+  const chunks = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.length;
+    if (total > MAX_UNPACKED_LENGTH) {
+      await reader.cancel();
+      throw new Error("too_large");
+    }
+    chunks.push(value);
+  }
+  const out = new Uint8Array(total);
+  let offset = 0;
+  chunks.forEach((chunk) => { out.set(chunk, offset); offset += chunk.length; });
+  return out;
+}
+
+// Obsługuje oba formaty zapisu: nowy ("LOW2." + deflate + base64) i stary (sam base64 JSON-a).
+async function decodeSaveData(data) {
+  const clean = String(data).replace(/\s+/g, "");
+  const bytes = clean.startsWith(PACKED_PREFIX)
+    ? await inflateRaw(base64ToBytes(clean.slice(PACKED_PREFIX.length)))
+    : base64ToBytes(clean);
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+
 // Build gracza = jego zapis w chmurze (tabela saves). Zwraca { player } albo { error, status }.
 export async function loadBuild(db, userId) {
   const row = await db.prepare("SELECT data FROM saves WHERE user_id = ?").bind(userId).first();
@@ -73,8 +108,7 @@ export async function loadBuild(db, userId) {
 
   let player;
   try {
-    const bytes = Uint8Array.from(atob(row.data), (character) => character.charCodeAt(0));
-    player = JSON.parse(new TextDecoder().decode(bytes)).player;
+    player = (await decodeSaveData(row.data)).player;
   } catch (error) {
     return { error: "invalid_save", status: 422 };
   }
