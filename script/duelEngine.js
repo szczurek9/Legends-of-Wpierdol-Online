@@ -7,8 +7,8 @@
 // więc balans zostaje wspólny z kampanią. Wyjątek to kontratak wroga: w pojedynku nie ma go wcale,
 // zamiast niego działa tura przeciwnika (zatrucie, pnącza, ogłuszenie).
 //
-// Ładowany po battleMath.js / battleState.js / battleActions.js. W v1: atak i umiejętności klas
-// (bez mikstur i aktywnej umiejętności broni).
+// Ładowany po battleMath.js / battleState.js / battleActions.js. Obsługuje atak, umiejętności klas
+// i aktywne umiejętności broni unikalnych (Yamato, Pistolet Jhina); bez mikstur.
 (function () {
   const M = window.BattleMath;
   const S = window.BattleState;
@@ -102,6 +102,25 @@
     return options.some((option) => validate(duel, side, option).ok);
   }
 
+  // Próg egzekucji Yamato: bazowo 5% (rośnie z każdym użyciem) + 1 punkt za każde 6. trafienie w tej rundzie.
+  function yamatoThreshold(unit) {
+    return Math.min(100, (unit.player.yamatoExecuteCap || 5) + (unit.state.yamatoJudgementStacks || 0));
+  }
+
+  // Aktywna umiejętność broni unikalnej (Spacja): Judgement Cut (Yamato) albo wystrzał puli (Pistolet Jhina).
+  // Jak w kampanii nie zużywa tury.
+  function validateWeapon(duel, side) {
+    const unit = duel.sides[side];
+    const foe = duel.sides[other(side)].player;
+    if (unit.player.weaponId === "yamato") {
+      return foe.healthPoints <= foe.maxHealthPoints * yamatoThreshold(unit) / 100 ? { ok: true } : { ok: false, reason: "yamato_not_ready" };
+    }
+    if (unit.player.weaponId === "jhinPistol") {
+      return unit.state.jhinPool > 0 ? { ok: true } : { ok: false, reason: "pool_empty" };
+    }
+    return { ok: false, reason: "no_weapon_ability" };
+  }
+
   // Czy ruch jest dozwolony. Nic nie zmienia — klient sprawdza to przed wysłaniem, a klient przeciwnika
   // przed zastosowaniem (nielegalny ruch = rozjazd, walka zostaje anulowana).
   function validate(duel, side, action) {
@@ -113,6 +132,7 @@
       // Mag nie ma zwykłego ataku (jak w kampanii: kafelek „Atakuj” jest dla niego ukryty).
       return duel.sides[side].player.classId === "mage" ? { ok: false, reason: "mage_no_attack" } : { ok: true };
     }
+    if (action.kind === "weapon") return validateWeapon(duel, side);
     if (action.kind !== "ability") return { ok: false, reason: "unsupported" };
 
     const unit = duel.sides[side];
@@ -182,6 +202,8 @@
     try {
       if (action.kind === "pass") {
         result = A.finishPlayerAction(unit.state, "Brak dostępnych akcji — tracisz turę.");
+      } else if (action.kind === "weapon") {
+        result = A.useWeaponAbility(unit.state);
       } else if (action.kind === "attack") {
         const focused = Boolean(unit.state.focusMark);
         const attacked = A.playerAttack(unit.state, { forceCritical: Boolean(unit.state.guaranteedCrit), focusStrike: focused });
@@ -208,7 +230,10 @@
     if (attackType && foeEffects.evadeNext) delete foe.state.effects.evadeNext; // unik zużyty (trafiony lub nie)
     if (foeEffects.rageArmor && (attackType || direct > 0)) delete foe.state.effects.rageArmor; // Gniew-pancerz na jeden atak
 
-    if (direct > 0) {
+    const execution = action.kind === "weapon" && unit.player.weaponId === "yamato";
+    if (direct > 0 && execution) {
+      foeHp = 0; // Judgement Cut to egzekucja, nie obrażenia: Lustro i Mushin jej nie osłabiają
+    } else if (direct > 0) {
       if (foeEffects.mushin) finalDirect = Math.max(1, Math.floor(finalDirect * 0.7));
       if (foeEffects.mirror) {
         const fatal = finalDirect >= hpBefore;
@@ -333,6 +358,10 @@
       return {
         classId: unit.player.classId,
         skinName: unit.player.skinName,
+        weaponId: unit.player.weaponId,
+        weaponName: unit.player.weaponName,
+        jhinPool: unit.state.jhinPool || 0,
+        yamatoThreshold: yamatoThreshold(unit),
         hp: unit.player.healthPoints,
         maxHp: unit.player.maxHealthPoints,
         mana: unit.player.manaPoints,
@@ -359,5 +388,5 @@
     };
   }
 
-  window.DuelEngine = { create, validate, apply, view, abilitiesOf, hasAnyAction };
+  window.DuelEngine = { create, validate, apply, view, abilitiesOf, hasAnyAction, yamatoThreshold };
 })();

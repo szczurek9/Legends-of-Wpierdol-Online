@@ -469,6 +469,12 @@
     const side = move.side;
     const name = fight.names[side];
     const classId = fight.duel.sides[side].player.classId;
+    if (move.action.kind === "weapon") {
+      if (fight.duel.sides[side].player.weaponId === "yamato") {
+        return `${name} używa Judgement Cut — egzekucja!${res.roundOver ? ` Rundę wygrywa ${fight.names[res.roundWinner]}!` : ""}`;
+      }
+      return `${name} wystrzeliwuje pulę Pistoletu Jhina: ${res.damage} obrażeń.${res.roundOver ? ` Rundę wygrywa ${fight.names[res.roundWinner]}!` : ""}`;
+    }
     if (move.action.kind === "pass") return `${name} nie ma żadnej dostępnej akcji i traci turę.`;
     const label = move.action.kind === "attack" ? "atakuje" : `używa ${abilityName(classId, move.action.id)}`;
     let text;
@@ -508,6 +514,8 @@
     if (unit.guaranteedCrit) out.push(["primalStrike", "", `${prefix}Primal Strike: następny atak to gwarantowany krytyk`]);
     if (unit.classId === "assassin" && unit.overkillPool > 0) out.push(["overkillPool", shortNumber(Math.floor(unit.overkillPool)), `${prefix}Overkill: ${Math.floor(unit.overkillPool)}`]);
     if (unit.classId === "tank" && unit.rage > 0) out.push(["ragePool", shortNumber(Math.floor(unit.rage)), `${prefix}Skumulowany Gniew: ${Math.floor(unit.rage)}`]);
+    if (unit.weaponId === "jhinPistol" && unit.jhinPool > 0) out.push(["jhinPool", shortNumber(unit.jhinPool), `${prefix}Pula Pistoletu Jhina: ${unit.jhinPool}`]);
+    if (unit.weaponId === "yamato") out.push(["yamatoJudgement", `${unit.yamatoThreshold}%`, `${prefix}Judgement Cut: egzekucja poniżej ${unit.yamatoThreshold}% HP`]);
     return out;
   }
 
@@ -596,6 +604,31 @@
     if (!isMage) {
       addTile({ kind: "attack" }, { name: "Atakuj", hotkey: "Q" }, window.GameIcons.stat("damage", "tile-glyph"), `Atak bronią: ${fight.duel.sides[fight.side].player.weaponName}`);
     }
+    // Umiejętność broni unikalnej (Yamato, Pistolet Jhina): wolna akcja pod Spacją.
+    const weaponId = view.me.weaponId;
+    if (weaponId === "yamato" || weaponId === "jhinPistol") {
+      const yamato = weaponId === "yamato";
+      const pool = Math.floor(view.me.jhinPool);
+      const ready = yamato
+        ? view.opponent.hp <= view.opponent.maxHp * view.me.yamatoThreshold / 100 && view.opponent.hp > 0
+        : pool > 0;
+      const tile = {
+        name: yamato ? "Judgement Cut" : "Pula Jhina",
+        hotkey: "Spc",
+        sub: yamato ? `poniżej ${view.me.yamatoThreshold}% HP` : (pool > 0 ? String(pool) : "pusta"),
+      };
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "ability-button weapon-ability-button";
+      R().buildTile(button, { ...tile, icon: window.GameIcons.itemIcon("weapons", weaponId, "tile-img") });
+      button.title = `Umiejętność broni: ${view.me.weaponName}`;
+      button.setAttribute("aria-label", `${tile.name}, ${tile.sub}, skrót Spacja`);
+      button.classList.toggle("is-no-mana", !ready);
+      button.disabled = fight.busy || !myTurn;
+      button.addEventListener("click", () => playMove({ kind: "weapon" }));
+      if (!button.disabled) fight.hotkeys.space = { kind: "weapon" };
+      holder.appendChild(button);
+    }
     abilities.forEach((ability, index) => {
       const hotkey = isMage ? ["Q", "W", "E", "R"][index] : ["W", "E", "R"][index];
       const isToggle = ability.id === "senNoKata";
@@ -610,7 +643,7 @@
     });
     // Brak jakiejkolwiek akcji (np. Mag bez many): można tylko oddać turę, zamiast czekać na timeout.
     if (myTurn && !E.hasAnyAction(fight.duel, fight.side)) {
-      addTile({ kind: "pass" }, { name: "Pomiń turę", hotkey: "Space" }, window.GameIcons.stat("mana", "tile-glyph"), "Nie masz żadnej dostępnej akcji — oddajesz turę.");
+      addTile({ kind: "pass" }, { name: "Pomiń turę", hotkey: "P" }, window.GameIcons.stat("mana", "tile-glyph"), "Nie masz żadnej dostępnej akcji — oddajesz turę.");
     }
   }
 
@@ -639,7 +672,14 @@
 
   async function playMove(action) {
     if (!fight || fight.busy || fight.ended) return;
-    if (!E.validate(fight.duel, fight.side, action).ok) return;
+    const check = E.validate(fight.duel, fight.side, action);
+    if (!check.ok) {
+      if (action.kind === "weapon") {
+        logLine(check.reason === "pool_empty" ? "Pula Pistoletu Jhina jest pusta."
+          : `Judgement Cut wymaga celu poniżej ${E.yamatoThreshold(fight.duel.sides[fight.side])}% HP.`, "warning");
+      }
+      return;
+    }
     fight.busy = true;
     const n = fight.moves.length;
     const move = { n, side: fight.side, action, next: null };
@@ -648,7 +688,9 @@
     logLine(describeMove(move, res), res.roundOver ? "success" : "");
     renderFight();
 
+    const current = fight;
     const result = await api("/move", { method: "POST", body: { id: fight.id, n, action, next: res.next } });
+    if (fight !== current) return; // wyszedł do menu w trakcie wysyłania ruchu
     if (result.ok) {
       fight.moves.push(move);
       fight.deadline = result.data.deadline;
@@ -701,7 +743,9 @@
   async function desync() {
     if (!fight || fight.ended) return;
     stopTimers();
+    const current = fight;
     await api("/finish", { method: "POST", body: { id: fight.id, desync: true } });
+    if (fight !== current) return; // gracz zdążył wyjść do menu
     logLine("Wykryto rozjazd symulacji (np. różne wersje gry u graczy) — walka została anulowana bez wyniku.", "danger");
     finishFight();
   }
@@ -710,12 +754,15 @@
     if (!fight || fight.ended) return;
     if (!window.confirm("Poddać walkę? Przeciwnik wygrywa.")) return;
     stopTimers();
+    const current = fight;
     const result = await api("/finish", { method: "POST", body: { id: fight.id, forfeit: true } });
+    if (fight !== current) return;
     if (result.ok && result.data.duel) return concludeFight(result.data.duel);
     finishFight();
   }
 
   function concludeFight(state) {
+    if (!fight) return;
     const youWon = state.winner === fight.side;
     const reason = END_REASONS[state.endReason] || "";
     if (state.status === "finished") {
@@ -735,8 +782,8 @@
     stopTimers();
     clearInterval(tickTimer);
     tickTimer = null;
-    if (fight) fight.ended = true;
-    if (!screen) return;
+    if (!fight || !screen) return;
+    fight.ended = true;
     $("#duel-forfeit-btn", screen).classList.add("hidden");
     $("#duel-back-btn", screen).classList.remove("hidden");
     if (fight.duel) renderFight();
