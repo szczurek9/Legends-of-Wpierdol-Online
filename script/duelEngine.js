@@ -255,7 +255,9 @@
         const attacked = A.playerAttack(unit.state, { forceCritical: Boolean(unit.state.guaranteedCrit), focusStrike: focused });
         attacked.guaranteedCrit = false;
         attacked.focusMark = false;
-        result = attacked.enemyDefeated ? attacked : A.finishPlayerAction(attacked, attacked.message);
+        // Zawsze kończymy akcję (tura, regeneracja many, odliczanie). Kod kampanii pomija to przy śmiertelnym ciosie, ale
+        // w pojedynku Lustro albo Mushin mogą cel uratować — wtedy atakujący nie może zachować tury.
+        result = A.finishPlayerAction(attacked, attacked.message);
       } else {
         result = A.useAbility(unit.state, action.id);
       }
