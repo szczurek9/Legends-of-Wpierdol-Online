@@ -322,7 +322,7 @@
       window.player.overkillPool = 0;
       message = `Overkill Release zadaje ${result.dealt} obrażeń, ignorując 80% pancerza wroga.`;
     } else if (ability.id === "stormBreeze" || ability.id === "starStrike") {
-      const raw = ability.id === "stormBreeze" ? 15 + ap * 0.25 : 60 + ap * 0.9;
+      const raw = ability.id === "stormBreeze" ? 15 + ap * 0.25 : 60 + ap * (ability.apScaling ?? 0.9); // apScaling: nadpisanie z tabeli pojedynków
       const result = M.applyDamageToEnemy(state, M.magicDamage(raw, state.enemyMagicResistance, window.player.magicPenetration));
       next = result.state;
       message = `${ability.name} zadaje ${result.dealt} magicznych obrażeń.`;

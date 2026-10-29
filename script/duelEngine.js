@@ -19,6 +19,20 @@
   const MANA_RESTORE_PER_ROUND = 0.5;          // po każdej rundzie +50% maks. many
   const ATTACK_ABILITIES = ["rhythmOfWar", "kōgeki"]; // umiejętności będące atakiem (podlegają unikowi)
   const FREE_ABILITIES = ["senNoKata", "absoluteFocus"]; // nie zużywają tury
+  // Balans pojedynków (kampania zostaje bez zmian):
+  const STUN_CAP_DEFAULT = 1;               // ogłuszenie w pojedynku trwa max 1 turę...
+  const STUN_CAP_BY_CLASS = { archer: 2 };  // ...a Łucznik (Strzała Mrozu) ma max 2
+  const MIRROR_FATAL_BLOCK = 0.65;          // Śmiertelne Lustro blokuje 65% śmiertelnego ciosu (w kampanii 99%)
+  // Nadpisania umiejętności tylko na czas pojedynku (koszt, odnowienie, skalowanie). Opisy dopasowują się niżej.
+  const DUEL_ABILITY_OVERRIDES = {
+    starStrike: { cost: 125, apScaling: 0.8, text: [["90%", "80%"]] },                    // Mag W: 100 → 125 many, 90% → 80% AP
+    deadlyMirror: { cooldown: 6, text: [["99%", "65%"]] },                               // Mag R: odnowienie 5 → 6
+    deadlyVines: { text: [["Ogłusza na 3 tury i", "Ogłusza na 1 turę i przez 3 tury"]] },
+    stoneBastion: { text: [["na 2 tury", "na 1 turę"]] },
+    frostArrow: { text: [["na 3 tury", "na 2 tury"]] },
+  };
+  const OVERKILL_THRESHOLD = 0.5;           // próg puli Overkill = 50% maks. HP przeciwnika (jak w kampanii)
+  const OVERKILL_START_SHARE = 0.3;         // Zabójca zaczyna pojedynek z 30% tego progu
 
   const other = (side) => (side === "host" ? "guest" : "host");
 
@@ -33,8 +47,27 @@
     };
   }
 
+  // Kopia window.classAbilities z nadpisaniami pojedynków (przeliczana tylko, gdy dane się zmienią).
+  let tunedSource = null;
+  let tunedTable = null;
+  function duelAbilityTable() {
+    const source = window.classAbilities;
+    if (source === tunedSource && tunedTable) return tunedTable;
+    const table = JSON.parse(JSON.stringify(source || {}));
+    Object.values(table).forEach((data) => (data.active || []).forEach((ability) => {
+      const override = DUEL_ABILITY_OVERRIDES[ability.id];
+      if (!override) return;
+      const { text, ...values } = override;
+      Object.assign(ability, values);
+      (text || []).forEach(([from, to]) => { if (ability.description) ability.description = ability.description.replace(from, to); });
+    }));
+    tunedSource = source;
+    tunedTable = table;
+    return table;
+  }
+
   function abilitiesOf(player) {
-    return window.classAbilities?.[player.classId]?.active || [];
+    return duelAbilityTable()?.[player.classId]?.active || [];
   }
 
   // Pancerz, jaki ma przeciwnik w momencie ataku (pancerz + bonus + premia z Gniewu, mnożona przez Bastion).
@@ -78,7 +111,11 @@
       player.manaPoints = firstRound
         ? player.maxManaPoints
         : M.clamp(player.manaPoints + Math.floor(player.maxManaPoints * MANA_RESTORE_PER_ROUND), 0, player.maxManaPoints);
-      player.overkillPool = 0;
+      // Pula Overkill: Zabójca zaczyna cały pojedynek z 30% progu i NIE zeruje jej między rundami.
+      if (firstRound) {
+        const foeMaxHp = duel.sides[other(side)].player.maxHealthPoints;
+        player.overkillPool = player.classId === "assassin" ? Math.floor(foeMaxHp * OVERKILL_THRESHOLD * OVERKILL_START_SHARE) : 0;
+      }
       player.adeptBookStacks = 0;
       // Kod kampanii (useWeaponAbility) czyta próg z tego pola, więc ustawiamy je zgodnie z regułą pojedynków.
       player.yamatoExecuteCap = yamatoThreshold(duel);
@@ -160,6 +197,8 @@
 
     const player = window.player; // gracz wykonujący akcję (podmieniony na czas akcji)
     let next = state;
+    const stunCap = STUN_CAP_BY_CLASS[player.classId] || STUN_CAP_DEFAULT;
+    if (next.effects.stun > stunCap) next = { ...next, effects: { ...next.effects, stun: stunCap } };
     let text = "";
     if (state.effects.poison > 0) {
       const result = M.applyDamageToEnemy(next, M.magicDamage(30 + player.ad * 0.25, state.enemyMagicResistance, player.magicPenetration));
@@ -199,7 +238,9 @@
     const ctx = { turnConsumed: false, hpAtHook: null, opponentSkips: false };
     const previousPlayer = window.player;
     const previousRoll = M.roll;
+    const previousAbilities = window.classAbilities;
     window.player = unit.player;
+    window.classAbilities = duelAbilityTable(); // koszt/odnowienie/skalowanie z nadpisań pojedynków
     M.roll = () => Math.floor(duel.rng() * 100);
     A.setOpponentTurn((state) => opponentTurn(ctx, state));
 
@@ -222,6 +263,7 @@
       A.setOpponentTurn(null);
       M.roll = previousRoll;
       window.player = previousPlayer;
+      window.classAbilities = previousAbilities;
     }
 
     // --- Obrona przeciwnika (warstwa po obliczeniu obrażeń przez kod kampanii) ---
@@ -242,7 +284,7 @@
       if (foeEffects.mushin) finalDirect = Math.max(1, Math.floor(finalDirect * 0.7));
       if (foeEffects.mirror) {
         const fatal = finalDirect >= hpBefore;
-        const blocked = fatal ? Math.floor(finalDirect * 0.99) : Math.floor(finalDirect * 0.10);
+        const blocked = fatal ? Math.floor(finalDirect * MIRROR_FATAL_BLOCK) : Math.floor(finalDirect * 0.10);
         finalDirect = Math.max(1, finalDirect - blocked);
         reflected = Math.floor(blocked * (fatal ? 0.05 : 0.20));
         foeHp = M.clamp(hpBefore - finalDirect, 0, foe.player.maxHealthPoints);
@@ -274,9 +316,16 @@
     }
 
     unit.state = { ...result, yamatoJudgementStacks: 0, enemyHealth: foe.player.healthPoints, enemyDefeated: foe.player.healthPoints <= 0 };
+    // Naprawa Lustra: w kampanii wróg atakuje w tej samej akcji (przed odliczaniem efektów), w pojedynku dopiero w swojej
+    // turze — odliczanie zjadało efekt, zanim wróg zdążył uderzyć. Przywracamy go; zużywa go najbliższy atak wroga.
+    if (action.kind === "ability" && action.id === "deadlyMirror" && !unit.state.enemyDefeated) {
+      unit.state.effects = { ...unit.state.effects, mirror: true };
+    }
     return {
       ctx, hpBefore, direct: finalDirect, dot, reflected, burst, evaded: evading,
-      message: result.message, missed: Boolean(result.missed), critical: Boolean(result.critical),
+      // komunikat kampanii mówi "na 3 tury" — w pojedynku stun Łucznika trwa max 2
+      message: action.id === "frostArrow" && result.message ? result.message.replace("na 3 tury", "na 2 tury") : result.message,
+      missed: Boolean(result.missed), critical: Boolean(result.critical),
     };
   }
 
