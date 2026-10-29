@@ -187,6 +187,15 @@
     if (typeof player.achRun.escapes !== "number" || !(player.achRun.escapes >= 0)) player.achRun.escapes = 0;
     if (typeof player.achRun.potionFreeLevels !== "number" || !(player.achRun.potionFreeLevels >= 0)) player.achRun.potionFreeLevels = 0;
 
+    // Dawna Katana (60 obr., +70% AD) została przemianowana na Maczetę (id "machete"). Nowa Katana (100 obr., +100% AD)
+    // ma stare id "katana", więc stare egzemplarze rozpoznajemy po statystykach i przepisujemy na Maczetę.
+    // Bez tego dawna Katana podszywałaby się pod nową (ekwipunek rozpoznaje broń po nazwie).
+    const isOldKatana = (weapon) => weapon && weapon.id === "katana" && weapon.baseDamage === 60;
+    player.inventory.forEach((weapon) => {
+      if (isOldKatana(weapon)) { weapon.id = "machete"; weapon.name = "Maczeta"; }
+    });
+    if (player.weaponId === "katana" && player.weaponBaseDamage === 60) { player.weaponId = "machete"; player.weaponName = "Maczeta"; }
+
     hydrateDescriptions(player);
 
     return player;

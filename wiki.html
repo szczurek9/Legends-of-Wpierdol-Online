@@ -93,6 +93,7 @@
   <div class="card"><span class="tag">Limit pancerza: 50</span><h3><span class="wiki-item-icon" data-group="classes" data-id="samurai" data-glyph="⚔️"></span>Samurai</h3><ul>
     <li>+15% obrażeń, +15% celności, +10% uniku, +5 pancerza</li>
     <li>Pasywka <b>Opanowanie</b> — krytyki x1,2 zamiast x1,5 (poza Kōgeki)</li>
+    <li>Z bronią białą (Melee): +10% obrażeń zwykłego ataku i +5% lifestealu</li>
     <li>Przełącznik stylu walki <b>Sen no Kata</b> (Bōei / Chikara)</li>
   </ul></div>
   <div class="card"><span class="tag">Limit pancerza: 60</span><h3><span class="wiki-item-icon" data-group="classes" data-id="archer" data-glyph="🏹"></span>Łucznik</h3><ul>
@@ -127,14 +128,14 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <details><summary>Pełny łańcuch obliczeń ataku bronią gracza</summary><div class="inner">
 <ol>
 <li>weaponDamage = max(1, floor(baseDamage + AD*adScaling))</li>
-<li>Mnożnik klasy: Zabójca +10%, Samurai +15%, Łucznik +10% (broń Ranged), Tank -25%/-20% (broń &gt;500 dmg), Chikara +7,5%</li>
+<li>Mnożnik klasy: Zabójca +10%, Samurai +15% (+10% z bronią Melee), Łucznik +10% (broń Ranged), Tank -25%/-20% (broń &gt;500 dmg), Chikara +7,5%</li>
 <li>Sen no Kata / Bōei: co 3. atak = 10% obrażeń, ale ogłusza wroga na 1 turę</li>
 <li>Krytyk: naturalny / wymuszony (Primal Strike) / 4% Pistolet Jhina. Mnożnik: Samurai x1,2, inni x1,5, super-krytyk Zabójcy x2,25, Jhin x4</li>
 <li>Bonusy przedmiotów AD (Strzały Cieni, Płaszcz Zabójcy, Uchwyt Wilka — stackowalny)</li>
 <li><b>Primal Ready</b> (Zabójca, pula Overkill ≥ 50% HP wroga): pancerz wroga liczony jako ×0,2</li>
 <li>Dodatkowe obrażenia w tym samym ataku: Potęga Nocy (nieuchronne co 5 atak), 4. atak Jhina (fizyczne), Yamato (magiczne co atak)</li>
 <li>Automatyczne uwolnienie puli Jhina po 16 atakach, jeśli gracz nie zrobi tego ręcznie</li>
-<li>Lifesteal: heal = floor(obrażenia * (lifesteal(+bonus Zabójcy)) / 100)</li>
+<li>Lifesteal: heal = floor(obrażenia * (lifesteal(+bonus Zabójcy; Samuraj z bronią Melee +5%)) / 100)</li>
 <li>Leczenie z puli Overkill: floor(pula * (5 + floor(penPancerza/0,7) + floor(pancerz/0,8)) / 100)</li>
 <li>Regeneracja many na turę: floor(bazowa_mana_klasy * 0,03 * (1 + 3,25 * R / (R + 200))), gdzie R = suma % regeneracji many z klasy i przedmiotów, a bazowa mana klasy to 320 (Mag), 200 (Łucznik) lub 100 (reszta). Mana z przedmiotów powiększa tylko pulę, nie regenerację. Dodatkowo w trakcie walki gracz dostaje stałe +5 many co 5 sekund czasu rzeczywistego — ten bonus nie skaluje się z regeneracją many i nie zależy od tur. Skuteczność maleje z każdym kolejnym punktem R, a maksymalny bonus to +325%.</li>
 </ol></div></details>
@@ -199,9 +200,10 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 </table></div></details>
 <details><summary>Samurai — pasywka: Opanowanie</summary><div class="inner">
 <p>Zwykłe ataki zadają o 15% więcej obrażeń, ale krytyk zwiększa je tylko 1,2 raza zamiast 1,5 raza. Wyjątek: Kōgeki zawsze krytykuje na x1,5.</p>
+<p>Gdy walczysz bronią białą (Melee — także Pięściami), zwykłe ataki zadają dodatkowo +10% obrażeń i leczą Cię o dodatkowe 5% zadanych obrażeń (lifesteal). Bonusy obrażeń sumują się: 15% + 10% = +25%. Broń hybrydowa (Hybrid) i dystansowa (Ranged) tego bonusu nie daje.</p>
 <table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability1.png" data-glyph="✨"></span></td><td>Mushin</td><td>50</td><td>1</td><td>Leczy Cię o 3% maks. HP plus 0,1% za każdy punkt przebicia pancerza (maksymalnie 10%, limit osiągasz przy 70 przebicia). Przez 3 tury wróg zadaje o 30% mniej obrażeń (liczone po krytyku, przed odjęciem pancerza).</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability2.png" data-glyph="🔄"></span></td><td>Sen no Kata</td><td>0</td><td>—</td><td>Przełącznik trybu (nie zużywa tury). <b>Bōei:</b> co 3. zwykły atak zadaje tylko 10% obrażeń, ale ogłusza wroga na 1 turę. <b>Chikara:</b> zadajesz o 7,5% więcej obrażeń (razem z bonusem klasy +22,5% zamiast +15%), a wróg zadaje Ci o 4,5% więcej.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability2.png" data-glyph="🔄"></span></td><td>Sen no Kata</td><td>0</td><td>—</td><td>Przełącznik trybu (nie zużywa tury). <b>Bōei:</b> co 3. zwykły atak zadaje tylko 10% obrażeń, ale ogłusza wroga na 1 turę. <b>Chikara:</b> zadajesz o 7,5% więcej obrażeń (dodaje się do bonusów pasywki Samuraja), a wróg zadaje Ci o 4,5% więcej.</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability3.png" data-glyph="⚡"></span></td><td>Kōgeki</td><td>30</td><td>2</td><td>Zwykły atak z gwarantowanym krytykiem x1,5. Jeśli trafisz i wróg przeżyje, dostaje dodatkowo obrażenia magiczne równe obrażeniom Twojej broni × (50% + 0,2% za każdy punkt przebicia pancerza). Leczy według magicznego lifestealu.</td></tr>
 </table></div></details>
 <details><summary>Łucznik — pasywka: Eagle Sight</summary><div class="inner">
@@ -240,10 +242,11 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="spear"></span></td><td>Włócznia</td><td>25 $</td><td>10</td><td>+10%</td><td>H</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="wornSword"></span></td><td>Zniszczony miecz</td><td>55 $</td><td>15</td><td>+20%</td><td>M</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="bow"></span></td><td>Łuk</td><td>150 $</td><td>45</td><td>+50%</td><td>R</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="katana"></span></td><td>Katana</td><td>275 $</td><td>60</td><td>+70%</td><td>M</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="machete"></span></td><td>Maczeta</td><td>275 $</td><td>60</td><td>+70%</td><td>M</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="shuriken"></span></td><td>Shuriken</td><td>350 $</td><td>70</td><td>+60%</td><td>H</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="revolver"></span></td><td>Rewolwer</td><td>475 $</td><td>75</td><td>+75%</td><td>R</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="rifle"></span></td><td>Karabin</td><td>700 $</td><td>90</td><td>+100%</td><td>R</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="weapons" data-id="katana"></span></td><td>Katana</td><td>900 $</td><td>100</td><td>+100%</td><td>M</td></tr>
 </table></div>
 <div class="grid">
   <div class="card"><span class="tag">Unikalna — lootbox 4750 $</span><h3><span class="wiki-item-icon" data-group="weapons" data-id="jhinPistol"></span>Pistolet Jhina</h3><ul>

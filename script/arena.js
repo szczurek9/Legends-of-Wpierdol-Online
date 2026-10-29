@@ -43,7 +43,7 @@
     let classMult = 1;
     if (M.classId() === "archer" && player.weaponType === "R") classMult = 1.10;
     if (M.classId() === "assassin") classMult = 1.10;
-    if (M.classId() === "samurai") classMult = 1.15;
+    if (M.classId() === "samurai") classMult = 1.15 + M.samuraiMeleeDamageBonus();
     if (M.classId() === "tank" && weaponDamage > 500) classMult = 0.75;
     const weaponHit = weaponDamage * classMult;
 

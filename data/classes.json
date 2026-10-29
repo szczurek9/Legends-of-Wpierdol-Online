@@ -27,7 +27,7 @@
     "id": "samurai",
     "name": "Samurai",
     "armorCap": 50,
-    "description": "+15% obrażeń, +15% celności, +10% uniku, pancerz maks. 50.",
+    "description": "+15% obrażeń, +15% celności, +10% uniku, pancerz maks. 50. Broń melee: +10% obrażeń i +5% lifestealu.",
     "difficulty": 2,
     "role": "Celność, uniki i postawy bojowe"
   },

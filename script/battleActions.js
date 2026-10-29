@@ -51,6 +51,8 @@
     let multiplier = 1;
     if (M.classId() === "assassin") multiplier += 0.10;
     if (M.classId() === "samurai") multiplier += 0.15;
+    // Pasywka Samuraja: broń biała (Melee) = +10% obrażeń zwykłego ataku (lifesteal +5% jest w M.damageHeal).
+    multiplier += M.samuraiMeleeDamageBonus();
     // Pasywka Łucznika: +10% obrażeń zwykłego ataku z broni dystansowej (Ranged).
     if (archer && player.weaponType === "R") multiplier += 0.10;
     let weaponDamage = Math.max(1, Math.floor((player.weaponBaseDamage || player.weaponDmg) + player.ad * (player.weaponAdScaling || 0)));

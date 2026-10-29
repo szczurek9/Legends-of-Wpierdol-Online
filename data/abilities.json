@@ -25,7 +25,7 @@
     ]
   },
   "samurai": {
-    "passive": {"name":"Opanowanie","description":"Krytyczne trafienia zadają x1,2 obrażeń zamiast standardowego x1,5 innych klas. Kōgeki jest wyjątkiem i zawsze bije na pełnym x1,5."},
+    "passive": {"name":"Opanowanie","description":"Krytyczne trafienia zadają x1,2 obrażeń zamiast standardowego x1,5 innych klas. Kōgeki jest wyjątkiem i zawsze bije na pełnym x1,5. Z bronią białą (Melee) zwykły atak zadaje dodatkowo +10% obrażeń i leczy o dodatkowe 5% zadanych obrażeń."},
     "active": [
       {"id":"mushin","name":"Mushin","type":"utility","cost":50,"cooldown":1,"cdReducible":false,"description":"Leczy 3% (+1% za 10 pkt penetracji pancerza, maks. 10%) maksymalnego HP. Kolejne ataki wroga przez 3 tury zadają 30% mniej obrażeń.","icon":"ability1.png"},
       {"id":"senNoKata","name":"Sen no Kata","type":"toggle","cost":0,"description":"Przełącza styl walki, nie zużywa tury ani many. Bōei (domyślny): co 3. zwykły atak jest osłabiony do 10% obrażeń, ale ogłusza wroga na 1 turę. Chikara: +7,5% Twoich obrażeń, ale wróg zadaje Ci o 4,5% więcej obrażeń.","icon":"ability2.png"},

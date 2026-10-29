@@ -122,11 +122,19 @@
     if (hasBook) player.adeptBookStacks = Math.min(player.adeptBookStackLimit, player.adeptBookStacks + (classId() === "mage" ? 5 : 3));
   }
 
+  // Pasywka Samuraja (jak Eagle Sight u Łucznika): broń biała (Melee) daje +10% obrażeń zwykłego ataku i +5% lifestealu.
+  // Broń hybrydowa (H) i dystansowa (R) bonusu nie daje.
+  const SAMURAI_MELEE_DAMAGE_BONUS = 0.10;
+  const SAMURAI_MELEE_LIFESTEAL = 5;
+  const samuraiMeleeActive = () => classId() === "samurai" && window.player.weaponType === "M";
+  const samuraiMeleeDamageBonus = () => (samuraiMeleeActive() ? SAMURAI_MELEE_DAMAGE_BONUS : 0);
+  const samuraiMeleeLifesteal = () => (samuraiMeleeActive() ? SAMURAI_MELEE_LIFESTEAL : 0);
+
   // efficiency: mnożnik skuteczności leczenia (Łucznik bez przedmiotów AD leczy
   // się z magicznego lifestealu z 50% skutecznością).
   function damageHeal(amount, magic, efficiency = 1) {
     const player = window.player;
-    const percentage = magic ? player.magicLifesteal : player.lifesteal + (["assassin", "archer"].includes(classId()) ? player.bonusLifesteal : 0);
+    const percentage = magic ? player.magicLifesteal : player.lifesteal + (["assassin", "archer"].includes(classId()) ? player.bonusLifesteal : 0) + samuraiMeleeLifesteal();
     const restored = Math.floor(amount * percentage * efficiency / 100);
     player.healthPoints = clamp(player.healthPoints + restored, 0, player.maxHealthPoints);
     return restored;
@@ -222,6 +230,7 @@
     payMana,
     recordSpellCast,
     damageHeal,
+    samuraiMeleeDamageBonus,
     applyDamageToEnemy,
     cooldownReductions,
     isRAbility,

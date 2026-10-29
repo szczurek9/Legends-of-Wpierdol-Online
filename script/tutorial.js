@@ -75,7 +75,7 @@
         + "Masz dużo HP i pancerza, więc to najspokojniejszy start.</p>",
     },
     samurai: {
-      text: "<p><b>Pasywka Opanowanie:</b> Twoje krytyki są słabsze (x1,2 zamiast x1,5), ale masz więcej celności i uników. "
+      text: "<p><b>Pasywka Opanowanie:</b> Twoje krytyki są słabsze (x1,2 zamiast x1,5), ale masz więcej celności i uników. Z bronią białą (Melee) bijesz o 10% mocniej i leczysz się o dodatkowe 5% zadanych obrażeń. "
         + "<b>Sen no Kata</b> przełącza styl walki i nie zużywa tury.</p>",
     },
     archer: {
