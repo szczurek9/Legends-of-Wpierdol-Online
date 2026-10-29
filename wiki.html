@@ -164,39 +164,52 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <section id="umiejetnosci">
 <h2>Umiejętności klasowe</h2>
 <p><b>Redukcja odnowienia.</b> Część przedmiotów (AD i AP) skraca odnowienie umiejętności o stałą liczbę tur. Redukcja ogólna działa na wszystkie umiejętności z odnowieniem, a redukcja „R" tylko na umiejętność pod klawiszem R i dolicza się do ogólnej. Łączne limity z wszystkich założonych przedmiotów: maks. −2 tury redukcji ogólnej i maks. −2 tury redukcji R. Odnowienie nigdy nie spada poniżej 1 tury, a Gwiezdnego Uderzenia i Mushin (odnowienie 1) w ogóle nie da się skrócić.</p>
+<p><b>Jak czytać liczby.</b> <b>Moc umiejętności (AP)</b> to Twoja moc z przedmiotów plus stosy Księgi Adeptów, powiększona o procentowe bonusy z przedmiotów (np. z Kostura Zagłady). <b>AD</b> to obrażenia z przedmiotów AD. <b>Obrażenia broni</b> to tyle, ile zadaje Twoja broń razem z bonusem z AD — zanim doliczą się krytyk i bonusy klasy. Obrażenia magiczne zmniejsza odporność magiczna wroga (a Twoje przebicie magii ją obniża), fizyczne — jego pancerz (a Twoje przebicie pancerza go obniża); szczegóły w sekcji <a href="#walka">System walki</a>. Wyniki są zaokrąglane w dół do pełnych punktów.<br><i>Przykład:</i> Mag z 500 AP rzuca Gwiezdne Uderzenie: 60 + 90% z 500 = 60 + 450 = 510 obrażeń, zanim odejmie je odporność magiczna wroga.<br>Podane wartości dotyczą kampanii i areny. Różnice w pojedynkach są oznaczone jako <i>Pojedynek</i> i zebrane w sekcji <a href="#pojedynki">Pojedynki 1v1</a>.</p>
 <details open><summary>Zabójca — pasywka: Overkill</summary><div class="inner">
-<p>Nadwyżka obrażeń ponad HP wroga trafia do puli Overkill. Przy 50% maks. HP wroga następny atak ignoruje 80% jego pancerza. Pula leczy przy każdym ataku (skaluje się z pancerzem/penetracją), zabójstwo przywraca 10% many.</p>
+<p>Gdy zadasz wrogowi więcej obrażeń, niż miał HP (np. dobijasz go ciosem za 300, a zostało mu 100 HP), nadwyżka (200) trafia do puli Overkill. Pula robi dwie rzeczy:</p>
+<ul>
+<li><b>Leczy Cię przy każdym trafionym zwykłym ataku</b> i przy tym się nie zużywa. Wyleczysz tyle procent puli: 5% + 1% za każde 0,7 punktu przebicia pancerza + 1% za każde 0,8 punktu pancerza. <i>Przykład:</i> przy 28 przebicia i 40 pancerza to 5 + 40 + 50 = 95% puli na każdy atak.</li>
+<li><b>Przebija pancerz:</b> gdy pula urośnie do połowy maks. HP wroga, Twój następny zwykły atak ignoruje 80% jego pancerza, a pula spada do zera.</li>
+</ul>
+<p>Zabójstwo wroga przywraca Ci 10% maks. many.<br><i>Pojedynek: zaczynasz z pulą równą 15% maks. HP przeciwnika (to 30% progu potrzebnego do przebicia pancerza), a pula nie zeruje się między rundami.</i></p>
 <table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability1.png" data-glyph="⚔️"></span></td><td>Primal Strike</td><td>200</td><td>—</td><td>Wymusza krytyka; jeśli i tak byłby krytykiem → super-krytyk x2,25</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability2.png" data-glyph="✨"></span></td><td>Un-Dodgable Speed</td><td>80</td><td>4</td><td>+25% celności gracza, -30% celności wroga na 3 tury</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability3.png" data-glyph="⚔️"></span></td><td>Overkill Release</td><td>120</td><td>5</td><td>Uwalnia całą pulę Overkill jako obrażenia ign. 80% pancerza</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability1.png" data-glyph="⚔️"></span></td><td>Primal Strike</td><td>200</td><td>—</td><td>Następny zwykły atak jest krytykiem (x1,5). Jeśli ten atak i tak byłby krytykiem z Twojej szansy, dostajesz super-krytyk x2,25. Zużywa się przy tym ataku.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability2.png" data-glyph="✨"></span></td><td>Un-Dodgable Speed</td><td>80</td><td>4</td><td>Przez 3 tury masz +25% celności, a wróg ma −30% szansy na trafienie Ciebie. Tura rzucenia liczy się do tych 3, więc wzmocnioną celność mają dwa kolejne zwykłe ataki.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/assassin/ability3.png" data-glyph="⚔️"></span></td><td>Overkill Release</td><td>120</td><td>5</td><td>Zadaje całą pulę Overkill jako obrażenia fizyczne, ignorując 80% pancerza wroga (Twoje przebicie pancerza liczy się normalnie) i zeruje pulę. Gdy puli nie ma, umiejętność się nie wykona i nie zabiera many.</td></tr>
 </table></div></details>
 <details><summary>Mag — brak pasywki</summary><div class="inner">
 <table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability1.png" data-glyph="🔮"></span></td><td>Powiew Burzy</td><td>25</td><td>—</td><td>15 + 25% AP obrażeń magicznych</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability2.png" data-glyph="🔮"></span></td><td>Gwiezdne Uderzenie</td><td>100</td><td>1</td><td>60 + 90% AP obrażeń magicznych</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability3.png" data-glyph="🔮"></span></td><td>Zabójcze Pnącza</td><td>70</td><td>4</td><td>Ogłusza 3 tury, 10 + 10% AP obrażeń/turę</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability4.png" data-glyph="⚔️"></span></td><td>Śmiertelne Lustro</td><td>50</td><td>5</td><td>Blokuje 10% (99% jeśli cios byłby śmiertelny) nadchodzącego ciosu i odbija część na wroga</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability1.png" data-glyph="🔮"></span></td><td>Powiew Burzy</td><td>25</td><td>—</td><td>Obrażenia magiczne: 15 + 25% Twojej mocy umiejętności (AP). Leczy Cię według magicznego lifestealu.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability2.png" data-glyph="🔮"></span></td><td>Gwiezdne Uderzenie</td><td>100</td><td>1</td><td>Obrażenia magiczne: 60 + 90% AP. Leczy Cię według magicznego lifestealu.<br><i>Pojedynek: 60 + 80% AP, koszt 125 many.</i></td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability3.png" data-glyph="🔮"></span></td><td>Zabójcze Pnącza</td><td>70</td><td>4</td><td>Ogłusza wroga na 3 tury i dodatkowo rani go przez 3 tury: za każdym razem 10 + 10% AP obrażeń magicznych (pierwszy raz od razu po rzucie).<br><i>Pojedynek: ogłuszenie trwa 1 turę, obrażenia nadal 3 tury.</i></td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/mage/ability4.png" data-glyph="⚔️"></span></td><td>Śmiertelne Lustro</td><td>50</td><td>5</td><td>Przygotowuje blok na najbliższy atak wroga. Po odjęciu pancerza blokujesz 10% obrażeń i odbijasz 20% zablokowanej części z powrotem we wroga. Jeśli cios by Cię zabił (obrażenia ≥ Twoje aktualne HP), blokujesz aż 99%, odbijasz 5% zablokowanej części i leczysz się o 15% zablokowanej części. W kampanii i arenie blok działa tylko na kontratak wroga w turze rzucenia — jeśli wróg nie trafi, efekt przepada.<br><i>Pojedynek: blok śmiertelnego ciosu to 65%, odnowienie 6 tur; efekt czeka na atak przeciwnika i znika po Twoim kolejnym ruchu, jeśli ten nie zaatakował.</i></td></tr>
 </table></div></details>
 <details><summary>Tank — pasywka: Skumulowany Gniew</summary><div class="inner">
-<p>Otrzymane obrażenia fizyczne budują pulę Gniewu w stosunku 1:1: 100% obrażeń faktycznie otrzymanych po redukcji pancerzem trafia do puli. Przy 150% obrażeń broni gracza pula automatycznie eksploduje: 70% jako obrażenia, leczy o 35%, a do następnego ataku wroga zwiększa pancerz o 5% wartości puli (ponad limit pancerza klasy).</p>
+<p>Każde obrażenie, które faktycznie otrzymujesz (po odjęciu pancerza i bloku Lustra), dokłada się 1:1 do puli Gniewu. Gdy pula dobije do 1,5 raza obrażeń Twojej broni, wybucha sama:</p>
+<ul>
+<li>zadaje wrogowi obrażenia fizyczne równe 70% puli (zmniejszone przez jego pancerz),</li>
+<li>leczy Cię o 35% puli,</li>
+<li>do następnego ataku wroga dodaje Ci pancerz równy 5% puli (nawet ponad limit pancerza klasy).</li>
+</ul>
+<p>Po wybuchu pula wraca do zera.</p>
 <table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability1.png" data-glyph="✨"></span></td><td>Kamienny Bastion</td><td>50</td><td>4</td><td>Ogłusza 2 tury; +2% pancerza/turę przez 5 tur (maks. +10%)</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability2.png" data-glyph="⚡"></span></td><td>Skumulowany Gniew (aktywna)</td><td>50</td><td>2</td><td>Manualnie detonuje pulę: 25% obrażeń magicznych, leczy 30%</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability3.png" data-glyph="✨"></span></td><td>Żelazna Prowokacja</td><td>45</td><td>2</td><td>2 tury: kara ciężkiej broni -25%→-20%, +25% celności</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability1.png" data-glyph="✨"></span></td><td>Kamienny Bastion</td><td>50</td><td>4</td><td>Ogłusza wroga na 2 tury. Przez 5 tur Twój pancerz rośnie z każdą turą o kolejne 2%: +2%, +4%, +6%, +8%, +10% (procent Twojego pancerza).<br><i>Pojedynek: ogłuszenie trwa 1 turę.</i></td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability2.png" data-glyph="⚡"></span></td><td>Skumulowany Gniew (aktywna)</td><td>50</td><td>2</td><td>Ręcznie detonuje pulę Gniewu: zadaje obrażenia magiczne równe 25% puli, leczy Cię o 30% puli i zeruje pulę.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/tank/ability3.png" data-glyph="✨"></span></td><td>Żelazna Prowokacja</td><td>45</td><td>2</td><td>Przez 2 tury kara za ciężką broń (obrażenia broni powyżej 500) jest mniejsza: −20% zamiast −25%, a Twoja celność rośnie o 25%.</td></tr>
 </table></div></details>
 <details><summary>Samurai — pasywka: Opanowanie</summary><div class="inner">
+<p>Zwykłe ataki zadają o 15% więcej obrażeń, ale krytyk zwiększa je tylko 1,2 raza zamiast 1,5 raza. Wyjątek: Kōgeki zawsze krytykuje na x1,5.</p>
 <table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability1.png" data-glyph="✨"></span></td><td>Mushin</td><td>50</td><td>1</td><td>Leczy 3–10% maks. HP (skaluje z pen. pancerza); -30% obrażeń wroga na 3 tury</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability2.png" data-glyph="🔄"></span></td><td>Sen no Kata</td><td>0</td><td>—</td><td>Przełącznik (nie zużywa tury): Bōei — co 3. atak 10% dmg + ogłuszenie; Chikara — +7,5% dmg gracza, +4,5% dmg wroga</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability3.png" data-glyph="⚡"></span></td><td>Kōgeki</td><td>30</td><td>2</td><td>Zawsze pełny krytyk x1,5 + 50% obrażeń broni jako magiczne (skaluje z pen. pancerza)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability1.png" data-glyph="✨"></span></td><td>Mushin</td><td>50</td><td>1</td><td>Leczy Cię o 3% maks. HP plus 0,1% za każdy punkt przebicia pancerza (maksymalnie 10%, limit osiągasz przy 70 przebicia). Przez 3 tury wróg zadaje o 30% mniej obrażeń (liczone po krytyku, przed odjęciem pancerza).</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability2.png" data-glyph="🔄"></span></td><td>Sen no Kata</td><td>0</td><td>—</td><td>Przełącznik trybu (nie zużywa tury). <b>Bōei:</b> co 3. zwykły atak zadaje tylko 10% obrażeń, ale ogłusza wroga na 1 turę. <b>Chikara:</b> zadajesz o 7,5% więcej obrażeń (razem z bonusem klasy +22,5% zamiast +15%), a wróg zadaje Ci o 4,5% więcej.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/samurai/ability3.png" data-glyph="⚡"></span></td><td>Kōgeki</td><td>30</td><td>2</td><td>Zwykły atak z gwarantowanym krytykiem x1,5. Jeśli trafisz i wróg przeżyje, dostaje dodatkowo obrażenia magiczne równe obrażeniom Twojej broni × (50% + 0,2% za każdy punkt przebicia pancerza). Leczy według magicznego lifestealu.</td></tr>
 </table></div></details>
 <details><summary>Łucznik — pasywka: Eagle Sight</summary><div class="inner">
 <p>+10% obrażeń zwykłego ataku z broni Ranged. 8 wspólnych slotów na przedmioty AD i magiczne (AP). Atak Q zadaje obrażenia fizyczne: obrażenia = obrażenia bazowe broni + AP × (skalowanie AD broni × 0,72) + 50% AD. Bez przedmiotów AP: obrażenia bazowe broni + AD × (skalowanie AD broni × 1,16), bez dodatku 50% AD. Bez przedmiotów AD atak Q leczy z magicznego lifestealu (50% skuteczności) zamiast fizycznego.</p>
 <table><tr><th>Ikona</th><th>Umiejętność</th><th>Koszt</th><th>CD</th><th>Efekt</th></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability1.png" data-glyph="✨"></span></td><td>Nieokiełznane Skupienie (W)</td><td>55</td><td>3</td><td>Nie zużywa tury. Następny atak Q to gwarantowany krytyk x2 (nie może chybić)</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability2.png" data-glyph="🔮"></span></td><td>Rytm Wojny (E)</td><td>70</td><td>3</td><td>Zwykły atak + 145% AD jako obrażenia magiczne (bez przedmiotów AD: 50 + 40% AP); może krytować, leczy tylko magiczny lifesteal; gwarantowany unik następnego ataku wroga</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability3.png" data-glyph="🔮"></span></td><td>Strzała Mrozu (R)</td><td>170</td><td>6</td><td>100 + 85% AP + 107% AD obrażeń magicznych, ogłuszenie na 3 tury</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability1.png" data-glyph="✨"></span></td><td>Nieokiełznane Skupienie (W)</td><td>55</td><td>3</td><td>Nie zużywa tury. Twój następny atak Q jest gwarantowanym krytykiem x2 (zamiast x1,5) i nie może chybić.</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability2.png" data-glyph="🔮"></span></td><td>Rytm Wojny (E)</td><td>70</td><td>3</td><td>Zwykły atak, który zadaje obrażenia magiczne: obrażenia Twojej broni plus 145% AD (jeśli nie masz przedmiotów AD — plus 50 + 40% AP). Liczy się też bonus +10% z pasywki (broń Ranged), może być krytykiem x1,5 i może chybić. Leczy tylko według magicznego lifestealu. Najbliższy atak wroga zostaje uniknięty (nawet jeśli ten atak chybił).</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-src="res/abilities/archer/ability3.png" data-glyph="🔮"></span></td><td>Strzała Mrozu (R)</td><td>170</td><td>6</td><td>Obrażenia magiczne: 100 + 85% AP + 107% AD. Ogłusza wroga na 3 tury (o ile ten cios go nie zabił). Leczy według magicznego lifestealu.<br><i>Pojedynek: ogłuszenie trwa 2 tury.</i></td></tr>
 </table></div></details>
 </section>
 
@@ -204,10 +217,10 @@ obrażenia = max(1, floor(surowe * (1 - redukcja)))</div>
 <h2>Efekty statusowe w walce</h2>
 <div class="tablewrap"><table>
 <tr><th>Ikona</th><th>Efekt</th><th>Źródło</th><th>Działanie</th></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="stun" data-glyph="ℹ️"></span></td><td>Ogłuszenie</td><td>Sen no Kata, Zabójcze Pnącza, Kamienny Bastion</td><td>wróg pomija turę</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="stun" data-glyph="ℹ️"></span></td><td>Ogłuszenie</td><td>Sen no Kata (Bōei, 1 tura), Zabójcze Pnącza (3), Kamienny Bastion (2), Strzała Mrozu (3)</td><td>wróg pomija turę (w pojedynkach ogłuszenia są krótsze — sekcja Pojedynki 1v1)</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="poison" data-glyph="ℹ️"></span></td><td>Zatrucie</td><td>Kieł Węża (co 5. atak)</td><td>30+25%AD obrażeń magicznych/turę, obniża szansę na unik wroga o 10% (min. 0%)</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="vines" data-glyph="ℹ️"></span></td><td>Pnącza</td><td>Zabójcze Pnącza</td><td>10+10%AP obrażeń magicznych/turę</td></tr>
-<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="mirror" data-glyph="ℹ️"></span></td><td>Śmiertelne Lustro</td><td>umiejętność Maga</td><td>blok + odbicie następnego ciosu, zużywa się po trafieniu</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="vines" data-glyph="ℹ️"></span></td><td>Pnącza</td><td>Zabójcze Pnącza</td><td>10 + 10% AP obrażeń magicznych na turę, przez 3 tury (pierwszy raz od razu po rzucie)</td></tr>
+<tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="mirror" data-glyph="ℹ️"></span></td><td>Śmiertelne Lustro</td><td>umiejętność Maga</td><td>blokuje 10% obrażeń (99%, jeśli cios byłby śmiertelny) i odbija część z powrotem we wroga; zużywa się po trafieniu, a w kampanii znika po turze rzucenia</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="mushin" data-glyph="ℹ️"></span></td><td>Mushin</td><td>umiejętność Samuraja</td><td>-30% obrażeń wroga na 3 tury</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="focusMark" data-glyph="ℹ️"></span></td><td>Znacznik Skupienia</td><td>Nieokiełznane Skupienie (Łucznik)</td><td>następny atak Q: gwarantowany krytyk x2, nie chybia</td></tr>
 <tr><td class="icon-cell"><span class="wiki-item-icon" data-group="effects" data-id="evadeNext" data-glyph="ℹ️"></span></td><td>Unik z Rytmu Wojny</td><td>Rytm Wojny (Łucznik)</td><td>następny atak wroga zostaje uniknięty; czeka, jeśli wróg jest ogłuszony</td></tr>
@@ -456,7 +469,7 @@ nagroda = round(bazowa × mnożnikWykonania)</div>
 <ul>
   <li><b>Tryb Casual — best of 3.</b> Wygrywa ten, kto pierwszy wygra 2 rundy. Tryb rankingowy jest dopiero planowany.</li>
   <li>Walka jest turowa: gracze wykonują ruchy naprzemiennie. Kto zaczyna pierwszą rundę, jest losowane, a każdą kolejną zaczyna <b>przegrany poprzedniej rundy</b>.</li>
-  <li><b>Start każdej rundy:</b> pełne HP, <b>+50% maks. many</b> (w 1. rundzie pełna mana), wyzerowane cooldowny i efekty oraz stosy Księgi Adeptów i pula Overkill.</li>
+  <li><b>Start każdej rundy:</b> pełne HP, <b>+50% maks. many</b> (w 1. rundzie pełna mana), wyzerowane cooldowny i efekty oraz stosy Księgi Adeptów. Pula Overkill Zabójcy jest ustawiana tylko raz, na początku pojedynku (patrz niżej).</li>
   <li><b>Limit czasu:</b> na ruch masz <b>30 sekund</b> (na początku walki dochodzi 15 sekund na wczytanie). Brak ruchu w tym czasie oznacza przegraną całej walki.</li>
   <li>Przycisk <b>🏳️ Poddaj się</b> kończy walkę porażką.</li>
   <li>Walkę liczy ten sam silnik u obu graczy na tych samych danych, więc wynik jest identyczny po obu stronach. Gdyby jednak wykryto rozjazd symulacji, walka jest <b>anulowana bez wyniku</b>.</li>
@@ -465,7 +478,7 @@ nagroda = round(bazowa × mnożnikWykonania)</div>
 <h3>Dostępne akcje</h3>
 <ul>
   <li><b>Judgement Cut (Yamato) ma w pojedynku stały próg egzekucji:</b> 8% HP przeciwnika w 1. rundzie i +1 punkt procentowy w każdej kolejnej (9% w 2., 10% w 3.). Próg z kampanii (rosnący z każdym użyciem) ani stosy za co 6. trafienie nie mają tu wpływu, a po pojedynku nic nie wraca do Twojej postaci.</li>
-  <li>Zwykły atak bronią (nie ma go Mag, tak samo jak w kampanii), umiejętności klasowe (koszt many i cooldowny jak w kampanii) oraz aktywne umiejętności broni unikalnych: <b>Judgement Cut</b> (Yamato) i wystrzał puli <b>Pistoletu Jhina</b>.</li>
+  <li>Zwykły atak bronią (nie ma go Mag, tak samo jak w kampanii), umiejętności klasowe (koszt many i cooldowny jak w kampanii, z wyjątkami z tabeli „Różnice względem kampanii”) oraz aktywne umiejętności broni unikalnych: <b>Judgement Cut</b> (Yamato) i wystrzał puli <b>Pistoletu Jhina</b>.</li>
   <li><b>Mikstur nie ma</b> — w pojedynku nie można ich używać. Nie ma też ucieczki.</li>
   <li>Przeciwnik <b>nie kontratakuje automatycznie</b> — zadaje obrażenia tylko własnymi ruchami. Zatrucie i pnącza ranią przeciwnika na początku jego tury, a ogłuszenie sprawia, że traci on swoją turę.</li>
   <li>Umiejętność broni oraz Sen no Kata i Absolutne Skupienie <b>nie zużywają tury</b>.</li>
@@ -479,9 +492,21 @@ nagroda = round(bazowa × mnożnikWykonania)</div>
 <tr><td>P</td><td>Pomiń turę (gdy nie masz innej akcji)</td></tr>
 </table></div>
 
+<h3>Różnice względem kampanii</h3>
+<p>Poza poniższymi zmianami umiejętności i broni działają tak samo jak w kampanii i arenie. Opisy i koszty w oknie pojedynku pokazują już wartości pojedynkowe.</p>
+<div class="tablewrap"><table>
+<tr><th>Umiejętność</th><th>Kampania / arena</th><th>Pojedynek</th></tr>
+<tr><td>Zabójcze Pnącza (Mag)</td><td>ogłuszenie 3 tury</td><td>ogłuszenie 1 tura (obrażenia nadal 3 tury)</td></tr>
+<tr><td>Gwiezdne Uderzenie (Mag)</td><td>60 + 90% AP, 100 many</td><td>60 + 80% AP, 125 many</td></tr>
+<tr><td>Śmiertelne Lustro (Mag)</td><td>blok śmiertelnego ciosu 99%, odnowienie 5 tur; działa tylko na kontratak w turze rzucenia</td><td>blok śmiertelnego ciosu 65%, odnowienie 6 tur; czeka na atak przeciwnika i znika po Twoim kolejnym ruchu</td></tr>
+<tr><td>Kamienny Bastion (Tank)</td><td>ogłuszenie 2 tury</td><td>ogłuszenie 1 tura</td></tr>
+<tr><td>Strzała Mrozu (Łucznik)</td><td>ogłuszenie 3 tury</td><td>ogłuszenie 2 tury</td></tr>
+<tr><td>Pula Overkill (Zabójca)</td><td>rośnie z nadwyżki obrażeń zadanych przy dobijaniu wrogów</td><td>start pojedynku z pulą równą 15% maks. HP przeciwnika, bez zerowania między rundami</td></tr>
+</table></div>
+
 <h3>Nagrody</h3>
 <p>Pojedynki nie dają pieniędzy ani Punktów Skinów i nie zmieniają postępu kampanii — liczy się wyłącznie wynik walki.</p>
-<p class="note">Szczegóły dotyczące zapisu w chmurze znajdziesz w sekcji <a href="#zapis">Zapis, konto i opcje</a>. Balans umiejętności i broni jest wspólny z kampanią i areną.</p>
+<p class="note">Szczegóły dotyczące zapisu w chmurze znajdziesz w sekcji <a href="#zapis">Zapis, konto i opcje</a>. Balans umiejętności i broni jest wspólny z kampanią i areną, poza zmianami z tabeli „Różnice względem kampanii”.</p>
 </section>
 
 <section id="sklep">
