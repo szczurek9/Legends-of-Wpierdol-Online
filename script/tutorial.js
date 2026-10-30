@@ -32,6 +32,10 @@
   }
 
   const kbd = (key) => `<kbd class="tut-key">${esc(key)}</kbd>`;
+  // Klawisze walki zależą od Opcji gracza (window.GameSettings).
+  const keyOf = (action) => kbd(window.GameSettings.label(action));
+  // Nazwa klawisza tak, jak zgłasza ją event.key (dla allowKeys).
+  const eventKeyOf = (action) => (window.GameSettings.key(action) === "space" ? " " : window.GameSettings.key(action));
 
   function visible(element) {
     if (!element || element.getClientRects().length === 0) return false;
@@ -105,11 +109,11 @@
 
     const icons = window.GameIcons;
     if (!isMage && icons) {
-      row(icons.stat("damage", "class-ability-icon"), `<b>Atakuj</b> ${kbd("Q")}`, "zwykły atak bronią");
+      row(icons.stat("damage", "class-ability-icon"), `<b>Atakuj</b> ${keyOf("slot1")}`, "zwykły atak bronią");
     }
     const abilities = window.classAbilities?.[classId]?.active || [];
     abilities.forEach((ability, index) => {
-      const key = (isMage ? ["Q", "W", "E", "R"] : ["W", "E", "R"])[index];
+      const key = window.GameSettings.label(window.GameSettings.abilityAction(classId, index));
       const meta = [
         ability.cost ? `${ability.cost} many` : "bez kosztu",
         ability.cooldown ? `odnowienie: ${turns(ability.cooldown)}` : null,
@@ -367,10 +371,10 @@
         target: "#battle-abilities",
         title: "Twoje akcje",
         body: isMage
-          ? `<p>Jako Mag masz cztery czary pod klawiszami ${kbd("Q")} ${kbd("W")} ${kbd("E")} ${kbd("R")}. `
+          ? `<p>Jako Mag masz cztery czary pod klawiszami ${keyOf("slot1")} ${keyOf("slot2")} ${keyOf("slot3")} ${keyOf("slot4")}. `
             + "<b>Powiew Burzy</b> jest tani i bez odnowienia — to Twój podstawowy atak.</p>"
             + "<p>Pod kafelkiem widać koszt many, a po użyciu liczbę tur odnowienia. Szary kafelek = za mało many albo trwa odnowienie. Najedź na niego, by przeczytać opis.</p>"
-          : `<p><b>Atakuj</b> (${kbd("Q")}) to zwykły atak bronią. Kolejne kafelki to umiejętności klasy (${kbd("W")} ${kbd("E")} ${kbd("R")}).</p>`
+          : `<p><b>Atakuj</b> (${keyOf("slot1")}) to zwykły atak bronią. Kolejne kafelki to umiejętności klasy (${keyOf("slot2")} ${keyOf("slot3")} ${keyOf("slot4")}).</p>`
             + "<p>Pod kafelkiem widać koszt many, a po użyciu liczbę tur odnowienia. Szary kafelek = za mało many albo trwa odnowienie. Najedź na niego, by przeczytać opis.</p>",
       });
 
@@ -381,7 +385,7 @@
           return isMage ? buttons.find((button) => !button.disabled) || buttons[0] || null : byId("attack-btn");
         },
         clickSel: "#battle-abilities .ability-button",
-        allowKeys: ["q"],
+        allowKeys: [eventKeyOf("slot1")],
         enter: (step) => { step.startLog = byId("battle-log")?.textContent || ""; },
         until: (step) => (byId("battle-log")?.textContent || "") !== step.startLog,
         auto: () => {
@@ -390,8 +394,8 @@
         },
         title: "Pierwszy cios!",
         body: isMage
-          ? `<p>Kliknij <b>Powiew Burzy</b> albo wciśnij ${kbd("Q")}.</p>`
-          : `<p>Kliknij <b>Atakuj</b> albo wciśnij ${kbd("Q")}.</p>`,
+          ? `<p>Kliknij <b>Powiew Burzy</b> albo wciśnij ${keyOf("slot1")}.</p>`
+          : `<p>Kliknij <b>Atakuj</b> albo wciśnij ${keyOf("slot1")}.</p>`,
       });
 
       info({
@@ -408,7 +412,7 @@
         title: "Pomocne przyciski",
         body: "<ul class=\"tut-list\">"
           + "<li><b>🏃 Uciekaj</b> — raz na poziom: leczy połowę HP i many, ale kończy walkę bez awansu.</li>"
-          + `<li><b>▶ Auto</b> (${kbd("A")}) — gra za Ciebie. Obok zmieniasz prędkość 1×–3×.</li>`
+          + `<li><b>▶ Auto</b> (${keyOf("auto")}) — gra za Ciebie. Obok zmieniasz prędkość 1×–3×.</li>`
           + "<li><b>Mikstury</b> kupione w sklepie pojawią się pod przyciskami akcji i nie kończą tury.</li>"
           + "</ul>",
         nextLabel: "Walczę! ›",
@@ -453,7 +457,7 @@
         body: "<ul class=\"tut-list\">"
           + "<li><b>⚔️ Graj</b> rozpoczyna walkę z przeciwnikiem z Twojego poziomu. Ty robisz akcję, potem odpowiada wróg.</li>"
           + "<li><b>HP</b> to życie, <b>mana</b> płaci za umiejętności. Pod kafelkiem akcji widać koszt many i odnowienie.</li>"
-          + `<li>Skróty: ${isMage ? `${kbd("Q")} ${kbd("W")} ${kbd("E")} ${kbd("R")} (czary)` : `${kbd("Q")} (atak), ${kbd("W")} ${kbd("E")} ${kbd("R")} (umiejętności)`}, ${kbd("Spacja")} (broń unikalna), ${kbd("A")} (auto-walka).</li>`
+          + `<li>Skróty: ${isMage ? `${keyOf("slot1")} ${keyOf("slot2")} ${keyOf("slot3")} ${keyOf("slot4")} (czary)` : `${keyOf("slot1")} (atak), ${keyOf("slot2")} ${keyOf("slot3")} ${keyOf("slot4")} (umiejętności)`}, ${keyOf("weapon")} (broń unikalna), ${keyOf("auto")} (auto-walka). Zmienisz je w Opcjach → Walka.</li>`
           + "<li><b>🏃 Uciekaj</b> działa raz na poziom i kończy walkę bez awansu.</li>"
           + "<li>Co 5. poziom to <b>boss</b>, a po przegranej możesz cofnąć stan sprzed walki.</li>"
           + "</ul>",

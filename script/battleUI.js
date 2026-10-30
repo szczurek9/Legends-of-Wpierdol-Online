@@ -42,6 +42,8 @@
   };
 
   const UI = window.BattleUIRender;
+  const Settings = window.GameSettings;
+  const optionsModal = document.getElementById("options-modal");
   let state;
   let isTransitioning = false;
 
@@ -167,6 +169,7 @@
       return;
     }
     window.Achievements?.onPlayerDeath(state);
+    const autoWasOn = autoOn;   // stopAuto() je zeruje, a restart po śmierci dotyczy tylko auto-walki
     stopAuto();
     refs.actions.classList.add("hidden");
     refs.escapeButton.classList.add("hidden");
@@ -179,6 +182,7 @@
     updateAutoButtons();
     UI.renderPlayerModel(refs, true);
     showMessage("Przegrywasz walkę.", "danger");
+    if (autoWasOn && Settings.auto.restartOnDeath) scheduleDeathRestart();
   }
 
   function canAct() {
@@ -213,6 +217,7 @@
 
   // Wspólne przygotowanie ekranu walki (kampania i arena).
   function showBattleScreen() {
+    cancelPendingAuto();
     stopAuto();
     startBonusMana();
     logHistoryList.replaceChildren();
@@ -255,6 +260,7 @@
   let autoOn = false;
   let autoTimer = null;
   let autoSpeedIndex = readAutoSpeedIndex();
+  let autoWaiting = false;   // auto-walka czeka na manę (opcja „bez zatrzymywania”)
 
   function readAutoSpeedIndex() {
     try {
@@ -267,7 +273,6 @@
   autoButton.type = "button";
   autoButton.id = "auto-btn";
   autoButton.className = "battle-auto-btn";
-  autoButton.title = "Auto-walka (A): gra za Ciebie — używa umiejętności, mikstur zdrowia i ataku";
   const autoSpeedButton = document.createElement("button");
   autoSpeedButton.type = "button";
   autoSpeedButton.id = "auto-speed-btn";
@@ -286,6 +291,7 @@
     autoButton.classList.toggle("is-active", autoOn);
     autoButton.setAttribute("aria-pressed", String(autoOn));
     autoButton.textContent = autoOn ? "⏸ Auto: WŁ." : "▶ Auto";
+    autoButton.title = `Auto-walka (${Settings.label("auto")}): gra za Ciebie — używa umiejętności, mikstur zdrowia i ataku`;
     autoSpeedButton.textContent = `${AUTO_SPEEDS[autoSpeedIndex]}×`;
     autoSpeedButton.setAttribute("aria-label", `Prędkość auto-walki: ${AUTO_SPEEDS[autoSpeedIndex]}×`);
   }
@@ -311,10 +317,15 @@
       return;
     }
     if (!canAct() && !isTransitioning) return;
+    enableAuto();
+  }
+
+  function enableAuto(delay = 250) {
     autoOn = true;
+    autoWaiting = false;
     updateAutoButtons();
     showMessage("Auto-walka włączona.");
-    scheduleAuto(250);
+    scheduleAuto(delay);
   }
 
   // Osiągnięcia odróżniają akcje Auto-walki od ręcznych (Leniwiec).
@@ -356,6 +367,14 @@
         stopAuto(action.reason);
         return;
       }
+      if (action.kind === "wait") {
+        // Mag bez many: nic nie robimy, dopóki mana (+5 co 5 s) nie wystarczy na czar.
+        if (!autoWaiting) showMessage("Auto-walka czeka na regenerację many…", "warning");
+        autoWaiting = true;
+        scheduleAuto(AUTO_BASE_DELAY_MS);
+        return;
+      }
+      autoWaiting = false;
       runAutoAction(action);
       if (!action.free) break;
     }
@@ -368,6 +387,80 @@
     try { window.localStorage.setItem(AUTO_SPEED_KEY, String(AUTO_SPEEDS[autoSpeedIndex])); } catch (error) { /* brak dostępu do storage */ }
     updateAutoButtons();
     if (autoOn) scheduleAuto();
+  });
+
+  // --- Automatyczny restart po śmierci i kontynuacja po poziomie (opcje auto-walki) ---
+  // Restart = to samo, co ręcznie „Cofnij stan sprzed walki” + „Graj”.
+  const deathRestart = document.createElement("div");
+  deathRestart.className = "death-restart hidden";
+  const deathRestartText = document.createElement("p");
+  deathRestartText.setAttribute("role", "status");
+  const deathRestartCancel = document.createElement("button");
+  deathRestartCancel.type = "button";
+  deathRestartCancel.className = "secondary-button";
+  deathRestartCancel.textContent = "Anuluj automatyczny restart";
+  deathRestart.append(deathRestartText, deathRestartCancel);
+  refs.deathPanel.querySelector(".death-actions").before(deathRestart);
+
+  let restartTicker = null;
+  let nextLevelTimer = null;
+  const NEXT_LEVEL_DELAY_MS = 2000;
+
+  function cancelPendingAuto() {
+    window.clearInterval(restartTicker);
+    restartTicker = null;
+    window.clearTimeout(nextLevelTimer);
+    nextLevelTimer = null;
+    deathRestart.classList.add("hidden");
+  }
+
+  function scheduleDeathRestart() {
+    window.clearInterval(restartTicker);
+    let left = Settings.auto.restartDelay;
+    const render = () => { deathRestartText.textContent = `Automatyczny restart walki za ${left} s…`; };
+    render();
+    deathRestart.classList.remove("hidden");
+    restartTicker = window.setInterval(() => {
+      left -= 1;
+      if (left > 0) {
+        render();
+        return;
+      }
+      cancelPendingAuto();
+      restartBattleAfterDeath();
+    }, 1000);
+  }
+
+  function restartBattleAfterDeath() {
+    if (refs.battleScreen.classList.contains("hidden") || refs.deathPanel.classList.contains("hidden")) return;
+    const restored = window.SaveSystem.restoreBattleState();
+    closeBattle();   // wraca do menu i odświeża je, jak po „Cofnij stan sprzed walki”
+    if (!restored) return;
+    openBattle();    // jak kliknięcie „Graj”
+    if (state && !state.finished) enableAuto();
+  }
+
+  function scheduleNextLevel() {
+    const level = window.player.level;
+    if (!window.enemies?.[level - 1]) return;                                  // ukończono wszystkie poziomy
+    if (window.DuelUI && level === window.DuelUI.MIN_LEVEL) return;           // zostaw okno odblokowania pojedynków
+    showMessage(`${refs.battleLog.textContent} Auto-walka: następny poziom za chwilę — „Wróć do menu” przerywa.`, "success");
+    window.clearTimeout(nextLevelTimer);
+    nextLevelTimer = window.setTimeout(() => {
+      nextLevelTimer = null;
+      if (refs.battleScreen.classList.contains("hidden") || !state || !state.levelUp) return;
+      closeBattle();
+      openBattle();
+      if (state && !state.finished) enableAuto();
+    }, NEXT_LEVEL_DELAY_MS);
+  }
+
+  deathRestartCancel.addEventListener("click", cancelPendingAuto);
+
+  // Zmiana klawiszy w Opcjach odświeża plakietki skrótów na kafelkach.
+  Settings.subscribe(() => {
+    updateAutoButtons();
+    if (state && !refs.battleScreen.classList.contains("hidden")) UI.renderAbilities(refs, state, useAbility, useWeaponAbility);
   });
 
   // --- Arena ---
@@ -443,9 +536,11 @@
         finishArena();
       } else if (state.levelUp) {
         window.Achievements?.onLevelComplete(state);
+        const continueAuto = autoOn && Settings.auto.keepAfterLevel;   // finish() wyłącza auto-walkę
         finish(`${message} ${state.message} Otrzymujesz nagrodę: ${state.reward} $.`, "success");
         // Ukończony 50. poziom (gracz ma teraz 51) — odblokowane pojedynki 1v1.
         if (window.DuelUI && window.player.level === window.DuelUI.MIN_LEVEL) window.DuelUI.showUnlockPrompt();
+        if (continueAuto) scheduleNextLevel();
       } else {
         refs.actions.classList.remove("hidden");
         if (hideAbilitiesAndPotions) {
@@ -535,41 +630,39 @@
     showMessage(result.message);
   }
 
+  // Skróty pochodzą z Opcji (GameSettings). Cztery „sloty” (domyślnie Q/W/E/R):
+  // Mag ma pod nimi swoje 4 czary, pozostałe klasy: atak + 3 umiejętności.
   function handleBattleShortcut(event) {
     if (refs.battleScreen.classList.contains("hidden") || event.repeat) return;
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
     if (["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
+    if (optionsModal && !optionsModal.classList.contains("hidden")) return;
 
-    const key = event.key.toLowerCase();
-    if (event.code === "Space") {
-      event.preventDefault();
+    const key = Settings.keyFromEvent(event);
+    const action = key && Settings.actionForKey(key);
+    if (!action) return;
+    event.preventDefault();
+
+    if (action === "weapon") {
       useWeaponAbility();
       return;
     }
-    if (key === "a") {
-      event.preventDefault();
+    if (action === "auto") {
       toggleAuto();
       return;
     }
-    const classAbilities = window.classAbilities?.[window.player.classId]?.active || [];
-    const keys = ["q", "w", "e", "r"];
-    const abilityIndex = keys.indexOf(key);
 
+    const slot = Number(action.slice(4)) - 1;   // slot1..slot4 -> 0..3
+    const classAbilities = window.classAbilities?.[window.player.classId]?.active || [];
     if (window.player.classId === "mage") {
-      if (abilityIndex < 0 || !classAbilities[abilityIndex]) return;
-      event.preventDefault();
-      useAbility(classAbilities[abilityIndex].id);
+      if (classAbilities[slot]) useAbility(classAbilities[slot].id);
       return;
     }
-
-    if (key === "q") {
-      event.preventDefault();
+    if (slot === 0) {
       attack();
       return;
     }
-    if (abilityIndex > 0 && classAbilities[abilityIndex - 1]) {
-      event.preventDefault();
-      useAbility(classAbilities[abilityIndex - 1].id);
-    }
+    if (classAbilities[slot - 1]) useAbility(classAbilities[slot - 1].id);
   }
 
   function escape() {
@@ -595,6 +688,7 @@
   }
 
   function closeBattle() {
+    cancelPendingAuto();
     stopAuto();
     stopBonusMana();
     if (window.SaveSystem.isArenaActive()) window.SaveSystem.endArena({ cooldownMs: window.Arena.COOLDOWN_MS });
@@ -622,6 +716,7 @@
   refs.escapeButton.addEventListener("click", escape);
   refs.backButton.addEventListener("click", closeBattle);
   refs.deathNewGameButton.addEventListener("click", () => {
+    cancelPendingAuto();
     refs.battleScreen.classList.add("hidden");
     window.startNewGame();
   });

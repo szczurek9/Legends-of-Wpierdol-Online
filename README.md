@@ -28,6 +28,7 @@ Przeglądarkowa gra RPG z turowym systemem walki, napisana w całości w czystym
 * **Spacja** — Uwolnienie specjalnej mechaniki dla unikalnych broni (dostępne tylko po wylosowaniu odpowiedniego oręża)
 * **A** — Auto-walka (przycisk ▶ Auto w nagłówku walki; prędkość 1×/2×/3×). Gra za Ciebie umiejętnościami, miksturami zdrowia i atakiem; wyłącza się po ukończeniu poziomu i nie działa w Arenie.
 * *Mikstury oraz opcja jednorazowej ucieczki z walki obsługiwane są bezpośrednio z poziomu interfejsu (UI).*
+* **Opcje → ⚔️ Walka:** zmiana wszystkich powyższych klawiszy oraz ustawienia auto-walki (brak zatrzymywania przy niskim HP/manie/miksturach, używanie mikstur, kontynuacja po poziomie, automatyczny restart po śmierci po 3–10 s). Ustawienia zapisują się w przeglądarce (`localStorage`).
 
 ## Licencja
 

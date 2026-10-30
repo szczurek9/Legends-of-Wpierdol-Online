@@ -250,10 +250,10 @@
     const button = document.createElement("button");
     button.type = "button";
     button.className = "ability-button weapon-ability-button";
-    const tile = { name, hotkey: "Spc", sub };
+    const tile = { name, hotkey: window.GameSettings.label("weapon", true), sub };
     buildTile(button, { ...tile, icon: window.GameIcons.itemIcon("weapons", player.weaponId, "tile-img") });
     button.title = `Umiejętność broni: ${player.weaponName}`;
-    button.setAttribute("aria-label", `${name}, ${sub}, skrót Spacja`);
+    button.setAttribute("aria-label", `${name}, ${sub}, skrót ${window.GameSettings.label("weapon")}`);
     // Kafelek zawsze klikalny: gdy umiejętność nie jest gotowa, klik tylko pokazuje powód w logu.
     button.classList.toggle("is-no-mana", !ready);
     button.addEventListener("click", () => onUse?.(ready ? null : notReady));
@@ -262,16 +262,15 @@
 
   function renderAbilities(refs, state, onUseAbility, onUseWeaponAbility) {
     refs.abilitiesPanel.replaceChildren();
-    const isMage = window.player.classId === "mage";
 
     // Atak bronią (Q) — ten sam przycisk co zawsze, tylko w formie kafelka.
     buildTile(refs.attackButton, {
       icon: window.GameIcons.stat("damage", "tile-glyph"),
       name: "Atakuj",
-      hotkey: "Q",
+      hotkey: window.GameSettings.label("slot1", true),
     });
     refs.attackButton.title = `Atak bronią: ${window.player.weaponName}`;
-    refs.attackButton.setAttribute("aria-label", "Atakuj, skrót Q");
+    refs.attackButton.setAttribute("aria-label", `Atakuj, skrót ${window.GameSettings.label("slot1")}`);
     refs.abilitiesPanel.appendChild(refs.attackButton);
 
     // Umiejętność broni unikalnej (Spacja) — kafelek dla telefonów, bez klawiatury.
@@ -287,7 +286,7 @@
       const cooldownNote = maxCooldown ? ` | CD: ${maxCooldown} tur${maxCooldown < ability.cooldown ? ` (bazowo ${ability.cooldown})` : ""}` : "";
       button.title = `${ability.description} Koszt: ${ability.cost} many${cooldownNote}`;
 
-      const hotkey = isMage ? ["Q", "W", "E", "R"][abilityIndex] : ["W", "E", "R"][abilityIndex];
+      const hotkey = window.GameSettings.label(window.GameSettings.abilityAction(window.player.classId, abilityIndex), true);
       const isToggle = ability.id === "senNoKata";
       const cooldown = isToggle ? 0 : (state.cooldowns?.[ability.id] || 0);
       const noMana = window.player.manaPoints < ability.cost;

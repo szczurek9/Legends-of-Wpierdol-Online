@@ -9,6 +9,10 @@
 //   { kind: "ability", id, free }     umiejętność klasy (free = nie zajmuje tury)
 //   { kind: "attack" }                zwykły atak (Q)
 //   { kind: "pause", reason }         auto-walka powinna się zatrzymać
+//   { kind: "wait" }                  nic do zrobienia — poczekaj na manę (opcja „bez zatrzymywania”)
+//
+// Zachowanie zależy od opcji gracza (window.GameSettings.auto): używanie mikstur
+// oraz wyłączenie zatrzymywania przy niskim HP / manie / braku mikstur.
 (function () {
   const M = window.BattleMath;
 
@@ -61,8 +65,14 @@
     ],
   };
 
+  // Opcje auto-walki z Opcji (domyślnie: mikstury włączone, zatrzymywanie włączone).
+  function options() {
+    return window.GameSettings?.auto || { noPause: false, usePotions: true };
+  }
+
+  // Mikstura jest „dostępna” dla auto-walki tylko, gdy gracz pozwolił jej ich używać.
   function hasPotion(id) {
-    return (window.player.potionInventory || []).includes(id);
+    return options().usePotions !== false && (window.player.potionInventory || []).includes(id);
   }
 
   function weaponAbilityReady(state) {
@@ -96,8 +106,10 @@
       return { kind: "potion", id: "healthPotion", free: true };
     }
     const escapeAvailable = !state.arena && !player.usedEscape;
-    if ((hpRatio <= PAUSE_BELOW || inDanger) && escapeAvailable) {
-      return { kind: "pause", reason: "Auto-walka wstrzymana: niskie HP i brak Mikstur Zdrowia. Użyj ucieczki albo walcz dalej ręcznie." };
+    const { noPause, usePotions } = options();
+    if ((hpRatio <= PAUSE_BELOW || inDanger) && escapeAvailable && !noPause) {
+      const cause = usePotions === false ? "niskie HP (używanie mikstur jest wyłączone w Opcjach)" : "niskie HP i brak Mikstur Zdrowia";
+      return { kind: "pause", reason: `Auto-walka wstrzymana: ${cause}. Użyj ucieczki albo walcz dalej ręcznie.` };
     }
 
     // 2. Mikstury wzmacniające — tylko na bossów, żeby nie marnować drogich eliksirów.
@@ -126,6 +138,14 @@
 
     // 5. Zwykły atak (Mag go nie ma — wszystko robi czarami).
     if (M.classId() !== "mage") return { kind: "attack" };
+
+    // Mag bez many: albo zatrzymujemy auto-walkę, albo (opcja) czekamy na regenerację many.
+    // Czekanie ma sens tylko, gdy tani czar bez odnowienia da się kiedyś opłacić.
+    const fallback = abilities.find((item) => item.id === "stormBreeze");
+    const canWait = Boolean(fallback)
+      && (state.cooldowns?.[fallback.id] || 0) <= 0
+      && player.maxManaPoints >= fallback.cost;
+    if (noPause && canWait) return { kind: "wait" };
 
     const hint = escapeAvailable ? " Ucieczka przywraca część many." : "";
     return { kind: "pause", reason: `Auto-walka wstrzymana: brak many na jakąkolwiek umiejętność.${hint}` };

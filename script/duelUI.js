@@ -737,12 +737,12 @@
       const check = myTurn ? E.validate(fight.duel, fight.side, action) : { ok: false };
       button.disabled = fight.busy || !check.ok;
       button.addEventListener("click", () => playMove(action));
-      if (tile.hotkey && !button.disabled) fight.hotkeys[tile.hotkey.toLowerCase()] = action;
+      if (tile.key && !button.disabled) fight.hotkeys[tile.key] = action;
       holder.appendChild(button);
     };
 
     if (!isMage) {
-      addTile({ kind: "attack" }, { name: "Atakuj", hotkey: "Q" }, window.GameIcons.stat("damage", "tile-glyph"), `Atak bronią: ${fight.duel.sides[fight.side].player.weaponName}`);
+      addTile({ kind: "attack" }, { name: "Atakuj", hotkey: window.GameSettings.label("slot1", true), key: window.GameSettings.key("slot1") }, window.GameIcons.stat("damage", "tile-glyph"), `Atak bronią: ${fight.duel.sides[fight.side].player.weaponName}`);
     }
     // Umiejętność broni unikalnej (Yamato, Pistolet Jhina): wolna akcja pod Spacją.
     const weaponId = view.me.weaponId;
@@ -754,7 +754,7 @@
         : pool > 0;
       const tile = {
         name: yamato ? "Judgement Cut" : "Pula Jhina",
-        hotkey: "Spc",
+        hotkey: window.GameSettings.label("weapon", true),
         sub: yamato ? `poniżej ${view.me.yamatoThreshold}% HP` : (pool > 0 ? String(pool) : "pusta"),
       };
       const button = document.createElement("button");
@@ -762,28 +762,29 @@
       button.className = "ability-button weapon-ability-button";
       R().buildTile(button, { ...tile, icon: window.GameIcons.itemIcon("weapons", weaponId, "tile-img") });
       button.title = `Umiejętność broni: ${view.me.weaponName}`;
-      button.setAttribute("aria-label", `${tile.name}, ${tile.sub}, skrót Spacja`);
+      button.setAttribute("aria-label", `${tile.name}, ${tile.sub}, skrót ${window.GameSettings.label("weapon")}`);
       button.classList.toggle("is-no-mana", !ready);
       button.disabled = fight.busy || !myTurn;
       button.addEventListener("click", () => playMove({ kind: "weapon" }));
-      if (!button.disabled) fight.hotkeys.space = { kind: "weapon" };
+      if (!button.disabled) fight.hotkeys[window.GameSettings.key("weapon")] = { kind: "weapon" };
       holder.appendChild(button);
     }
     abilities.forEach((ability, index) => {
-      const hotkey = isMage ? ["Q", "W", "E", "R"][index] : ["W", "E", "R"][index];
+      const slot = window.GameSettings.abilityAction(classId, index);
+      const hotkey = window.GameSettings.label(slot, true);
       const isToggle = ability.id === "senNoKata";
       const cooldown = isToggle ? 0 : (view.me.cooldowns[ability.id] || 0);
       const noMana = view.me.mana < ability.cost;
       const maxCooldown = window.BattleMath.effectiveCooldown ? window.BattleMath.effectiveCooldown(ability) : ability.cooldown;
       const sub = isToggle ? (view.me.senMode === "boei" ? `Bōei · atak ${view.me.senAttackCount}/3` : "Chikara") : "";
       const cooldownNote = maxCooldown ? ` | CD: ${maxCooldown} tur` : "";
-      addTile({ kind: "ability", id: ability.id }, { name: ability.name, hotkey, cost: ability.cost, cooldown, noMana, sub, maxCooldown },
+      addTile({ kind: "ability", id: ability.id }, { name: ability.name, hotkey, key: window.GameSettings.key(slot), cost: ability.cost, cooldown, noMana, sub, maxCooldown },
         window.GameIcons.abilityIcon(classId, ability, "tile-img"), `${ability.description} Koszt: ${ability.cost} many${cooldownNote}`);
       if (isToggle) holder.lastChild.classList.add(view.me.senMode === "boei" ? "ability-mode-boei" : "ability-mode-chikara");
     });
     // Brak jakiejkolwiek akcji (np. Mag bez many): można tylko oddać turę, zamiast czekać na timeout.
     if (myTurn && !E.hasAnyAction(fight.duel, fight.side)) {
-      addTile({ kind: "pass" }, { name: "Pomiń turę", hotkey: "P" }, window.GameIcons.stat("mana", "tile-glyph"), "Nie masz żadnej dostępnej akcji — oddajesz turę.");
+      addTile({ kind: "pass" }, { name: "Pomiń turę", hotkey: "P", key: "p" }, window.GameIcons.stat("mana", "tile-glyph"), "Nie masz żadnej dostępnej akcji — oddajesz turę.");
     }
   }
 

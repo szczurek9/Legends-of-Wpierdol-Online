@@ -438,6 +438,7 @@
                 <div class="opt-tabs" role="tablist" aria-label="Sekcje opcji">
                     <button id="opt-tab-save" class="opt-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="opt-panel-save" data-opt-tab="save">💾 Zapis</button>
                     <button id="opt-tab-look" class="opt-tab" type="button" role="tab" aria-selected="false" aria-controls="opt-panel-look" data-opt-tab="look" tabindex="-1">🎨 Wygląd</button>
+                    <button id="opt-tab-combat" class="opt-tab" type="button" role="tab" aria-selected="false" aria-controls="opt-panel-combat" data-opt-tab="combat" tabindex="-1">⚔️ Walka</button>
                 </div>
 
                 <div id="opt-panel-save" class="opt-panel" role="tabpanel" aria-labelledby="opt-tab-save">
@@ -503,6 +504,42 @@
                     </div>
                 </div>
 
+                <div id="opt-panel-combat" class="opt-panel hidden" role="tabpanel" aria-labelledby="opt-tab-combat">
+                    <section class="opt-card" aria-labelledby="opt-keys-title">
+                        <h3 id="opt-keys-title" class="opt-card-title">⌨️ Sterowanie</h3>
+                        <p class="opt-hint">Kliknij klawisz, a potem naciśnij nowy. <kbd class="opt-kbd">Esc</kbd> anuluje. Jeśli klawisz jest już zajęty, obie akcje zamienią się miejscami.</p>
+                        <div class="opt-key-list">
+                            <div class="opt-key-row"><span class="opt-key-name">Atak <small>(Mag: umiejętność 1)</small></span><button type="button" class="opt-key-btn" data-bind="slot1"></button></div>
+                            <div class="opt-key-row"><span class="opt-key-name">Umiejętność 1 <small>(Mag: umiejętność 2)</small></span><button type="button" class="opt-key-btn" data-bind="slot2"></button></div>
+                            <div class="opt-key-row"><span class="opt-key-name">Umiejętność 2 <small>(Mag: umiejętność 3)</small></span><button type="button" class="opt-key-btn" data-bind="slot3"></button></div>
+                            <div class="opt-key-row"><span class="opt-key-name">Umiejętność 3 <small>(Mag: umiejętność 4)</small></span><button type="button" class="opt-key-btn" data-bind="slot4"></button></div>
+                            <div class="opt-key-row"><span class="opt-key-name">Umiejętność broni</span><button type="button" class="opt-key-btn" data-bind="weapon"></button></div>
+                        </div>
+                        <p id="opt-keys-status" class="opt-hint opt-key-status" role="status" aria-live="polite"></p>
+                        <div class="modal-actions opt-single-action">
+                            <button id="opt-keys-reset-btn" type="button">↩️ Przywróć domyślne klawisze</button>
+                        </div>
+                    </section>
+                    <section class="opt-card" aria-labelledby="opt-auto-title">
+                        <h3 id="opt-auto-title" class="opt-card-title">🤖 Auto-walka</h3>
+                        <div class="opt-key-row"><span class="opt-key-name">Włącz / wyłącz auto-walkę</span><button type="button" class="opt-key-btn" data-bind="auto"></button></div>
+                        <label class="opt-toggle"><input id="opt-auto-no-pause" type="checkbox"><span>Wyłącz zatrzymywanie auto-walki przy niskim HP / manie / braku mikstur</span></label>
+                        <label class="opt-toggle"><input id="opt-auto-potions" type="checkbox"><span>Używaj mikstur</span></label>
+                        <label class="opt-toggle"><input id="opt-auto-keep" type="checkbox"><span>Nie wyłączaj auto-walki po przejściu poziomu</span></label>
+                        <small class="opt-hint opt-sub">Po wygranej gra sama zaczyna kolejny poziom.</small>
+                        <label class="opt-toggle"><input id="opt-auto-restart" type="checkbox"><span>Automatycznie zrestartuj walkę po śmierci</span></label>
+                        <small class="opt-hint opt-sub">Cofa stan sprzed walki i klika „Graj” (działa, gdy auto-walka była włączona).</small>
+                        <div class="opt-range-row" id="opt-auto-delay-row">
+                            <label for="opt-auto-delay">Restart po</label>
+                            <input id="opt-auto-delay" type="range" min="3" max="10" step="1" value="5">
+                            <output id="opt-auto-delay-value" for="opt-auto-delay">5 s</output>
+                        </div>
+                        <div class="modal-actions opt-single-action">
+                            <button id="opt-auto-reset-btn" type="button">↩️ Przywróć domyślne ustawienia auto-walki</button>
+                        </div>
+                    </section>
+                </div>
+
                 <section class="opt-card tut-opt-card" aria-labelledby="opt-tutorial-title">
                     <h3 id="opt-tutorial-title" class="opt-card-title">🎓 Samouczek</h3>
                     <p class="tut-opt-text">Nie pamiętasz, jak działa sklep albo walka? Przejdź krótki samouczek jeszcze raz.</p>
@@ -548,6 +585,7 @@
     <script src="script/battleActions.js"></script>
     <script src="script/arena.js"></script>
     <script src="script/battle.js"></script>
+    <script src="script/settings.js"></script>
     <script src="script/battleUIRender.js"></script>
     <script src="script/autoBattle.js"></script>
     <script src="script/battleUI.js"></script>
