@@ -1,5 +1,5 @@
 // Wersja gry — zmieniaj tylko tutaj (pokazuje się w stopce strony).
-window.GAME_VERSION = "1.0.3b";
+window.GAME_VERSION = "1.0.3";
 (function showGameVersion() {
   const element = document.getElementById("game-version");
   if (element) element.textContent = `v${window.GAME_VERSION}`;
@@ -25,6 +25,7 @@ window.createAchievementRun = function () {
     noItems: true,            // żadna walka nie odbyła się z przedmiotem AD/AP
     escapes: 0,               // ile razy użyto ucieczki w kampanii
     potionFreeLevels: 0,      // poziomy z rzędu ukończone bez mikstury
+    escapeFreeLevels: 0,      // poziomy z rzędu ukończone bez ucieczki (-1 = właśnie użyto ucieczki, bieżący poziom się nie liczy)
   };
 };
 

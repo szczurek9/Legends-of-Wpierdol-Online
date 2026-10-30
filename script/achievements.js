@@ -307,8 +307,8 @@
       addToSet("classesCleared", p.classId);
       if (run.noItems) unlock("hardcore");
     }
-    if (p.level >= 10 && run.fistsOnly && p.classId !== "mage") unlock("fistfighter");
-    if (p.level >= 15 && run.escapes === 0) unlock("noFear");
+    if (p.level >= 5 && run.fistsOnly && p.classId !== "mage") unlock("fistfighter");
+    if (run.escapeFreeLevels >= 5) unlock("noFear");
     if (run.potionFreeLevels >= 10) unlock("noPotions");
 
     const owned = ownedUniqueCount();
@@ -345,7 +345,12 @@
   }
 
   function onEscape() {
-    if (tracking()) ensureRun().escapes += 1;
+    if (!tracking()) return;
+    const run = ensureRun();
+    run.escapes += 1;
+    // -1 = poziom, na którym użyto ucieczki, się nie liczy: po jego ukończeniu seria wraca do 0 i dopiero
+    // kolejne poziomy ją budują (poziom po ucieczce nie jest poziomem "bez ucieczki").
+    run.escapeFreeLevels = -1;
   }
 
   function registerSamuraiAttack(missed) {
@@ -359,7 +364,7 @@
   }
 
   function checkRageBurst(result) {
-    if (player().classId === "tank" && (result.rageBurst || 0) > 800) unlock("tankRage");
+    if (player().classId === "tank" && (result.rageBurst || 0) > 450) unlock("tankRage");
   }
 
   // Zwykły atak (Q). focused = atak wzmocniony Nieokiełznanym Skupieniem.
@@ -387,7 +392,13 @@
     const heal = p.secondWind ? Math.floor(p.maxHealthPoints * 0.25) : 0;
     const mana = p.secondWind ? Math.floor(p.maxManaPoints * 0.25) : 0;
     lvl.lastKill = { hp: Math.max(0, p.healthPoints - heal), mana: Math.max(0, p.manaPoints - mana) };
-    if (!lvl.arena && enemy && enemy.isBoss && lvl.enemyWasFull) unlock("oneTap");
+    if (lvl.arena) return;
+    // OneTap: dowolna fala pokonana jedną akcją, gdy wróg miał pełne HP.
+    if (lvl.enemyWasFull) unlock("oneTap");
+    // Nietykalny: po ostatnim uderzeniu w bossa gracz ma pełne HP (leczenie z tego uderzenia i Drugie Tchnienie się liczą).
+    if (enemy && enemy.isBoss && p.healthPoints >= p.maxHealthPoints) unlock("untouchable");
+    // Hardcore: wystarczy pokonać jedną falę poziomu 50 bez przedmiotów AD/AP — zalicza się od razu, także gdy gracz potem zginie.
+    if (p.level === 50 && tracking() && ensureRun().noItems) unlock("hardcore");
   }
 
   // Poziom ukończony (po nextWave: poziom gracza już wzrósł).
@@ -397,7 +408,7 @@
     const enemy = window.BattleState.enemyOf(state);
 
     if (tracking() && !lvl.potion) ensureRun().potionFreeLevels += 1;
-    if (enemy && enemy.isBoss && (state.arenaDamageTaken || 0) === 0) unlock("untouchable");
+    if (tracking()) ensureRun().escapeFreeLevels += 1;
     if (lvl.lastKill.hp < p.maxHealthPoints * 0.15) unlock("edgerunner");
     if (p.classId === "mage" && lvl.lastKill.mana < p.maxManaPoints * 0.10) unlock("mageMana");
     if (!lvl.manual) count("autoLevels");
@@ -441,6 +452,7 @@
     if (spec.type === "counter") value = server.counters[spec.key] || 0;
     else if (spec.type === "set") value = (server.sets[spec.key] || []).length;
     else if (spec.type === "potionStreak") value = p.achRun?.potionFreeLevels || 0;
+    else if (spec.type === "escapeStreak") value = Math.max(0, p.achRun?.escapeFreeLevels || 0);
     else if (spec.type === "skins") value = ownedSkins(isCountableSkin).length;
     else if (spec.type === "femaleSkins") value = ownedSkins((skin) => skin.gender === "female").length;
     else if (spec.type === "uniqueWeapons") value = ownedUniqueCount();

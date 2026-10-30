@@ -186,6 +186,7 @@
     if (typeof player.achRun.noItems !== "boolean") player.achRun.noItems = defaultRun.noItems;
     if (typeof player.achRun.escapes !== "number" || !(player.achRun.escapes >= 0)) player.achRun.escapes = 0;
     if (typeof player.achRun.potionFreeLevels !== "number" || !(player.achRun.potionFreeLevels >= 0)) player.achRun.potionFreeLevels = 0;
+    if (typeof player.achRun.escapeFreeLevels !== "number" || !(player.achRun.escapeFreeLevels >= -1)) player.achRun.escapeFreeLevels = 0;
 
     // Dawna Katana (60 obr., +70% AD) została przemianowana na Maczetę (id "machete"). Nowa Katana (100 obr., +100% AD)
     // ma stare id "katana", więc stare egzemplarze rozpoznajemy po statystykach i przepisujemy na Maczetę.
