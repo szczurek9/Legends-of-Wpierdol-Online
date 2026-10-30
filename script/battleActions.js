@@ -299,7 +299,10 @@
     if (ability.id === "absoluteFocus") {
       if (state.focusMark) return { ...state, message: "Przeciwnik jest już oznaczony." };
       if (!M.payMana(window.player, ability.cost)) return { ...state, message: "Za mało many." };
-      const marked = S.setCooldown({ ...state, focusMark: true }, ability, M.effectiveCooldown(ability));
+      // +1, bo ta umiejętność nie zużywa tury: tuż po niej gracz robi Q, a odliczanie po Q zjadłoby jedną turę cooldownu.
+      // Zwykłe umiejętności dostają cooldown już PO odliczeniu w tej samej akcji, więc W musi dostać o 1 więcej, żeby
+      // blokowała tyle samo tur co one (bez tego redukcja cooldownu pozwalała na W-Q co turę).
+      const marked = S.setCooldown({ ...state, focusMark: true }, ability, M.effectiveCooldown(ability) + 1);
       return { ...marked, message: "Nieokiełznane Skupienie: następny atak (Q) będzie gwarantowanym krytykiem x2." };
     }
 
